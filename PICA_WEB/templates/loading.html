@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Loading Page</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1>Loading...</h1>
+        <div id="loader"> loading </div>
+        <script>
+            $(window).on('load', function () {
+                $('#loader').fadeOut();
+                window.location.assign("{{url_for('chatbot')}}")
+            });
+        </script>
+    </body>
+</html>

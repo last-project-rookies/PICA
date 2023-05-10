@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% with message = get_flashed_messages() %}
+    {% if message %}
+    <script>
+        alert("{{ message[-1] }}")
+    </script>
+    {% endif %}
+    {% endwith %}
+</head>
+<body>
+    <div id="root">
+        <h2 class="title">File Upload</h2>
+        <hr>
+        <div class="contents">
+            <div class="upload-box">
+                <div id="drop-file" class="drag-file">
+                    <img src="https://img.icons8.com/pastel-glyph/2x/image-file.png" alt="파일 아이콘" class="image">
+                    <p class="message">Drag files to upload</p>
+                    <img src="" alt="미리보기 이미지" class="preview">
+                    <p class="message">input userID</p>
+                </div>
+                <div>
+                    <input id="userID" type="text" size="100" />
+                </div>
+                <br><br>
+                        <div>
+                            <label class="file-label" for="chooseFile">Choose File</label>
+                            <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
+                                accept="image/png, image/jpeg, image/gif">
+                            <label class="file-label" for="uploadFile">Upload File</label>
+                            <button class="file" id="uploadFile"></button>
+                        </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //let fileGet = null
+        const button = document.getElementById("uploadFile")
+        //const formData = new FormData();
+        const userID = document.getElementById("userID")
+        let b_file = null
+        button.addEventListener('click', ()=>{
+            //formData.append('img', fileGet); //$('#chooseFile')[0].files[0]
+            if (!b_file || userID.value == '') {
+                alert('모두 기입해주세요!')
+                return null
+            }
+            $.ajax({
+                type: 'POST',
+                url: '{{url_for("req_stable")}}',
+                data: JSON.stringify({"b_img":b_file, "userID":userID.value}),
+                dataType: "JSON",
+                contentType: "application/json",  //"multipart/form-data",
+                //processData :false,
+                //cache: false,
+                success: function(data){
+                    const url = data['url']
+                    console.log(url)
+                    fetch(url)
+                        .then((response) => window.location.assign("{{ url_for('loading') }}"))
+                        .catch((error) =>  window.location.assign("{{ url_for('home') }}"));
+                },
+                error: function(request, status, error){
+                    console.log('업로드 에러~', error)
+                }
+            })
+        })
+    
+        function DropFile(dropAreaId, fileListId) {
+            let dropArea = document.getElementById(dropAreaId);
+            let fileList = document.getElementById(fileListId);
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+    
+            function highlight(e) {
+                preventDefaults(e);
+                dropArea.classList.add("highlight");
+            }
+    
+            function unhighlight(e) {
+                preventDefaults(e);
+                dropArea.classList.remove("highlight");
+            }
+    
+            function handleDrop(e) {
+                unhighlight(e);
+                let dt = e.dataTransfer;
+                let files = dt.files;
+    
+                handleFiles(files);
+    
+                const fileList = document.getElementById(fileListId);
+                if (fileList) {
+                    fileList.scrollTo({ top: fileList.scrollHeight });
+                }
+            }
+    
+            function handleFiles(files) {
+                files = [...files];
+                //fileGet = files[0]
+                // files.forEach(uploadFile);
+                files.forEach(previewFile);
+            }
+    
+            function previewFile(file) {
+                renderFile(file);
+            }
+            function renderFile(file) {
+                let reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onloadend = function () {
+                    let img = dropArea.getElementsByClassName("preview")[0];
+                    img.src = reader.result;
+                    b_file = reader.result.split(',').pop()
+                    img.style.display = "block";
+                };
+            }
+    
+            dropArea.addEventListener("dragenter", highlight, false);
+            dropArea.addEventListener("dragover", highlight, false);
+            dropArea.addEventListener("dragleave", unhighlight, false);
+            dropArea.addEventListener("drop", handleDrop, false);
+    
+            return {
+                handleFiles
+            };
+        }
+    
+        const dropFile = new DropFile("drop-file", "files");
+    
+    </script>
+</body>
+
+
+</html>

@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+
+<body>
+    <div>
+        <button id="delete_btn" onclick="delete_btn()"> 이미지 삭제 </button>
+    </div>
+    <div class="video-container">
+        <img/>
+        <video></video>
+    </div>
+    <div>
+        <button id='audiobtn' onClick="record()" > 시작/ 종료</button>
+    </div>
+    <script>
+        const img = document.querySelector('.video-container img')
+        $(window).on('load', function () {
+            // default 이미지 삽입
+            $.ajax({
+                url: "{{ url_for('get_img') }}",
+                type: "GET",
+                success: function(data) {
+                    img.src = data['url']
+                    img.width = 500;
+                    img.height = 500;
+                },
+                error: function(xhr) {
+                    console.log("Error:", xhr.responseText);
+                    window.location.assign("{{ url_for('home') }}")
+                }
+            });
+        });
+        function delete_btn(){
+            console.log(img.src)
+            $.ajax({
+                url : "{{ url_for('delete_img') }}",
+                type : "POST",
+                data : JSON.stringify({"url" : img.src}),
+                dataType: "JSON",
+                contentType: "application/json",
+                success: function(res){
+                    console.log('success')
+                    window.location.replace("{{ url_for('home') }}")
+                },
+                error : function(error){
+                    console.log("error", error)
+                }
+            })
+        }
+    </script>
+    <script>
+        const video = document.querySelector('.video-container video');
+        video.defaultPlaybackRate= 1.5
+        window.SpeechRecognition =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new window.SpeechRecognition();
+        // 세팅
+        recognition.interimResults = true;
+        recognition.lang = "ko-KR";
+        recognition.continuous = true;
+        recognition.maxAlternatives = 10000;
+        let data = ""
+        recognition.addEventListener("result", (e) => {
+            let speechToText = "";
+            let interimTranscript = "";
+            for (let i = e.resultIndex, len = e.results.length; i < len; i++) {
+                let transcript = e.results[i][0].transcript;
+                if (e.results[i].isFinal) {
+                speechToText += transcript;
+                } else {
+                interimTranscript += transcript;
+                }
+            }
+                // 임시값 세팅
+                console.log(data)
+                data = speechToText + interimTranscript
+            });
+        // 음성 인식 시작
+        let startStop = true
+        function record(){
+            const btn = document.getElementById('audiobtn')
+            if (startStop) {
+                recognition.start()
+                startStop = false
+                btn.style.backgroundColor = 'red'
+                btn.style.color = 'white'
+            }
+            else {
+                recognition.stop()
+                startStop = true
+                btn.style.backgroundColor = ''
+                btn.style.color = ''
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url_for("send_message")}}',
+                    data: JSON.stringify({"inputdata": data}),
+                    dataType : 'JSON',
+                    contentType: "application/json",
+                    success: function(data){
+                        $('img').remove('')
+                        console.log(data["video_url"])
+                        video.autoplay = true;
+                        video.muted = false;
+                        video.width = 500;
+                        video.height = 500;
+                        video.src = data["video_url"];
+                    },
+                    error: function(request, status, error){
+                        console.log('에러에러~', error)
+                    }
+                })
+            }
+        }
+        
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,5 @@
+flask
+mariadb
+EdgeGPT
+asyncio
+boto3
