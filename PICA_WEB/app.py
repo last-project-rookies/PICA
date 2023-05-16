@@ -119,3 +119,4 @@ def send_message():
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+# waitress-serve --port=5000 --channel-timeout=300 app:app

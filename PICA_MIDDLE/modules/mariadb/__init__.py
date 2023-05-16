@@ -37,12 +37,14 @@ sql = """
     );
 """
 cursor.execute(sql)
+# log -> 영상 url 세팅
 sql = """
     CREATE TABLE if not EXISTS log (
         id INT(11) NOT NULL AUTO_INCREMENT,
         question VARCHAR(100) NOT NULL,
         answer VARCHAR(100) NOT NULL,
         a_status INT(3) NOT NULL,
+        video_url VARCHAR(100) NOT NULL,
         user_id INT(11) NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES user(id)

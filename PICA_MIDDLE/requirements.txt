@@ -3,3 +3,4 @@ mariadb
 EdgeGPT
 asyncio
 boto3
+opanai

@@ -2,6 +2,13 @@ from EdgeGPT import Chatbot, ConversationStyle
 import asyncio
 import re
 
+# import os
+# import openai
+
+# openai.organization = "org-9sdnvDIyMufJHYvaDZV7noYE"
+# openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.Model.list()
+
 
 # bing 대답 생성
 async def being_call(data):
@@ -48,5 +55,4 @@ def remove_emoji(text):
 if __name__ == "__main__":
     answer = asyncio.run(being_call("안녕하세요"))
     # answer = answer.encode("utf-8", "ignore").decode("utf-8")
-    answer = remove_emoji(answer)
     print(answer)
