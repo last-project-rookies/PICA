@@ -24,14 +24,14 @@ class AwsQuery:
         self.BUCKET_NAME = "google-extension2"
         self.CLOUD_FLONT_CDN = "https://d2frc9lzfoaix3.cloudfront.net"
 
-    async def s3_upload(self, userID, name, data):
+    async def s3_upload(self, userID, data):
         self.S3.Bucket(self.BUCKET_NAME).put_object(
-            Key=f"{userID}/{name}",
+            Key=f"{userID}/log_summary/yesterday.txt",
             Body=data,
         )
 
-    async def s3_delete(self, userID, name):
-        self.S3.Object(self.BUCKET_NAME, f"{userID}/{name}").delete()
+    async def s3_delete(self, userID, nickname, filename):
+        self.S3.Object(self.BUCKET_NAME, f"{userID}/{nickname}/{filename}").delete()
 
 
 if __name__ == "__main__":

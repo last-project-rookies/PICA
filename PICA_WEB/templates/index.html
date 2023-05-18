@@ -24,7 +24,10 @@
                     <p class="message">input userID</p>
                 </div>
                 <div>
-                    <input id="userID" type="text" size="100" />
+                    <label class="file-label" for="userID">input userID</label><br>
+                    <input id="userID" style="margin-bottom: 10px;" type="text" size="110%" />
+                    <label class="file-label" for="nickname">input nickname</label><br>
+                    <input id="nickname" type="text" size="110%" />
                 </div>
                 <br><br>
                         <div>
@@ -42,8 +45,11 @@
         const button = document.getElementById("uploadFile")
         //const formData = new FormData();
         const userID = document.getElementById("userID")
+        const nickname = document.getElementById("nickname")
+
         let b_file = null
         button.addEventListener('click', ()=>{
+            window.location.assign("{{url_for('loading')}}")
             //formData.append('img', fileGet); //$('#chooseFile')[0].files[0]
             if (!b_file || userID.value == '') {
                 alert('모두 기입해주세요!')
@@ -52,7 +58,7 @@
             $.ajax({
                 type: 'POST',
                 url: '{{url_for("req_stable")}}',
-                data: JSON.stringify({"b_img":b_file, "userID":userID.value}),
+                data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value}),
                 dataType: "JSON",
                 contentType: "application/json",  //"multipart/form-data",
                 //processData :false,
@@ -61,7 +67,7 @@
                     const url = data['url']
                     console.log(url)
                     fetch(url)
-                        .then((response) => window.location.assign("{{ url_for('loading') }}"))
+                        .then((response) => window.location.assign("{{ url_for('chatbot') }}"))
                         .catch((error) =>  window.location.assign("{{ url_for('home') }}"));
                 },
                 error: function(request, status, error){

@@ -4,13 +4,13 @@ from modules.mariadb import db
 print("db 연결 ~ ", db)
 
 
-# def db_select():
-#     sql = "select * from user;"
-#     results = None
-#     with db.cursor() as cursor:
-#         cursor.execute(sql)
-#         results = cursor.fetchall()
-#     return results
+def db_select_log():
+    sql = "select * from log;"
+    results = None
+    with db.cursor() as cursor:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+    return results
 
 
 def db_select_url(id):

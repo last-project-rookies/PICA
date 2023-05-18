@@ -38,8 +38,8 @@ def get_img():
 def delete_img():
     # url 받아오기
     url = request.get_json().get("url")
-    user_id, name = url.split("/")[-2], url.split("/")[-1]
-    data = {"user_id": user_id, "name": name}
+    user_id, nickname, filename = url.split("/")[-3], url.split("/")[-2], url.split("/")[-1]
+    data = {"user_id": user_id, "nickname": nickname, "filename": filename}
 
     # 요청
     try:
@@ -87,8 +87,11 @@ def req_stable():
     # 데이터 받아오기
     b_img = request.get_json()["b_img"]
     user_id = request.get_json()["userID"]
+    nickname = request.get_json()["nickname"]
+    # password = request.get_json()["password"]
+
     session["user_id"] = user_id
-    data = {"b_img": b_img, "user_id": user_id}
+    data = {"b_img": b_img, "user_id": user_id, "nickname": nickname}
     # 요청
     try:
         res = requests.post("http://127.0.0.1:3000/req_stable", json=data)
@@ -115,6 +118,18 @@ def send_message():
     except Exception as e:
         print("send_message error : ", e)
     return jsonify({"video_url": video_url})
+
+
+@app.route("/logout")
+def logout():
+    user_id = session["user_id"]
+    data = {"user_id": user_id}
+    # 요청
+    try:
+        res = requests.post("http://127.0.0.1:3000/logout", json=data)
+    except Exception as e:
+        print("logout error : ", e)
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":

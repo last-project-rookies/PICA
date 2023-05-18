@@ -1,6 +1,8 @@
 flask
 mariadb
-EdgeGPT
 asyncio
+pymysql
 boto3
-opanai
+openai
+langchain
+faiss-cpu

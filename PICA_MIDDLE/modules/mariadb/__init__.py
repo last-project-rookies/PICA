@@ -44,7 +44,7 @@ sql = """
         question VARCHAR(100) NOT NULL,
         answer VARCHAR(100) NOT NULL,
         a_status INT(3) NOT NULL,
-        video_url VARCHAR(100) NOT NULL,
+        video_url VARCHAR(500) NOT NULL,
         user_id INT(11) NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES user(id)
@@ -67,4 +67,5 @@ sql = """
 cursor.execute(sql)
 cursor.close()
 # 연결 종료
+
 # db.close()

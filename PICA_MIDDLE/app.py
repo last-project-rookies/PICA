@@ -1,11 +1,14 @@
 from flask import Flask, jsonify, request
 from modules.did import make_d_id
-from modules.chat import being_call
+
+# from modules.chat import being_call
+from modules.gpt import gpt_call, make_summary
 from modules.aws import AwsQuery
-from modules.db import db_select_id, db_insert, db_delete, db_select_url
+from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log
 import asyncio
 import requests
 import json
+import urllib.request
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_MIDDLE"
@@ -37,9 +40,11 @@ def get_img():
 def delete_img():
     data = request.get_json()
     # url 받아오기
-    user_id, name = data.get("user_id"), data.get("name")
+    user_id = data.get("user_id")
+    nickname = data.get("nickname")
+    filename = data.get("filename")
     # aws s3 데이터 삭제
-    asyncio.run(aws.s3_delete(user_id, name))
+    asyncio.run(aws.s3_delete(user_id, nickname, filename))
     # db & session 삭제
     db_delete(db_select_id(user_id))
 
@@ -53,23 +58,27 @@ def req_stable():
     data = request.get_json()
     b_img = data.get("b_img")
     user_id = data.get("user_id")
+    nickname = data.get("nickname")
     url = None
     try:
-        # # 2. 스테이블 디퓨전 서버에 POST 전송
-        res = requests.post(
-            "https://8623c46562b88b0770.gradio.live/base64file",
-            json.dumps({"base64_file": b_img, "user_id": user_id}),
-        )
-        print(res.status_code)
+        # # # 2. 스테이블 디퓨전 서버에 POST 전송
+        # res = requests.post(
+        #     "https://96694122-1ac1-4eb9.gradio.live/base64file",
+        #     json.dumps({"base64_file": b_img, "user_id": user_id}),
+        # )
+        # print(res.status_code)
 
-        res_text = res.json()
-        img_name = json.loads(res_text).get("img_name")
+        # res_text = res.json()
+        # img_name = json.loads(res_text).get("img_name")
 
-        # 3. url 생성
-        url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{img_name}"
+        # # 3. url 생성
+        # url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{img_name}"
 
         # 임시 url
-        # url = aws.CLOUD_FLONT_CDN + "/hi/iu.jpg"
+        url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/059f665f-a414-4d7f-adea-d0c8665bb0e6_fun.jpg"
+        )
 
         # 4. db-user, url 테이블 삽입
         db_insert("user", user_id)
@@ -93,25 +102,57 @@ def send_message():
         voice = data.get("voice")
 
         # gpt
-        being_msg = asyncio.run(being_call(voice))
+        # 1. bing
+        # being_msg = asyncio.run(being_call(voice))
+        # 2. lang_chain
+
+        chat = asyncio.run(gpt_call(voice))
 
         # 감정 결과 fun,sad,angry -> urls[1], urls[2], urls[3]
         urls = db_select_url(db_select_id(user_id))
 
         # d-id
-        video_url = asyncio.run(make_d_id(being_msg, urls[1]))
+        # video_url = asyncio.run(make_d_id(being_msg, urls[1]))
+        video_url = ""
 
         # 각종 log db 저장
         # a_status : 감정 상태
         a_status = 1
         id_value = db_select_id(user_id)
-        db_insert("log", f"'{voice}', '{being_msg}', {a_status}, '{video_url}', {id_value}")
+        db_insert("log", f"'{voice}', '{chat}', {a_status}, '{video_url}', {id_value}")
     except asyncio.TimeoutError:
         print("except error")
 
     return jsonify({"video_url": video_url})
 
 
+async def log_summary_upload(user_id):
+    chat_log = db_select_log()
+    texts = ""
+    # print(texts)
+    for _, (_, voice, chat, _, _, _) in enumerate(chat_log):
+        texts += "voice : " + voice + "chat : " + chat
+    chat_summary = await make_summary(texts)
+    await aws.s3_upload(user_id, data=chat_summary)
+
+
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    asyncio.run(log_summary_upload(user_id))
+    return jsonify({})
+
+
+def read_summary():
+    with urllib.request.urlopen(
+        "https://d2frc9lzfoaix3.cloudfront.net/userid/log_summary/yesterday.txt"
+    ) as response:
+        txt = response.read().decode("utf-8")
+    print(txt)
+
+
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
+    # read_summary()
 # waitress-serve --port=3000 --channel-timeout=30 app:app
