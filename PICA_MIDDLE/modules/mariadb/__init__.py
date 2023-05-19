@@ -41,9 +41,10 @@ cursor.execute(sql)
 sql = """
     CREATE TABLE if not EXISTS log (
         id INT(11) NOT NULL AUTO_INCREMENT,
-        question VARCHAR(100) NOT NULL,
-        answer VARCHAR(100) NOT NULL,
+        question VARCHAR(300) NOT NULL,
+        answer VARCHAR(300) NOT NULL,
         a_status INT(3) NOT NULL,
+        q_status INT(3) NOT NULL,
         video_url VARCHAR(500) NOT NULL,
         user_id INT(11) NOT NULL,
         PRIMARY KEY (id),

@@ -2,13 +2,17 @@ from flask import Flask, jsonify, request
 from modules.did import make_d_id
 
 # from modules.chat import being_call
-from modules.gpt import gpt_call, make_summary
+from modules.gpt.chat import gpt_call, setting
+from modules.gpt.summary import make_summary
+from modules.gpt.emotion import chat_emotion
 from modules.aws import AwsQuery
 from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log
 import asyncio
 import requests
 import json
 import urllib.request
+import os
+import shutil
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_MIDDLE"
@@ -104,22 +108,39 @@ def send_message():
         # gpt
         # 1. bing
         # being_msg = asyncio.run(being_call(voice))
-        # 2. lang_chain
 
-        chat = asyncio.run(gpt_call(voice))
+        # 2. lang_chain
+        # setting -> 유저 정보 -> 로그인 할떄 세팅
+        conversation, memory_vectorstore, static_vectorstore = setting()
+        chat = asyncio.run(gpt_call(voice, conversation, memory_vectorstore, static_vectorstore))
+
+        # 3. emotion 분석
+        user_emotion = asyncio.run(chat_emotion("user", voice))
+        max_value = max(user_emotion.get("emotion").values())
+        # q_status : 사용자 감정 상태
+        for idx, (_, value) in enumerate(user_emotion.get("emotion").items()):
+            if value == max_value:
+                q_status = idx + 1
+                break
+
+        gpt_emotion = asyncio.run(chat_emotion("gpt", chat))
+        max_value = max(gpt_emotion.get("emotion").values())
+        # a_status : gpt 감정 상태
+        for idx, (_, value) in enumerate(gpt_emotion.get("emotion").items()):
+            if value == max_value:
+                a_status = idx + 1
+                break
 
         # 감정 결과 fun,sad,angry -> urls[1], urls[2], urls[3]
         urls = db_select_url(db_select_id(user_id))
 
         # d-id
-        # video_url = asyncio.run(make_d_id(being_msg, urls[1]))
+        # video_url = asyncio.run(make_d_id(being_msg, urls[a_status]))
         video_url = ""
 
         # 각종 log db 저장
-        # a_status : 감정 상태
-        a_status = 1
         id_value = db_select_id(user_id)
-        db_insert("log", f"'{voice}', '{chat}', {a_status}, '{video_url}', {id_value}")
+        db_insert("log", f"'{voice}', '{chat}', {a_status}, {q_status}, '{video_url}', {id_value}")
     except asyncio.TimeoutError:
         print("except error")
 
@@ -129,8 +150,7 @@ def send_message():
 async def log_summary_upload(user_id):
     chat_log = db_select_log()
     texts = ""
-    # print(texts)
-    for _, (_, voice, chat, _, _, _) in enumerate(chat_log):
+    for _, (_, voice, chat, _, _, _, _) in enumerate(chat_log):
         texts += "voice : " + voice + "chat : " + chat
     chat_summary = await make_summary(texts)
     await aws.s3_upload(user_id, data=chat_summary)
@@ -141,6 +161,8 @@ def logout():
     data = request.get_json()
     user_id = data.get("user_id")
     asyncio.run(log_summary_upload(user_id))
+    if os.path.exists(f"user_id"):
+        shutil.rmtree(f"{user_id}")
     return jsonify({})
 
 
