@@ -2,6 +2,7 @@
 
 <head>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% with message = get_flashed_messages() %}
     {% if message %}
@@ -15,6 +16,14 @@
     <div id="root">
         <h2 class="title">File Upload</h2>
         <hr>
+        <!-- 로딩 -->
+        <div id="loading" style="display: none;">
+                <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_4ppuo5eo.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop autoplay></lottie-player>
+                <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_p8bfn5to.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop  autoplay></lottie-player>
+                <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_kUtZCR7Zyk.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+                <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_ft6xCqcC4s.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+        </div>
+        <!-- 파일 업로드 -->
         <div class="contents">
             <div class="upload-box">
                 <div id="drop-file" class="drag-file">
@@ -40,40 +49,63 @@
             </div>
         </div>
     </div>
+    <style>
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
     <script>
-        //let fileGet = null
+        function showLoading() {
+            $('#loading').show();
+            }
+            
+            function hideLoading() {
+            $('#loading').hide();
+            }
+    </script>
+    <script>
         const button = document.getElementById("uploadFile")
-        //const formData = new FormData();
         const userID = document.getElementById("userID")
         const nickname = document.getElementById("nickname")
 
         let b_file = null
+        // 버튼 이벤트
         button.addEventListener('click', ()=>{
-            window.location.assign("{{url_for('loading')}}")
-            //formData.append('img', fileGet); //$('#chooseFile')[0].files[0]
             if (!b_file || userID.value == '') {
                 alert('모두 기입해주세요!')
                 return null
+            } else {
+                showLoading();
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url_for("req_stable")}}',
+                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value}),
+                    dataType: "JSON",
+                    contentType: "application/json",  //"multipart/form-data",
+                    success: function(data){
+                        const url = data['url']
+                        console.log(url)
+                        fetch(url)
+                            .then((response) => window.location.assign("{{ url_for('chatbot') }}"))
+                            .catch((error) =>  window.location.assign("{{ url_for('home') }}"));
+                    },
+                    error: function(request, status, error){
+                        console.log('업로드 에러~', error)
+                    }
+                })
             }
-            $.ajax({
-                type: 'POST',
-                url: '{{url_for("req_stable")}}',
-                data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value}),
-                dataType: "JSON",
-                contentType: "application/json",  //"multipart/form-data",
-                //processData :false,
-                //cache: false,
-                success: function(data){
-                    const url = data['url']
-                    console.log(url)
-                    fetch(url)
-                        .then((response) => window.location.assign("{{ url_for('chatbot') }}"))
-                        .catch((error) =>  window.location.assign("{{ url_for('home') }}"));
-                },
-                error: function(request, status, error){
-                    console.log('업로드 에러~', error)
-                }
-            })
         })
     
         function DropFile(dropAreaId, fileListId) {
