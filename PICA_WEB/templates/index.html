@@ -32,20 +32,46 @@
                     <img src="" alt="미리보기 이미지" class="preview">
                     <p class="message">input userID</p>
                 </div>
-                <div>
+                <div id="input">
+                    <label class="file-label" id="chooseLabel"  for="chooseFile">Choose File</label>
+                    <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
+                        accept="image/png, image/jpeg">
                     <label class="file-label" for="userID">input userID</label><br>
-                    <input id="userID" style="margin-bottom: 10px;" type="text" size="110%" />
-                    <label class="file-label" for="nickname">input nickname</label><br>
-                    <input id="nickname" type="text" size="110%" />
+                    <input id="userID"  type="text"/>
+                    <label class="file-label"  for="nickname">input nickname</label><br>
+                    <input id="nickname"  type="text" />
+                    <label class="file-label"  for="sex">input sex</label><br>
+                    <select name="sex" id="sex" >
+                        <option  value="male">남자</option>
+                        <option  value="male">여자</option>
+                    </select>
+                    <label class="file-label"  for="face">input face</label><br>
+                    <select name="face" id="face" >
+                        <option  value="male">고양이상</option>
+                        <option  value="female">강아지상</option>
+                    </select>
+                    <label class="file-label"  for="mbti">input mbti</label><br>
+                    <select name="mbti" id="mbti">
+                        <option  value="male">INFP</option>
+                        <option  value="male">INFJ</option>
+                        <option  value="male">INTP</option>
+                        <option  value="male">INTJ</option>
+                        <option  value="male">ISFP</option>
+                        <option  value="male">ISFJ</option>
+                        <option  value="male">ISTP</option>
+                        <option  value="male">ISTJ</option>
+                        <option  value="male">ENFP</option>
+                        <option  value="male">ENFJ</option>
+                        <option  value="male">ENTP</option>
+                        <option  value="male">ENTJ</option>
+                        <option  value="male">ESFP</option>
+                        <option  value="male">ESFJ</option>
+                        <option  value="male">ESTP</option>
+                        <option  value="male">ESTJ</option>
+                    </select>
+                    <label class="file-label" id="uploadLabel" for="uploadFile">Upload File</label>
+                    <input type="button" class="file" id="uploadFile">
                 </div>
-                <br><br>
-                        <div>
-                            <label class="file-label" for="chooseFile">Choose File</label>
-                            <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
-                                accept="image/png, image/jpeg, image/gif">
-                            <label class="file-label" for="uploadFile">Upload File</label>
-                            <button class="file" id="uploadFile"></button>
-                        </div>
             </div>
         </div>
     </div>
@@ -64,6 +90,31 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        #input {
+            display:flexbox; 
+            width: 60%; 
+            align-items:center; 
+            justify-content:center;
+        }
+        #input > label,
+        #input > input,
+        #input > select,
+        #input > option{
+            display:block;  
+            width: 100%; 
+            margin-bottom: 10px;
+        }
+        #input > .file{
+            display:none;
+            margin-bottom: 30px;
+        }
+        #input > label{
+            background-color: gray;
+        }
+        #input > #chooseLabel, 
+        #input > #uploadLabel{
+            background-color: goldenrod;
         }
     </style>
     <script>

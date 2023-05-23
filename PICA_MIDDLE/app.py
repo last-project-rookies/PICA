@@ -144,7 +144,7 @@ def send_message():
     except asyncio.TimeoutError:
         print("except error")
 
-    return jsonify({"video_url": video_url})
+    return jsonify({"msg": chat, "video_url": video_url})
 
 
 async def log_summary_upload(user_id):

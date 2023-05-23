@@ -5,6 +5,7 @@ import time
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_WEB"
+app.config["JSON_AS_ASCII"] = False
 
 
 # 예시 페이지
@@ -89,7 +90,7 @@ def req_stable():
     user_id = request.get_json()["userID"]
     nickname = request.get_json()["nickname"]
     # password = request.get_json()["password"]
-
+    session["nickname"] = nickname
     session["user_id"] = user_id
     data = {"b_img": b_img, "user_id": user_id, "nickname": nickname}
     # 요청
@@ -107,17 +108,19 @@ def req_stable():
 @app.route("/send_message", methods=["GET", "POST"])
 def send_message():
     user_id = session["user_id"]
+    nickname = session["nickname"]
+    print(nickname)
     # voice
     voice = request.get_json()["inputdata"]
     data = {"voice": voice, "user_id": user_id}
-
     # 요청
     try:
         res = requests.post("http://127.0.0.1:3000/send_message", json=data)
         video_url = res.json().get("video_url")
+        msg = res.json().get("msg")
     except Exception as e:
         print("send_message error : ", e)
-    return jsonify({"video_url": video_url})
+    return jsonify({"info": {"nickname": nickname, "answer": msg}, "video_url": video_url})
 
 
 @app.route("/logout")
