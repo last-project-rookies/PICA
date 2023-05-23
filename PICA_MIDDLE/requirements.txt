@@ -1,5 +1,5 @@
 flask
-mariadb
+# mariadb
 asyncio
 pymysql
 boto3

@@ -95,9 +95,9 @@ def req_stable():
     data = {"b_img": b_img, "user_id": user_id, "nickname": nickname}
     # 요청
     try:
-        res = requests.post("http://127.0.0.1:3000/req_stable", json=data)
-        url = res.json().get("url")
-    except Exception as e:
+        res = requests.post("http://127.0.0.1:3000/req_stable", json=data, verify=False, timeout=30)
+        url = res.json().get("url") 
+    except requests.exceptions.ConnectionError as e:
         print("req_stable error : ", e)
         return redirect(url_for("home"))
 
@@ -136,5 +136,5 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
 # waitress-serve --port=5000 --channel-timeout=300 app:app
