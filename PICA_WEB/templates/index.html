@@ -2,6 +2,7 @@
 
 <head>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% with message = get_flashed_messages() %}
     {% if message %}
@@ -15,6 +16,14 @@
     <div id="root">
         <h2 class="title">File Upload</h2>
         <hr>
+        <!-- 로딩 -->
+        <div id="loading" style="display: none;">
+                <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_4ppuo5eo.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop autoplay></lottie-player>
+                <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_p8bfn5to.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop  autoplay></lottie-player>
+                <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_kUtZCR7Zyk.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+                <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_ft6xCqcC4s.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+        </div>
+        <!-- 파일 업로드 -->
         <div class="contents">
             <div class="upload-box">
                 <div id="drop-file" class="drag-file">
@@ -23,51 +32,131 @@
                     <img src="" alt="미리보기 이미지" class="preview">
                     <p class="message">input userID</p>
                 </div>
-                <div>
-                    <input id="userID" type="text" size="100" />
+                <div id="input">
+                    <label class="file-label" id="chooseLabel"  for="chooseFile">Choose File</label>
+                    <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
+                        accept="image/png, image/jpeg">
+                    <label class="file-label" for="userID">input userID</label><br>
+                    <input id="userID"  type="text"/>
+                    <label class="file-label"  for="nickname">input nickname</label><br>
+                    <input id="nickname"  type="text" />
+                    <label class="file-label"  for="sex">input sex</label><br>
+                    <select name="sex" id="sex" >
+                        <option  value="male">남자</option>
+                        <option  value="male">여자</option>
+                    </select>
+                    <label class="file-label"  for="face">input face</label><br>
+                    <select name="face" id="face" >
+                        <option  value="male">고양이상</option>
+                        <option  value="female">강아지상</option>
+                    </select>
+                    <label class="file-label"  for="mbti">input mbti</label><br>
+                    <select name="mbti" id="mbti">
+                        <option  value="male">INFP</option>
+                        <option  value="male">INFJ</option>
+                        <option  value="male">INTP</option>
+                        <option  value="male">INTJ</option>
+                        <option  value="male">ISFP</option>
+                        <option  value="male">ISFJ</option>
+                        <option  value="male">ISTP</option>
+                        <option  value="male">ISTJ</option>
+                        <option  value="male">ENFP</option>
+                        <option  value="male">ENFJ</option>
+                        <option  value="male">ENTP</option>
+                        <option  value="male">ENTJ</option>
+                        <option  value="male">ESFP</option>
+                        <option  value="male">ESFJ</option>
+                        <option  value="male">ESTP</option>
+                        <option  value="male">ESTJ</option>
+                    </select>
+                    <label class="file-label" id="uploadLabel" for="uploadFile">Upload File</label>
+                    <input type="button" class="file" id="uploadFile">
                 </div>
-                <br><br>
-                        <div>
-                            <label class="file-label" for="chooseFile">Choose File</label>
-                            <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
-                                accept="image/png, image/jpeg, image/gif">
-                            <label class="file-label" for="uploadFile">Upload File</label>
-                            <button class="file" id="uploadFile"></button>
-                        </div>
             </div>
         </div>
     </div>
+    <style>
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #input {
+            display:flexbox; 
+            width: 60%; 
+            align-items:center; 
+            justify-content:center;
+        }
+        #input > label,
+        #input > input,
+        #input > select,
+        #input > option{
+            display:block;  
+            width: 100%; 
+            margin-bottom: 10px;
+        }
+        #input > .file{
+            display:none;
+            margin-bottom: 30px;
+        }
+        #input > label{
+            background-color: gray;
+        }
+        #input > #chooseLabel, 
+        #input > #uploadLabel{
+            background-color: goldenrod;
+        }
+    </style>
     <script>
-        //let fileGet = null
+        function showLoading() {
+            $('#loading').show();
+            }
+            
+            function hideLoading() {
+            $('#loading').hide();
+            }
+    </script>
+    <script>
         const button = document.getElementById("uploadFile")
-        //const formData = new FormData();
         const userID = document.getElementById("userID")
+        const nickname = document.getElementById("nickname")
+
         let b_file = null
+        // 버튼 이벤트
         button.addEventListener('click', ()=>{
-            //formData.append('img', fileGet); //$('#chooseFile')[0].files[0]
             if (!b_file || userID.value == '') {
                 alert('모두 기입해주세요!')
                 return null
+            } else {
+                showLoading();
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url_for("req_stable")}}',
+                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value}),
+                    dataType: "JSON",
+                    contentType: "application/json",  //"multipart/form-data",
+                    success: function(data){
+                        const url = data['url']
+                        console.log(url)
+                        fetch(url)
+                            .then((response) => window.location.assign("{{ url_for('chatbot') }}"))
+                            .catch((error) =>  window.location.assign("{{ url_for('home') }}"));
+                    },
+                    error: function(request, status, error){
+                        console.log('업로드 에러~', error)
+                    }
+                })
             }
-            $.ajax({
-                type: 'POST',
-                url: '{{url_for("req_stable")}}',
-                data: JSON.stringify({"b_img":b_file, "userID":userID.value}),
-                dataType: "JSON",
-                contentType: "application/json",  //"multipart/form-data",
-                //processData :false,
-                //cache: false,
-                success: function(data){
-                    const url = data['url']
-                    console.log(url)
-                    fetch(url)
-                        .then((response) => window.location.assign("{{ url_for('loading') }}"))
-                        .catch((error) =>  window.location.assign("{{ url_for('home') }}"));
-                },
-                error: function(request, status, error){
-                    console.log('업로드 에러~', error)
-                }
-            })
         })
     
         function DropFile(dropAreaId, fileListId) {

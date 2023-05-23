@@ -1,22 +1,124 @@
 <html>
-
-<head>
+<head> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI friend</title>
+    <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome {{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }} -->
+    <link rel="stylesheet" href="./static/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="./static/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="./static/plugins/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="./static/dist/css/adminlte.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="./static/plugins/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="./static/plugins/summernote/summernote-bs4.min.css">
+    <!-- 실시간 통신 담당 socket.io 포함(js) -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <!-- 화면처리, 이벤트 담당 jQuery.js 포함 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
-
 <body>
-    <div>
-        <button id="delete_btn" onclick="delete_btn()"> 이미지 삭제 </button>
+    <div id="root">
+        <div class="contents">
+            <div class="header-menu">
+                <button id="delete_btn" onclick="delete_btn()"> 이미지 삭제 </button>
+            </div>
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+
+                    <!-- Main row -->
+                    <div class="row">
+                        <!-- Left col -->
+                        <section class="col-lg-12 connectedSortable">
+                            <div class="video-container">
+                                <center><img/><video></video></center>
+                            </div>
+                            <br>
+                            <!-- DIRECT CHAT -->
+                            <div class="card direct-chat direct-chat-primary">
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <!-- Conversations are loaded here -->
+                                    
+                                    <div class="direct-chat-messages" id="chat_main_board">
+                                        
+                                    </div>
+                                    <!--/.direct-chat-messages-->
+
+                                    <!-- Contacts are loaded here -->
+                                    <div class="direct-chat-contacts">
+                                        <ul class="contacts-list">
+                                        </ul>
+                                        <!-- /.contacts-list -->
+                                    </div>
+                                    <!-- /.direct-chat-pane -->
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <!-- 채팅 입력창 -->
+                                    <div class="input-group">
+                                        <!-- 채팅 입력 -->
+                                        <!-- <button id="record" style="border: none; background-color: white; margin: 0px 2px;">녹음</button> -->
+                                        <button id='record' style="border: none; background-color: white; margin: 0px 2px;"  onClick="record()" > 녹음 </button>
+                                        <input id="chat_input" type="text" name="message" placeholder="Type Message ..." class="form-control">
+                                        <!-- 채팅 전송 이벤트 발생 버튼 -->
+                                        <span id="chat_send" class="input-group-append ">
+                                            <button type="button" style='font-size: 16px; border: none;' >  ▷  </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- /.card-footer-->
+                            </div>
+                            <!--/.direct-chat -->
+                        </section>
+                        <!-- /.Left col -->
+                    </div>
+                    <!-- /.row (main row) -->
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
     </div>
-    <div class="video-container">
-        <img/>
-        <video></video>
-    </div>
-    <div>
-        <button id='audiobtn' onClick="record()" > 시작/ 종료</button>
-    </div>
+    <style>
+        .contents {
+            display:flexbox; 
+            align-items:center; 
+            justify-content:center;
+        }
+        .card-body{
+            flex:1 1 auto;
+            padding:var(--bs-card-spacer-y) var(--bs-card-spacer-x);color:var(--bs-card-color)}
+        .header-menu{
+            padding: 10px;
+            margin: 10px;
+            height: 10%;
+            display: flex;
+            justify-content: right;
+            align-items: right;
+        }
+        #delete_btn{
+            display: block;
+            border-radius: 10%;
+            border: 3px solid black;
+            font-weight: 700;
+            font-size: 2.5vh;
+            background-color: gainsboro;
+        }
+    </style>
     <script>
-        const img = document.querySelector('.video-container img')
+        const img = document.querySelector('.video-container > center > img')
         $(window).on('load', function () {
             // default 이미지 삽입
             $.ajax({
@@ -34,7 +136,6 @@
             });
         });
         function delete_btn(){
-            console.log(img.src)
             $.ajax({
                 url : "{{ url_for('delete_img') }}",
                 type : "POST",
@@ -42,7 +143,6 @@
                 dataType: "JSON",
                 contentType: "application/json",
                 success: function(res){
-                    console.log('success')
                     window.location.replace("{{ url_for('home') }}")
                 },
                 error : function(error){
@@ -52,7 +152,8 @@
         }
     </script>
     <script>
-        const video = document.querySelector('.video-container video');
+        const video = document.querySelector('.video-container > center >  video');
+        video.style.display = "none"
         video.defaultPlaybackRate= 1.5
         window.SpeechRecognition =
             window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -75,13 +176,12 @@
                 }
             }
                 // 임시값 세팅
-                console.log(data)
                 data = speechToText + interimTranscript
             });
         // 음성 인식 시작
         let startStop = true
         function record(){
-            const btn = document.getElementById('audiobtn')
+            const btn = document.getElementById('record')
             if (startStop) {
                 recognition.start()
                 startStop = false
@@ -93,28 +193,110 @@
                 startStop = true
                 btn.style.backgroundColor = ''
                 btn.style.color = ''
-                $.ajax({
-                    type: 'POST',
-                    url: '{{url_for("send_message")}}',
-                    data: JSON.stringify({"inputdata": data}),
-                    dataType : 'JSON',
-                    contentType: "application/json",
-                    success: function(data){
-                        $('img').remove('')
-                        console.log(data["video_url"])
-                        video.autoplay = true;
-                        video.muted = false;
-                        video.width = 500;
-                        video.height = 500;
-                        video.src = data["video_url"];
-                    },
-                    error: function(request, status, error){
-                        console.log('에러에러~', error)
-                    }
-                })
+                $('#chat_input').val(data)
+                sendMessage()
+                data = ""
             }
         }
-        
+        function sendMessage(){
+            msg = $('#chat_input').val()
+            // 1-1. 메세지 입력창 비움
+            $('#chat_input').val('')
+            // 1-2. 입력 내용 채팅창에 추가(왼쪽)
+            setChatting('나', msg)
+            $.ajax({
+                type: 'POST',
+                url: '{{url_for("send_message")}}',
+                data: JSON.stringify({"inputdata": msg}),
+                dataType : 'JSON',
+                contentType: "application/json",
+                success: function(data){
+                    $('.video-container > center > img').remove('')
+                    console.log(data["video_url"])
+                    video.style.display = ''
+                    video.autoplay = true;
+                    video.muted = false;
+                    video.width = 500;
+                    video.height = 500;
+                    video.src = data["video_url"];
+                    resMessage(data['info'])
+                },
+                error: function(request, status, error){
+                    console.log('d-id 에러~', error)
+                }
+            })
+        }
+    </script>
+    <script>
+        $('#chat_input').on('keyup', e => {
+            // 채팅에 관련된 모든 작업 진행
+            // 대상을 특정(css selector) -> 이벤트 부여(on) -> 이벤트가 발생하면 처리(callback)할 일 작성
+            // 1. 입력창에 내용 입력 후 엔터키를 누르면(keypress) 서버로 내용 전송
+            if (e.keyCode == 13 && $('#chat_input').val() != '') {
+                sendMessage()
+            }
+        })
+        function resMessage(res) {
+            // 응답 내용에서 키와 동일한 변수를 지정하여 값을 추출(분해)
+            let { nickname, answer } = res
+            // 답변 화면 처리
+            setChatting(nickname, answer, 'right')
+        }
+        function setChatting(name, msg, dir = 'left') {
+            // 채팅 보드에 채팅 내용이 세팅되게 화면 처리
+            let html = ''
+            let today = new Date();
+            let year = today.getFullYear(); // 년도
+            let month = today.getMonth() + 1;  // 월
+            let date = today.getDate();  // 날짜
+            let hours = today.getHours(); // 시
+            let minutes = today.getMinutes();  // 분
+
+            if (dir == 'left') {
+                // 내가 보낸 메세지(질문)
+                html = `
+                <div class="direct-chat-msg">
+                    <div class="direct-chat-infos clearfix">
+                        <span class="direct-chat-name float-left">${name}</span>
+                        <span class="direct-chat-timestamp float-right">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span>
+                    </div>
+                    <!-- /.direct-chat-infos -->
+                    <img class="direct-chat-img" src="../static/img/user_img.png"
+                        alt="message user image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                        ${msg}
+                    </div>
+                    <!-- /.direct-chat-text -->
+                </div>`
+            } else {
+                let today = new Date();
+                let year = today.getFullYear(); // 년도
+                let month = today.getMonth() + 1;  // 월
+                let date = today.getDate();  // 날짜
+                let hours = today.getHours(); // 시
+                let minutes = today.getMinutes();  // 분
+                // 관리자가 보낸 메세지(답변)
+                html = `
+                <div class="direct-chat-msg right">
+                    <div class="direct-chat-infos clearfix">
+                        <span class="direct-chat-name float-right">${name}</span>
+                        <span class="direct-chat-timestamp float-left">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span>
+                    </div>
+                    <!-- /.direct-chat-infos -->
+                    <img class="direct-chat-img" src="../static/img/ai_img.png"
+                        alt="message user image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                        ${msg}
+                    </div>
+                    <!-- /.direct-chat-text -->
+                </div>`
+            }
+            $('#chat_main_board').append(html)
+            // 화면 자동 스크롤 처리
+            $('#chat_main_board').scrollTop($('#chat_main_board')[0].scrollHeight)
+        }
     </script>
 </body>
 

@@ -1,7 +1,7 @@
 import pymysql
 
 # 데이터베이스 연결
-db = pymysql.connect(host="localhost", user="root", password="12341234", charset="utf8")
+db = pymysql.connect(host="pica-public-db.coysatc2jipz.ap-northeast-2.rds.amazonaws.com",port=3306, user="root", password="12341234", charset="utf8")
 
 # 커서 객체 생성
 cursor = db.cursor()
@@ -41,10 +41,11 @@ cursor.execute(sql)
 sql = """
     CREATE TABLE if not EXISTS log (
         id INT(11) NOT NULL AUTO_INCREMENT,
-        question VARCHAR(100) NOT NULL,
-        answer VARCHAR(100) NOT NULL,
+        question VARCHAR(300) NOT NULL,
+        answer VARCHAR(300) NOT NULL,
         a_status INT(3) NOT NULL,
-        video_url VARCHAR(100) NOT NULL,
+        q_status INT(3) NOT NULL,
+        video_url VARCHAR(500) NOT NULL,
         user_id INT(11) NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES user(id)
@@ -67,4 +68,5 @@ sql = """
 cursor.execute(sql)
 cursor.close()
 # 연결 종료
+
 # db.close()

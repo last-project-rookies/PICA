@@ -5,6 +5,7 @@ import time
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_WEB"
+app.config["JSON_AS_ASCII"] = False
 
 
 # 예시 페이지
@@ -38,8 +39,8 @@ def get_img():
 def delete_img():
     # url 받아오기
     url = request.get_json().get("url")
-    user_id, name = url.split("/")[-2], url.split("/")[-1]
-    data = {"user_id": user_id, "name": name}
+    user_id, nickname, filename = url.split("/")[-3], url.split("/")[-2], url.split("/")[-1]
+    data = {"user_id": user_id, "nickname": nickname, "filename": filename}
 
     # 요청
     try:
@@ -87,13 +88,16 @@ def req_stable():
     # 데이터 받아오기
     b_img = request.get_json()["b_img"]
     user_id = request.get_json()["userID"]
+    nickname = request.get_json()["nickname"]
+    # password = request.get_json()["password"]
+    session["nickname"] = nickname
     session["user_id"] = user_id
-    data = {"b_img": b_img, "user_id": user_id}
+    data = {"b_img": b_img, "user_id": user_id, "nickname": nickname}
     # 요청
     try:
-        res = requests.post("http://127.0.0.1:3000/req_stable", json=data)
-        url = res.json().get("url")
-    except Exception as e:
+        res = requests.post("http://127.0.0.1:3000/req_stable", json=data, verify=False, timeout=30)
+        url = res.json().get("url") 
+    except requests.exceptions.ConnectionError as e:
         print("req_stable error : ", e)
         return redirect(url_for("home"))
 
@@ -104,19 +108,33 @@ def req_stable():
 @app.route("/send_message", methods=["GET", "POST"])
 def send_message():
     user_id = session["user_id"]
+    nickname = session["nickname"]
+    print(nickname)
     # voice
     voice = request.get_json()["inputdata"]
     data = {"voice": voice, "user_id": user_id}
-
     # 요청
     try:
         res = requests.post("http://127.0.0.1:3000/send_message", json=data)
         video_url = res.json().get("video_url")
+        msg = res.json().get("msg")
     except Exception as e:
         print("send_message error : ", e)
-    return jsonify({"video_url": video_url})
+    return jsonify({"info": {"nickname": nickname, "answer": msg}, "video_url": video_url})
+
+
+@app.route("/logout")
+def logout():
+    user_id = session["user_id"]
+    data = {"user_id": user_id}
+    # 요청
+    try:
+        res = requests.post("http://127.0.0.1:3000/logout", json=data)
+    except Exception as e:
+        print("logout error : ", e)
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
 # waitress-serve --port=5000 --channel-timeout=300 app:app
