@@ -33,6 +33,7 @@
         <div class="contents">
             <div class="header-menu">
                 <button id="delete_btn" onclick="delete_btn()"> 이미지 삭제 </button>
+                <button id="logout_btn" onclick="logout_btn()"> 로그아웃 </button>
             </div>
             <!-- Main content -->
             <section class="content">
@@ -108,13 +109,14 @@
             justify-content: right;
             align-items: right;
         }
-        #delete_btn{
+        .header-menu button{
             display: block;
             border-radius: 10%;
             border: 3px solid black;
             font-weight: 700;
             font-size: 2.5vh;
             background-color: gainsboro;
+            margin-left: 10px;
         }
     </style>
     <script>
@@ -135,6 +137,18 @@
                 }
             });
         });
+        function logout_btn(){
+            $.ajax({
+                url : "{{ url_for('logout') }}",
+                type : "GET",
+                success: function(res){
+                    window.location.assign("{{ url_for('home') }}")
+                },
+                error : function(error){
+                    console.log("error", error)
+                }
+            })
+        }
         function delete_btn(){
             $.ajax({
                 url : "{{ url_for('delete_img') }}",

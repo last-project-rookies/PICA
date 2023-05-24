@@ -1,7 +1,7 @@
 import pymysql
 
 # 데이터베이스 연결
-db = pymysql.connect(host="pica-public-db.coysatc2jipz.ap-northeast-2.rds.amazonaws.com",port=3306, user="root", password="12341234", charset="utf8")
+db = pymysql.connect(host="pica-db.coysatc2jipz.ap-northeast-2.rds.amazonaws.com",port=3306, user="root", password="12341234", charset="utf8")
 
 # 커서 객체 생성
 cursor = db.cursor()
