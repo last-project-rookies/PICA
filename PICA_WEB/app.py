@@ -11,7 +11,7 @@ app.config["JSON_AS_ASCII"] = False
 # 예시 페이지
 @app.route("/example")
 def example():
-    res = requests.post("http://127.0.0.1:3000/example", json={"data": "post"})
+    res = requests.post("http://pica-middle-1:3000/example", json={"data": "post"})
     print(res)
     tmp = res.json().get("check")
     print(tmp, type(tmp))
@@ -23,9 +23,10 @@ def example():
 def get_img():
     user_id = session["user_id"]
     data = {"user_id": user_id}
+    url = None
     # 요청
     try:
-        res = requests.post("http://127.0.0.1:3000/get_img", json=data)
+        res = requests.post("http://pica-middle-1:3000/get_img", json=data)
         url = res.json().get("url")
     except Exception as e:
         print("get_img error : ", e)
@@ -44,7 +45,7 @@ def delete_img():
 
     # 요청
     try:
-        res = requests.post("http://127.0.0.1:3000/delete_img", json=data)
+        res = requests.post("http://pica-middle-1:3000/delete_img", json=data)
     except Exception as e:
         print("delete_img error : ", e)
 
@@ -93,9 +94,10 @@ def req_stable():
     session["nickname"] = nickname
     session["user_id"] = user_id
     data = {"b_img": b_img, "user_id": user_id, "nickname": nickname}
+    url = None
     # 요청
     try:
-        res = requests.post("http://127.0.0.1:3000/req_stable", json=data, verify=False, timeout=30)
+        res = requests.post("http://pica-middle-1:3000/req_stable", json=data)
         url = res.json().get("url") 
     except requests.exceptions.ConnectionError as e:
         print("req_stable error : ", e)
@@ -113,9 +115,11 @@ def send_message():
     # voice
     voice = request.get_json()["inputdata"]
     data = {"voice": voice, "user_id": user_id}
+    msg = None
+    video_url = None
     # 요청
     try:
-        res = requests.post("http://127.0.0.1:3000/send_message", json=data)
+        res = requests.post("http://pica-middle-1:3000/send_message", json=data)
         video_url = res.json().get("video_url")
         msg = res.json().get("msg")
     except Exception as e:
@@ -129,10 +133,10 @@ def logout():
     data = {"user_id": user_id}
     # 요청
     try:
-        res = requests.post("http://127.0.0.1:3000/logout", json=data)
+        res = requests.post("http://pica-middle-1:3000/logout", json=data)
     except Exception as e:
         print("logout error : ", e)
-    return redirect(url_for("home"))
+    return jsonify({})
 
 
 if __name__ == "__main__":

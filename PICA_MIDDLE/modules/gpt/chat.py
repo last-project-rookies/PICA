@@ -177,7 +177,7 @@ def setting(user_get="이건우", name_get="이루다", mbti_get="ISTJ", age_get
         """
     CURRENT_TEMPLATE = f"""
         Current conversation:
-        {name} uses informal korean.(무조건 반말을 사용한다)
+        {name} uses informal korean.(무조건 반말을 사용한다) Just generate one answer of {name}
             {{history}}
             {user}: {{input}}
             {name}: """

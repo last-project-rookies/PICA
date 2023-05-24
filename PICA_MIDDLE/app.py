@@ -65,24 +65,24 @@ def req_stable():
     nickname = data.get("nickname")
     url = None
     try:
-        # # # 2. 스테이블 디퓨전 서버에 POST 전송
-        # res = requests.post(
-        #     "https://96694122-1ac1-4eb9.gradio.live/base64file",
-        #     json.dumps({"base64_file": b_img, "user_id": user_id}),
-        # )
-        # print(res.status_code)
-
-        # res_text = res.json()
-        # img_name = json.loads(res_text).get("img_name")
-
-        # # 3. url 생성
-        # url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{img_name}"
-
-        # 임시 url
-        url = (
-            aws.CLOUD_FLONT_CDN
-            + f"/{user_id}/{nickname}/059f665f-a414-4d7f-adea-d0c8665bb0e6_fun.jpg"
+        # 2. 스테이블 디퓨전 서버에 POST 전송
+        res = requests.post(
+            "https://7543dd02-7191-4306.gradio.live/base64file",
+            json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
         )
+        print(res.status_code)
+
+        res_text = res.json()
+        img_name = json.loads(res_text).get("img_name")
+
+        # 3. url 생성
+        url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{img_name}"
+
+        # # 임시 url
+        # url = (
+        #     aws.CLOUD_FLONT_CDN
+        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # )
 
         # 4. db-user, url 테이블 삽입
         db_insert("user", user_id)
@@ -111,7 +111,7 @@ def send_message():
 
         # 2. lang_chain
         # setting -> 유저 정보 -> 로그인 할떄 세팅
-        conversation, memory_vectorstore, static_vectorstore = setting()
+        conversation, memory_vectorstore, static_vectorstore = setting(user_get="이건우", name_get="이루다", mbti_get="ISTJ", age_get="22", user_id_get=user_id)
         chat = asyncio.run(gpt_call(voice, conversation, memory_vectorstore, static_vectorstore))
 
         # 3. emotion 분석

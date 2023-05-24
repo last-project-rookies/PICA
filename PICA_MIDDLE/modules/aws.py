@@ -21,8 +21,8 @@ class AwsQuery:
         #     config=Config(signature_version="s3v4"),
         #     region_name="ap-northeast-2",
         # )
-        self.BUCKET_NAME = "google-extension2"
-        self.CLOUD_FLONT_CDN = "https://d2frc9lzfoaix3.cloudfront.net"
+        self.BUCKET_NAME = "pica-s3"
+        self.CLOUD_FLONT_CDN = "https://d73fsaiivzjg2.cloudfront.net"
 
     async def s3_upload(self, userID, data):
         self.S3.Bucket(self.BUCKET_NAME).put_object(
