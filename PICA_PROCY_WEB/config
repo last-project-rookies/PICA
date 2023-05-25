@@ -1,0 +1,12 @@
+server {
+    # 80 포트를 체크, 바라론다, 80포트로 요청이 올때만 반응
+    listen       80;
+    # 서버 이름 기술, 나중에 구매한 도메인을 기록 localhost -> www.a.com
+    server_name  localhost;
+    # 80으로 요청이 오면 proxy_pass 매칭된 주소로 포워딩해라
+    location / {
+        # 포워딩한 주소 대입, web(이미지 이름)는 나중에 물리적 머신이 나눠지면 ip 나 도메인으로 변경가능
+        include uwsgi_params;
+        uwsgi_pass web:5000;
+    }
+}

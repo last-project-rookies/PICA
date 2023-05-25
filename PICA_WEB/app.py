@@ -7,11 +7,10 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_WEB"
 app.config["JSON_AS_ASCII"] = False
 
-
 # 예시 페이지
 @app.route("/example")
 def example():
-    res = requests.post("http://pica-middle-1:3000/example", json={"data": "post"})
+    res = requests.post("http://13.125.120.92:3000/example", json={"data": "post"})
     print(res)
     tmp = res.json().get("check")
     print(tmp, type(tmp))
@@ -26,7 +25,7 @@ def get_img():
     url = None
     # 요청
     try:
-        res = requests.post("http://pica-middle-1:3000/get_img", json=data)
+        res = requests.post("http://13.125.120.92:3000/get_img", json=data)
         url = res.json().get("url")
     except Exception as e:
         print("get_img error : ", e)
@@ -45,7 +44,7 @@ def delete_img():
 
     # 요청
     try:
-        res = requests.post("http://pica-middle-1:3000/delete_img", json=data)
+        res = requests.post("http://13.125.120.92:3000/delete_img", json=data)
     except Exception as e:
         print("delete_img error : ", e)
 
@@ -97,7 +96,7 @@ def req_stable():
     url = None
     # 요청
     try:
-        res = requests.post("http://pica-middle-1:3000/req_stable", json=data)
+        res = requests.post("http://13.125.120.92:3000/req_stable", json=data)
         url = res.json().get("url") 
     except requests.exceptions.ConnectionError as e:
         print("req_stable error : ", e)
@@ -119,7 +118,7 @@ def send_message():
     video_url = None
     # 요청
     try:
-        res = requests.post("http://pica-middle-1:3000/send_message", json=data)
+        res = requests.post("http://13.125.120.92:3000/send_message", json=data)
         video_url = res.json().get("video_url")
         msg = res.json().get("msg")
     except Exception as e:
@@ -133,7 +132,7 @@ def logout():
     data = {"user_id": user_id}
     # 요청
     try:
-        res = requests.post("http://pica-middle-1:3000/logout", json=data)
+        res = requests.post("http://13.125.120.92:3000/logout", json=data)
     except Exception as e:
         print("logout error : ", e)
     return jsonify({})

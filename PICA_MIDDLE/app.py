@@ -6,7 +6,7 @@ from modules.gpt.chat import gpt_call, setting
 from modules.gpt.summary import make_summary
 from modules.gpt.emotion import chat_emotion
 from modules.aws import AwsQuery
-from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log
+from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log, db_select_chatid
 import asyncio
 import requests
 import json
@@ -65,24 +65,24 @@ def req_stable():
     nickname = data.get("nickname")
     url = None
     try:
-        # 2. 스테이블 디퓨전 서버에 POST 전송
-        res = requests.post(
-            "https://7543dd02-7191-4306.gradio.live/base64file",
-            json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
-        )
-        print(res.status_code)
+        # # 2. 스테이블 디퓨전 서버에 POST 전송
+        # res = requests.post(
+        #     "https://7543dd02-7191-4306.gradio.live/base64file",
+        #     json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
+        # )
+        # print(res.status_code)
 
-        res_text = res.json()
-        img_name = json.loads(res_text).get("img_name")
+        # res_text = res.json()
+        # img_name = json.loads(res_text).get("img_name")
 
-        # 3. url 생성
-        url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{img_name}"
+        # # 3. url 생성
+        # url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{img_name}"
 
         # # 임시 url
-        # url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
+        url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        )
 
         # 4. db-user, url 테이블 삽입
         db_insert("user", user_id)
@@ -115,14 +115,6 @@ def send_message():
         chat = asyncio.run(gpt_call(voice, conversation, memory_vectorstore, static_vectorstore))
 
         # 3. emotion 분석
-        user_emotion = asyncio.run(chat_emotion("user", voice))
-        max_value = max(user_emotion.get("emotion").values())
-        # q_status : 사용자 감정 상태
-        for idx, (_, value) in enumerate(user_emotion.get("emotion").items()):
-            if value == max_value:
-                q_status = idx + 1
-                break
-
         gpt_emotion = asyncio.run(chat_emotion("gpt", chat))
         max_value = max(gpt_emotion.get("emotion").values())
         # a_status : gpt 감정 상태
@@ -140,7 +132,9 @@ def send_message():
 
         # 각종 log db 저장
         id_value = db_select_id(user_id)
-        db_insert("log", f"'{voice}', '{chat}', {a_status}, {q_status}, '{video_url}', {id_value}")
+        db_insert("log", f"'{voice}', '{chat}', {a_status}, 0, '{video_url}', {id_value}")
+        # aws sqs msg
+        asyncio.run(aws.sqs_send(db_select_chatid(id_value)))
     except asyncio.TimeoutError:
         print("except error")
 

@@ -1,12 +1,26 @@
 # 서비스, 컨테이너는 의존성 고려하여 순서대로 기술
 version: 'test'
 services:
-  # db
+  # procy
+  procy:
+    build: 
+      context: PICA_PROCY_WEB
+    
+    ports:
+      - 80:80
+    
+    restart: always
+
+    depends_on:
+      - web
+
+    networks:
+      - web_frontend_net
 
   # backend
   web:
     build:
-      context: pica_web
+      context: PICA_WEB
       
     ports:
       - 5000:5000
@@ -14,23 +28,25 @@ services:
     stdin_open: true
     stop_signal: SIGINT
     restart: always
+    # depends_on:
+    #   - middle
     networks:
       - web_frontend_net
-      - was_backend_net
+      # - was_backend_net
 
 
-  middle:
-    build:
-      context: pica_middle
+  # middle:
+  #   build:
+  #     context: PICA_MIDDLE
       
-    ports:
-      - 3000:3000
-    tty: true
-    stdin_open: true
-    stop_signal: SIGINT
-    restart: always
-    networks:
-      - was_backend_net
+  #   ports:
+  #     - 3000:3000
+  #   tty: true
+  #   stdin_open: true
+  #   stop_signal: SIGINT
+  #   restart: always
+  #   networks:
+  #     - was_backend_net
 
 
 
@@ -40,5 +56,5 @@ networks:
   # 프론트 방향 네트워크
   web_frontend_net:
   # 백엔드 방향 네트워크
-  was_backend_net:
+  # was_backend_net:
 

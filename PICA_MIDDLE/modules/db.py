@@ -77,6 +77,15 @@ def db_delete(id_value):
         cursor.execute(sql)
     db.commit()
 
+def db_select_chatid(user_id):
+    """
+    """
+    sql = f"select id from log where user_id = '{user_id}';"
+    result = None
+    with db.cursor() as cursor:
+        cursor.execute(sql)
+        result = cursor.fetchall()
+    return result[-1][0]
 
 if __name__ == "__main__":
     # db_insert("user", "name, password", "'test2', 456")
