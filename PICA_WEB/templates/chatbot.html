@@ -138,11 +138,12 @@
             });
         });
         function logout_btn(){
+            window.location.replace("{{ url_for('home')}}")
             $.ajax({
                 url : "{{ url_for('logout') }}",
                 type : "GET",
                 success: function(res){
-                    window.location.assign("{{ url_for('home') }}")
+                    console.log('logout')
                 },
                 error : function(error){
                     console.log("error", error)

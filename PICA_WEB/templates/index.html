@@ -18,10 +18,7 @@
         <hr>
         <!-- 로딩 -->
         <div id="loading" style="display: none;">
-                <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_4ppuo5eo.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop autoplay></lottie-player>
                 <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_p8bfn5to.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop  autoplay></lottie-player>
-                <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_kUtZCR7Zyk.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
-                <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_ft6xCqcC4s.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
         </div>
         <!-- 파일 업로드 -->
         <div class="contents">
@@ -43,31 +40,31 @@
                     <label class="file-label"  for="sex">input sex</label><br>
                     <select name="sex" id="sex" >
                         <option  value="male">남자</option>
-                        <option  value="male">여자</option>
+                        <option  value="female">여자</option>
                     </select>
                     <label class="file-label"  for="face">input face</label><br>
                     <select name="face" id="face" >
-                        <option  value="male">고양이상</option>
-                        <option  value="female">강아지상</option>
+                        <option  value="cat">고양이상</option>
+                        <option  value="dog">강아지상</option>
                     </select>
                     <label class="file-label"  for="mbti">input mbti</label><br>
                     <select name="mbti" id="mbti">
-                        <option  value="male">INFP</option>
-                        <option  value="male">INFJ</option>
-                        <option  value="male">INTP</option>
-                        <option  value="male">INTJ</option>
-                        <option  value="male">ISFP</option>
-                        <option  value="male">ISFJ</option>
-                        <option  value="male">ISTP</option>
-                        <option  value="male">ISTJ</option>
-                        <option  value="male">ENFP</option>
-                        <option  value="male">ENFJ</option>
-                        <option  value="male">ENTP</option>
-                        <option  value="male">ENTJ</option>
-                        <option  value="male">ESFP</option>
-                        <option  value="male">ESFJ</option>
-                        <option  value="male">ESTP</option>
-                        <option  value="male">ESTJ</option>
+                        <option  value="INFP">INFP</option>
+                        <option  value="INFJ">INFJ</option>
+                        <option  value="INTP">INTP</option>
+                        <option  value="INTJ">INTJ</option>
+                        <option  value="ISFP">ISFP</option>
+                        <option  value="ISFJ">ISFJ</option>
+                        <option  value="ISTP">ISTP</option>
+                        <option  value="ISTJ">ISTJ</option>
+                        <option  value="ENFP">ENFP</option>
+                        <option  value="ENFJ">ENFJ</option>
+                        <option  value="ENTP">ENTP</option>
+                        <option  value="ENTJ">ENTJ</option>
+                        <option  value="ESFP">ESFP</option>
+                        <option  value="ESFJ">ESFJ</option>
+                        <option  value="ESTP">ESTP</option>
+                        <option  value="ESTJ">ESTJ</option>
                     </select>
                     <label class="file-label" id="uploadLabel" for="uploadFile">Upload File</label>
                     <input type="button" class="file" id="uploadFile">
@@ -130,6 +127,9 @@
         const button = document.getElementById("uploadFile")
         const userID = document.getElementById("userID")
         const nickname = document.getElementById("nickname")
+        const sex = document.getElementById("sex")
+        const face = document.getElementById("face")
+        const mbti = document.getElementById("mbti")
 
         let b_file = null
         // 버튼 이벤트
@@ -142,7 +142,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '{{url_for("req_stable")}}',
-                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value}),
+                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value, "sex":sex.value, "face":face.value, "mbti": mbti}),
                     dataType: "JSON",
                     contentType: "application/json",  //"multipart/form-data",
                     success: function(data){
@@ -192,8 +192,6 @@
     
             function handleFiles(files) {
                 files = [...files];
-                //fileGet = files[0]
-                // files.forEach(uploadFile);
                 files.forEach(previewFile);
             }
     

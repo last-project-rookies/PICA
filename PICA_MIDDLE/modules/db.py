@@ -1,8 +1,17 @@
 import pymysql
 from modules.mariadb import db
+# 비동기 처리
+import asyncio
+from functools import wraps
 
 print("db 연결 ~ ", db)
 
+# 스레드 처리 세팅
+def async_action(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        return asyncio.run(f(*args, **kwargs))
+    return wrapped
 
 def db_select_log():
     sql = "select * from log;"
@@ -44,8 +53,8 @@ def db_select_id(name_value):
         result = cursor.fetchone()
     return result[0]
 
-
-def db_insert(table_name, values):
+@async_action
+async def db_insert(table_name, values):
     """
     - descript = db에서 원하는 테이블에 데이터 삽입
     - arg
@@ -65,8 +74,8 @@ def db_insert(table_name, values):
         cursor.execute(sql)
     db.commit()
 
-
-def db_delete(id_value):
+@async_action
+async def db_delete(id_value):
     """
     - descript = db에서 user 테이블에서 데이터 삭제(casecade)
     - arg

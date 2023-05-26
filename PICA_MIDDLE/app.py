@@ -1,33 +1,34 @@
-from flask import Flask, jsonify, request
+# 모듈
 from modules.did import make_d_id
-
-# from modules.chat import being_call
 from modules.gpt.chat import gpt_call, setting
 from modules.gpt.summary import make_summary
 from modules.gpt.emotion import chat_emotion
 from modules.aws import AwsQuery
 from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log, db_select_chatid
+
+# 비동기 처리
 import asyncio
+import threading
+from functools import wraps
+
+# 각종 라이브러리
+from flask import Flask, jsonify, request
 import requests
 import json
 import urllib.request
 import os
 import shutil
 
+# 스레드 처리 세팅
+def async_action(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        return asyncio.run(f(*args, **kwargs))
+    return wrapped
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_MIDDLE"
 aws = AwsQuery()
-
-
-# 예시 요청 받기
-@app.route("/example", methods=["GET", "POST"])
-def example():
-    tmp = request.get_json()
-    print(tmp, type(tmp))
-    print("hiih")
-    data = {"check": "hihi"}
-    return jsonify(data)
-
 
 # get_img 요청 처리
 @app.route("/get_img", methods=["GET", "POST"])
@@ -48,10 +49,15 @@ def delete_img():
     nickname = data.get("nickname")
     filename = data.get("filename")
     # aws s3 데이터 삭제
-    asyncio.run(aws.s3_delete(user_id, nickname, filename))
+    th_aws_delete = threading.Thread(target=aws.s3_delete, args=(user_id, nickname, filename))
+    th_aws_delete.start()
+    th_aws_delete.join()
     # db & session 삭제
-    db_delete(db_select_id(user_id))
-
+    id_value = db_select_id(user_id)
+    th_delete = threading.Thread(target=db_delete, args=(id_value,))
+    th_delete.start()
+    th_delete.join()
+    
     return jsonify({"data": None})
 
 
@@ -63,38 +69,55 @@ def req_stable():
     b_img = data.get("b_img")
     user_id = data.get("user_id")
     nickname = data.get("nickname")
-    url = None
+    fun_url = None
     try:
-        # # 2. 스테이블 디퓨전 서버에 POST 전송
-        # res = requests.post(
-        #     "https://7543dd02-7191-4306.gradio.live/base64file",
-        #     json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
-        # )
-        # print(res.status_code)
+        # 2. 스테이블 디퓨전 서버에 POST 전송
+        res = requests.post(
+            "http://54.248.40.115:8080/img2img",
+            json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
+        )
+        print(res.status_code)
 
-        # res_text = res.json()
-        # img_name = json.loads(res_text).get("img_name")
-
-        # # 3. url 생성
-        # url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{img_name}"
+        res_text = res.json()
+        fun_img = json.loads(res_text).get("img_name")
+        sad_img = fun_img.replace('_fun','_sad')
+        angry_img = fun_img.replace('_fun', '_angry')
+        # 3. url 생성
+        fun_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{fun_img}"
+        sad_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{sad_img}"
+        angry_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{angry_img}"
 
         # # 임시 url
-        url = (
-            aws.CLOUD_FLONT_CDN
-            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        )
-
-        # 4. db-user, url 테이블 삽입
-        db_insert("user", user_id)
+        # fun_url = (
+        #     aws.CLOUD_FLONT_CDN
+        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # )
+        # sad_url = (
+        #     aws.CLOUD_FLONT_CDN
+        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # )        
+        # angry_url = (
+        #     aws.CLOUD_FLONT_CDN
+        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # )
+        
+        # 4. db- user, url 테이블 삽입
+        print(fun_url)
+        th_user = threading.Thread(target=db_insert,args=("user", user_id))
+        th_user.start()
+        th_user.join()
         id_value = db_select_id(user_id)
-        db_insert("url", f"'{url}', '{url}', '{url}', {id_value}")
-        print(url)
+        th_url = threading.Thread(target=db_insert,args=("url", f"'{fun_url}', '{sad_url}', '{angry_url}', {id_value}"))
+        th_url.start()
+        th_url.join()
+        
+        
 
     except Exception as e:
         print("request error : ", e)
 
     # 웹에 전달
-    return jsonify({"url": url})
+    return jsonify({"url": fun_url})
 
 
 # send_message 요청 처리
@@ -105,16 +128,12 @@ def send_message():
         user_id = data.get("user_id")
         voice = data.get("voice")
 
-        # gpt
-        # 1. bing
-        # being_msg = asyncio.run(being_call(voice))
-
-        # 2. lang_chain
+        # 1. lang_chain
         # setting -> 유저 정보 -> 로그인 할떄 세팅
         conversation, memory_vectorstore, static_vectorstore = setting(user_get="이건우", name_get="이루다", mbti_get="ISTJ", age_get="22", user_id_get=user_id)
         chat = asyncio.run(gpt_call(voice, conversation, memory_vectorstore, static_vectorstore))
 
-        # 3. emotion 분석
+        # 2. emotion 분석
         gpt_emotion = asyncio.run(chat_emotion("gpt", chat))
         max_value = max(gpt_emotion.get("emotion").values())
         # a_status : gpt 감정 상태
@@ -123,50 +142,53 @@ def send_message():
                 a_status = idx + 1
                 break
 
-        # 감정 결과 fun,sad,angry -> urls[1], urls[2], urls[3]
+        # 3. 감정 결과 fun,sad,angry -> urls[1], urls[2], urls[3]
         urls = db_select_url(db_select_id(user_id))
 
-        # d-id
-        # video_url = asyncio.run(make_d_id(being_msg, urls[a_status]))
-        video_url = ""
+        # 4. d-id
+        video_url = asyncio.run(make_d_id(chat, urls[a_status]))
+        # video_url = ""
 
-        # 각종 log db 저장
+        # 5. 각종 log db 저장
         id_value = db_select_id(user_id)
-        db_insert("log", f"'{voice}', '{chat}', {a_status}, 0, '{video_url}', {id_value}")
-        # aws sqs msg
-        asyncio.run(aws.sqs_send(db_select_chatid(id_value)))
+        th_log = threading.Thread(target=db_insert, args=("log", f"'{voice}', '{chat}', {a_status}, 0, '{video_url}', {id_value}"))
+        th_log.start()
+        th_log.join()
+        
+        # 6. aws sqs msg
+        chatid = db_select_chatid(id_value)
+        th_sqs = threading.Thread(target=aws.sqs_send, args=(chatid, voice))
+        th_sqs.start()
+        th_sqs.join()
+        
     except asyncio.TimeoutError:
         print("except error")
 
     return jsonify({"msg": chat, "video_url": video_url})
 
-
+@async_action
 async def log_summary_upload(user_id):
     chat_log = db_select_log()
     texts = ""
     for _, (_, voice, chat, _, _, _, _) in enumerate(chat_log):
         texts += "voice : " + voice + "chat : " + chat
     chat_summary = await make_summary(texts)
-    await aws.s3_upload(user_id, data=chat_summary)
+    aws.s3_log_upload(user_id, data=chat_summary)
+    
 
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
     data = request.get_json()
     user_id = data.get("user_id")
-    asyncio.run(log_summary_upload(user_id))
+    # 스레드 처리
+    th_upload = threading.Thread(target=log_summary_upload,args=(user_id,))
+    th_upload.start()
+    th_upload.join()
     if os.path.exists(f"user_id"):
         shutil.rmtree(f"{user_id}")
+        
     return jsonify({})
-
-
-def read_summary():
-    with urllib.request.urlopen(
-        "https://d2frc9lzfoaix3.cloudfront.net/userid/log_summary/yesterday.txt"
-    ) as response:
-        txt = response.read().decode("utf-8")
-    print(txt)
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=3000, debug=True)

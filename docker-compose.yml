@@ -56,5 +56,5 @@ networks:
   # 프론트 방향 네트워크
   web_frontend_net:
   # 백엔드 방향 네트워크
-  # was_backend_net:
+  was_backend_net:
 
