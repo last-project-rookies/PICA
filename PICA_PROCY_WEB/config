@@ -7,6 +7,6 @@ server {
     location / {
         # 포워딩한 주소 대입, web(이미지 이름)는 나중에 물리적 머신이 나눠지면 ip 나 도메인으로 변경가능
         include uwsgi_params;
-        uwsgi_pass web:5000;
+        uwsgi_pass web:3333;
     }
 }

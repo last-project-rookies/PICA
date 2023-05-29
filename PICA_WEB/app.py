@@ -9,6 +9,44 @@ app.config["JSON_AS_ASCII"] = False
 aws_addr = '13.125.120.92' 
 # container_addr = 'pica-middle-1'
 
+####### 라우터 
+
+# 홈 페이지(캐릭터 입력 & 관리자 페이지)
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+# 캐릭터 정보 입력 페이지
+@app.route("/input")
+def input():
+    return render_template("input.html")
+
+# 캐릭터 생성 페이지
+@app.route("/make")
+def make():
+    return render_template("make.html")
+
+# chatbot 페이지
+@app.route("/chatbot")
+def chatbot():
+    try:
+        # session 상태 확인
+        if "user_id" not in session:
+            flash("이미지를 생성하지 못했습니다. 다시 생성해 주세요")
+            return redirect(url_for("input"))
+        else:
+            return render_template("chatbot.html")
+    except Exception as e:
+        flash("이미지가 삭제되었습니다. 새로운 캐릭터를 만들어주세요!")
+        return redirect(url_for("input"))
+
+# 관리자 페이지
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
+
+######## 로직
+
 # chatbot 페이지 로드직후 default 이미지 가져오기
 @app.route("/get_img")
 def get_img():
@@ -21,7 +59,7 @@ def get_img():
         url = res.json().get("url")
     except Exception as e:
         print("get_img error : ", e)
-        return redirect(url_for("home"))
+        return redirect(url_for("make"))
 
     return jsonify({"url": url})
 
@@ -45,35 +83,6 @@ def delete_img():
 
     return jsonify({"data": None})
 
-
-# 홈 페이지(회원가입 페이지)
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-
-# chatbot 페이지
-@app.route("/chatbot")
-def chatbot():
-    try:
-        # session 상태 확인
-        if "user_id" not in session:
-            flash("이미지를 생성하지 못했습니다. 다시 생성해 주세요")
-            return redirect(url_for("home"))
-        else:
-            return render_template("chatbot.html")
-    except Exception as e:
-        flash("이미지가 삭제되었습니다. 새로운 캐릭터를 만들어주세요!")
-        return redirect(url_for("home"))
-
-
-# 로딩 페이지
-@app.route("/loading")
-def loading():
-    time.sleep(5)
-    return render_template("loading.html")
-
-
 # 스테이블 디퓨전 이미지 생성
 @app.route("/req_stable", methods=["GET", "POST"])
 def req_stable():
@@ -96,7 +105,7 @@ def req_stable():
         url = res.json().get("url") 
     except requests.exceptions.ConnectionError as e:
         print("req_stable error : ", e)
-        return redirect(url_for("home"))
+        return redirect(url_for("input"))
 
     return jsonify({"url": url})
 
@@ -136,5 +145,5 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=3333, debug=True)
 # waitress-serve --port=5000 --channel-timeout=300 app:app
