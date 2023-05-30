@@ -18,6 +18,8 @@ import json
 import urllib.request
 import os
 import shutil
+from datetime import datetime
+from pytz import timezone
 
 # 스레드 처리 세팅
 def async_action(f):
@@ -72,34 +74,34 @@ def req_stable():
     fun_url = None
     try:
         # 2. 스테이블 디퓨전 서버에 POST 전송
-        res = requests.post(
-            "http://54.248.40.115:8080/img2img",
-            json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
+        # res = requests.post(
+        #     "http://54.248.40.115:8080/img2img",
+        #     json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
+        # )
+        # print(res.status_code)
+
+        # res_text = res.json()
+        # fun_img = json.loads(res_text).get("img_name")
+        # sad_img = fun_img.replace('_fun','_sad')
+        # angry_img = fun_img.replace('_fun', '_angry')
+        # # 3. url 생성
+        # fun_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{fun_img}"
+        # sad_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{sad_img}"
+        # angry_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{angry_img}"
+
+        # 임시 url
+        fun_url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/fun.jpg"
         )
-        print(res.status_code)
-
-        res_text = res.json()
-        fun_img = json.loads(res_text).get("img_name")
-        sad_img = fun_img.replace('_fun','_sad')
-        angry_img = fun_img.replace('_fun', '_angry')
-        # 3. url 생성
-        fun_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{fun_img}"
-        sad_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{sad_img}"
-        angry_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{angry_img}"
-
-        # # 임시 url
-        # fun_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
-        # sad_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )        
-        # angry_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
+        sad_url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        )        
+        angry_url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        )
         
         # 4. db- user, url 테이블 삽입
         print(fun_url)
@@ -107,12 +109,13 @@ def req_stable():
         th_user.start()
         th_user.join()
         id_value = db_select_id(user_id)
+        th_user = threading.Thread(target=db_insert,args=("accum_emotion", id_value))
+        th_user.start()
+        th_user.join()
         th_url = threading.Thread(target=db_insert,args=("url", f"'{fun_url}', '{sad_url}', '{angry_url}', {id_value}"))
         th_url.start()
         th_url.join()
         
-        
-
     except Exception as e:
         print("request error : ", e)
 
@@ -127,6 +130,8 @@ def send_message():
         data = request.get_json()
         user_id = data.get("user_id")
         voice = data.get("voice")
+        time = datetime.now(timezone('Asia/Seoul'))
+        time_str = time.strftime("%Y-%m-%d %H:%M:%S")
 
         # 1. lang_chain
         # setting -> 유저 정보 -> 로그인 할떄 세팅
@@ -146,18 +151,18 @@ def send_message():
         urls = db_select_url(db_select_id(user_id))
 
         # 4. d-id
-        video_url = asyncio.run(make_d_id(chat, urls[a_status]))
-        # video_url = ""
+        # video_url = asyncio.run(make_d_id(chat, urls[a_status]))
+        video_url = ""
 
         # 5. 각종 log db 저장
         id_value = db_select_id(user_id)
-        th_log = threading.Thread(target=db_insert, args=("log", f"'{voice}', '{chat}', {a_status}, 0, '{video_url}', {id_value}"))
+        th_log = threading.Thread(target=db_insert, args=("log", f"'{voice}', '{chat}', {a_status}, '{video_url}', {id_value}, '{time_str}'"))
         th_log.start()
         th_log.join()
         
         # 6. aws sqs msg
         chatid = db_select_chatid(id_value)
-        th_sqs = threading.Thread(target=aws.sqs_send, args=(chatid, voice))
+        th_sqs = threading.Thread(target=aws.sqs_send, args=(chatid, id_value, voice, time))
         th_sqs.start()
         th_sqs.join()
         

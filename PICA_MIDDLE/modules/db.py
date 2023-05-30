@@ -66,9 +66,9 @@ async def db_insert(table_name, values):
     elif table_name == "url":
         sql = f"insert into {table_name}(url_fun, url_sad, url_angry, user_id) values({values});"
     elif table_name == "log":
-        sql = f"insert into {table_name}(question, answer, a_status, q_status, video_url, user_id) values({values});"
-    elif table_name == "emotion":
-        sql = f"insert into {table_name}(fun_c, sad_c, angry_c, user_id) values({values});"
+        sql = f"insert into {table_name}(question, answer, a_status, video_url, user_id, time) values({values});"
+    elif table_name == "accum_emotion":
+        sql = f"insert into {table_name}(user_id) values({values});"
 
     with db.cursor() as cursor:
         cursor.execute(sql)

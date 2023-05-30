@@ -6,6 +6,8 @@ import asyncio
 from functools import wraps
 
 # 스레드 처리 세팅
+
+
 def async_action(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
@@ -34,26 +36,34 @@ class AwsQuery:
         self.BUCKET_NAME = "pica-s3"
         self.CLOUD_FLONT_CDN = "https://d73fsaiivzjg2.cloudfront.net"
         self.AGENT_QUEUE_URL = "https://sqs.ap-northeast-2.amazonaws.com/434692986520/emtionQueue"
-    
+
     def s3_log_upload(self, userID, data):
         self.S3.Bucket(self.BUCKET_NAME).put_object(
             Key=f"{userID}/log_summary/yesterday.txt",
             Body=data,
         )
+
     @async_action
     async def s3_delete(self, userID, nickname, filename):
         bucket = self.S3.Bucket(self.BUCKET_NAME)
         bucket.objects.filter(Prefix=f"{userID}/").delete()
-        
+
     @async_action
-    async def sqs_send(self, id, voice):
-        result =  self.SQS.send_message(
-            QueueUrl    = self.AGENT_QUEUE_URL,
-            MessageBody = json.dumps({
-                "id": str(id),
-                "text": voice
-                })
-            )
+    async def sqs_send(self, log_id, user_id,  voice, time):
+        result = self.SQS.send_message(
+            QueueUrl=self.AGENT_QUEUE_URL,
+            MessageBody=json.dumps({
+                "log_id": str(log_id),
+                "user_id": str(user_id),
+                "text": voice,
+                "year": time.year,
+                "month": time.month,
+                "day": time.day,
+                "hour": time.hour,
+                "minute": time.minute,
+                "second": time.second,
+            })
+        )
 
 
 if __name__ == "__main__":
