@@ -1,40 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>home</title>
-</head>
-<body>
-    홈 페이지
-    <div class="route">
-        <a href="{{url_for('input')}}"><button>캐릭터 생성하기</button></a>
-        <a href="{{url_for('admin')}}"><button>관리자 페이지 이동하기</button></a>
+  <body style="height: 100%;">
+  {% include 'public/header.html'%}
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center" style="height: 100vh;">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
+          <h1 style="margin-left: 10px;">PICA</h1>
+          <h2 style="margin-left: 10px;">MZ 1인가구를 위한 감정대화 서비스</h2>
+          <div class="d-flex">
+            <a href="{{url_for('input')}}" class="btn-get-started scrollto" style="margin: 10px; text-align:center;">캐릭터 생성</a>
+            <a href="{{url_for('admin')}}" class="btn-get-started scrollto" style="margin: 10px; text-align:center;">관리자 페이지로 이동</a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img">
+          <img src="static/assets/img/pica_img.png" class="img-fluid animated" alt="">
+        </div>
+      </div>
     </div>
-    <style>
-        /* CSS 코드를 여기에 작성합니다 */
-        body {
-            font-family: Arial, sans-serif;
-        }
-        
-        .route {
-            margin-top: 20px;
-        }
-        
-        .route a {
-            text-decoration: none;
-        }
-        
-        .route button {
-            display: block;
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+  </section><!-- End Hero -->
+  {% include 'public/footer.html'%}
 </body>
+
 </html>

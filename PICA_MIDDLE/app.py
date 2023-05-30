@@ -71,35 +71,35 @@ def req_stable():
     nickname = data.get("nickname")
     fun_url = None
     try:
-        # 2. 스테이블 디퓨전 서버에 POST 전송
-        res = requests.post(
-            "http://54.248.40.115:8080/img2img",
-            json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
+        # # 2. 스테이블 디퓨전 서버에 POST 전송
+        # res = requests.post(
+        #     "http://54.248.40.115:8080/img2img",
+        #     json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
+        # )
+        # print(res.status_code)
+
+        # res_text = res.json()
+        # fun_img = json.loads(res_text).get("img_name")
+        # sad_img = fun_img.replace('_fun','_sad')
+        # angry_img = fun_img.replace('_fun', '_angry')
+        # # 3. url 생성
+        # fun_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{fun_img}"
+        # sad_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{sad_img}"
+        # angry_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{angry_img}"
+
+        # 임시 url
+        fun_url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
         )
-        print(res.status_code)
-
-        res_text = res.json()
-        fun_img = json.loads(res_text).get("img_name")
-        sad_img = fun_img.replace('_fun','_sad')
-        angry_img = fun_img.replace('_fun', '_angry')
-        # 3. url 생성
-        fun_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{fun_img}"
-        sad_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{sad_img}"
-        angry_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{angry_img}"
-
-        # # 임시 url
-        # fun_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
-        # sad_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )        
-        # angry_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
+        sad_url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        )        
+        angry_url = (
+            aws.CLOUD_FLONT_CDN
+            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        )
         
         # 4. db- user, url 테이블 삽입
         print(fun_url)
@@ -146,8 +146,8 @@ def send_message():
         urls = db_select_url(db_select_id(user_id))
 
         # 4. d-id
-        video_url = asyncio.run(make_d_id(chat, urls[a_status]))
-        # video_url = ""
+        # video_url = asyncio.run(make_d_id(chat, urls[a_status]))
+        video_url = ""
 
         # 5. 각종 log db 저장
         id_value = db_select_id(user_id)

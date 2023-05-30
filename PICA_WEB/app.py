@@ -6,8 +6,8 @@ import time
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_WEB"
 app.config["JSON_AS_ASCII"] = False
-aws_addr = '13.125.120.92' 
-# container_addr = 'pica-middle-1'
+# aws_addr = '13.125.120.92' 
+aws_addr = 'pica-middle-1' 
 
 ####### 라우터 
 
@@ -29,16 +29,17 @@ def make():
 # chatbot 페이지
 @app.route("/chatbot")
 def chatbot():
-    try:
-        # session 상태 확인
-        if "user_id" not in session:
-            flash("이미지를 생성하지 못했습니다. 다시 생성해 주세요")
-            return redirect(url_for("input"))
-        else:
-            return render_template("pages/chatbot.html")
-    except Exception as e:
-        flash("이미지가 삭제되었습니다. 새로운 캐릭터를 만들어주세요!")
-        return redirect(url_for("input"))
+    # try:
+    #     # session 상태 확인
+    #     if "user_id" not in session:
+    #         flash("이미지를 생성하지 못했습니다. 다시 생성해 주세요")
+    #         return redirect(url_for("input"))
+    #     else:
+    #         return render_template("pages/chatbot.html")
+    # except Exception as e:
+    #     flash("이미지가 삭제되었습니다. 새로운 캐릭터를 만들어주세요!")
+    #     return redirect(url_for("input"))
+    return render_template("pages/chatbot.html")
 
 # 관리자 페이지
 @app.route("/admin")
@@ -90,10 +91,9 @@ def req_stable():
     b_img = request.get_json()["b_img"]
     user_id = request.get_json()["userID"]
     nickname = request.get_json()["nickname"]
-    # password = request.get_json()["password"]
-    # sex = request.get_json()["sex"]
-    # face = request.get_json()["face"]
-    # mbti = request.get_json()["mbti"]
+    sex = request.get_json()["sex"]
+    face = request.get_json()["face"]
+    mbti = request.get_json()["mbti"]
     
     session["nickname"] = nickname
     session["user_id"] = user_id
@@ -115,7 +115,6 @@ def req_stable():
 def send_message():
     user_id = session["user_id"]
     nickname = session["nickname"]
-    print(nickname)
     # voice
     voice = request.get_json()["inputdata"]
     data = {"voice": voice, "user_id": user_id}

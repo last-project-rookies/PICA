@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
     <title>make</title>
+    <style>
+        .center-div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .contents {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
 </head>
 <body>
-    캐릭터 생성하는 페이지
-    <br>
-    버튼 2개 -> 캐릭터가 맘에 드신가요?
-    <div class="example">
-        <img src="" alt="" />
-    </div>
-    <div class="route">
-        <!-- 삭제시 재요청 -->
-        <button>삭제하고 재요청</button>
-        <!-- chatbot 실행 -->
-        <button>진행</button>
-    </div>
+    {% include 'public/header.html'%}
+
+    <section id="hero" class="d-flex align-items-center" style="height: 100vh;">
+        <div class="container">
+            <div class="contents">
+                <h1 style="display:block; margin: 30px; padding:30px;">캐릭터가 맘에 드신가요?</h1>
+                <div class="stable">
+                    <img src="" alt="" width="312vw" height="312vh"/>
+                </div>
+                <div class="center-div">
+                    <!-- <button class="btn-get-started scrollto" style="margin: 10px; border:0px">재요청</button> -->
+                    <a href="{{url_for('input')}}" class="btn-get-started scrollto" style="margin: 10px;">재요청</a>
+                    <a href="{{url_for('chatbot')}}" class="btn-get-started scrollto" style="margin: 10px;">진행</a>
+                </div>
+            </div>
+          </div>
+      </section>
+
+    {% include 'public/footer.html'%}
     <script>
-        const img = document.querySelector('.example > img')
+        /**const img = document.querySelector('.stable > img')
         $(window).on('load', function () {
             // default 이미지 삽입
             $.ajax({
@@ -35,10 +51,10 @@
                 },
                 error: function(xhr) {
                     console.log("Error:", xhr.responseText);
-                    window.location.assign("{{ url_for('input') }}")
+                    //window.location.assign("{{ url_for('input') }}")
                 }
             });
-        });
+        });**/
     </script>
 </body>
 </html>
