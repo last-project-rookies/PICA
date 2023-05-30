@@ -19,12 +19,12 @@ def home():
 # 캐릭터 정보 입력 페이지
 @app.route("/input")
 def input():
-    return render_template("input.html")
+    return render_template("pages/input.html")
 
 # 캐릭터 생성 페이지
 @app.route("/make")
 def make():
-    return render_template("make.html")
+    return render_template("pages/make.html")
 
 # chatbot 페이지
 @app.route("/chatbot")
@@ -35,7 +35,7 @@ def chatbot():
             flash("이미지를 생성하지 못했습니다. 다시 생성해 주세요")
             return redirect(url_for("input"))
         else:
-            return render_template("chatbot.html")
+            return render_template("pages/chatbot.html")
     except Exception as e:
         flash("이미지가 삭제되었습니다. 새로운 캐릭터를 만들어주세요!")
         return redirect(url_for("input"))
@@ -43,7 +43,7 @@ def chatbot():
 # 관리자 페이지
 @app.route("/admin")
 def admin():
-    return render_template("admin.html")
+    return render_template("pages/admin.html")
 
 ######## 로직
 
