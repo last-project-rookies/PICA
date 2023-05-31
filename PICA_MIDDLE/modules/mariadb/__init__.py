@@ -44,9 +44,9 @@ sql = """
         question VARCHAR(300) NOT NULL,
         answer VARCHAR(300) NOT NULL,
         a_status INT(3) NOT NULL,
-        q_status INT(3),
         video_url VARCHAR(500) NOT NULL,
         user_id INT(11) NOT NULL,
+        time DATETIME NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES user(id)
         ON DELETE CASCADE
@@ -56,10 +56,59 @@ cursor.execute(sql)
 sql = """
     CREATE TABLE if not EXISTS emotion (
         id INT(11) NOT NULL AUTO_INCREMENT,
-        fun_c INT(11) NOT NULL,
-        sad_c INT(11) NOT NULL,
-        angry_c INT(11) NOT NULL,
+        happiness DECIMAL(5,2) NOT NULL,
+        excited DECIMAL(5,2) NOT NULL,
+        sadness DECIMAL(5,2) NOT NULL,
+        bored DECIMAL(5,2) NOT NULL,
+        disgust DECIMAL(5,2) NOT NULL,
+        anger DECIMAL(5,2) NOT NULL,
+        calm DECIMAL(5,2) NOT NULL,
+        comfortable DECIMAL(5,2) NOT NULL,
         user_id INT(11) NOT NULL,
+        log_id INT(11) NOT NULL,
+        time DATETIME NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES user(id),
+        FOREIGN KEY (log_id) REFERENCES log(id)
+        ON DELETE CASCADE
+    );
+"""
+cursor.execute(sql)
+sql = """
+    CREATE TABLE if not EXISTS vir_character (
+        id INT(11) NOT NULL AUTO_INCREMENT,
+        mbti VARCHAR(4) NOT NULL,
+        face TINYINT(1) NOT NULL,
+        sex TINYINT(1) NOT NULL,
+        nickname VARCHAR(20) NOT NULL,
+        user_id INT(11) NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES user(id)
+        ON DELETE CASCADE
+    );
+"""
+cursor.execute(sql)
+sql = """
+    CREATE TABLE if not EXISTS accum_emotion (
+        id INT(11) NOT NULL AUTO_INCREMENT,
+        sum_happiness DECIMAL(10,2) NOT NULL DEFAULT 0,
+        sum_excited DECIMAL(10,2) NOT NULL DEFAULT 0,
+        sum_sadness DECIMAL(10,2) NOT NULL DEFAULT 0,
+        sum_bored DECIMAL(10,2) NOT NULL DEFAULT 0,
+        sum_disgust DECIMAL(10,2) NOT NULL DEFAULT 0,
+        sum_anger DECIMAL(10,2) NOT NULL DEFAULT 0,
+        sum_calm DECIMAL(10,2) NOT NULL DEFAULT 0,
+        sum_comfortable DECIMAL(10,2) NOT NULL DEFAULT 0,
+        avg_happiness DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_excited DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_sadness DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_bored DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_disgust DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_avg_anger DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_calm DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_comfortable DECIMAL(5,3) NOT NULL DEFAULT 0,
+        num_chat SMALLINT NOT NULL DEFAULT 0,
+        user_id INT(11) NOT NULL UNIQUE,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES user(id)
         ON DELETE CASCADE
