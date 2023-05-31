@@ -6,10 +6,10 @@ import time
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_WEB"
 app.config["JSON_AS_ASCII"] = False
-# aws_addr = '13.125.120.92' 
-aws_addr = 'pica-middle-1' 
+# aws_addr = '13.125.120.92'
+aws_addr = 'pica-middle-1'
 
-#################################################### 라우터 
+#################################################### 라우터
 
 # 홈 페이지(캐릭터 입력 & 관리자 페이지)
 @app.route("/")
@@ -44,7 +44,7 @@ def chatbot():
 # 관리자 페이지
 @app.route("/admin")
 def admin():
-    return render_template("pages/admin.html")
+    return render_template('pages/admin.html')
 
 #################################################### 로직
 
@@ -70,7 +70,8 @@ def get_img():
 def delete_img():
     # url 받아오기
     url = request.get_json().get("url")
-    user_id, nickname, filename = url.split("/")[-3], url.split("/")[-2], url.split("/")[-1]
+    user_id, nickname, filename = url.split(
+        "/")[-3], url.split("/")[-2], url.split("/")[-1]
     data = {"user_id": user_id, "nickname": nickname, "filename": filename}
 
     # 요청
@@ -94,23 +95,23 @@ def req_stable():
     sex = request.get_json()["sex"]
     face = request.get_json()["face"]
     mbti = request.get_json()["mbti"]
-    
+
     session["nickname"] = nickname
     session["user_id"] = user_id
     data = {
-        "b_img": b_img, 
-        "user_id": user_id, 
+        "b_img": b_img,
+        "user_id": user_id,
         "nickname": nickname,
         "sex": sex,
         "face": face,
         "mbti": mbti
-        }
-    
+    }
+
     url = None
     # 요청
     try:
         res = requests.post(f"http://{aws_addr}:3000/req_stable", json=data)
-        url = res.json().get("url") 
+        url = res.json().get("url")
     except requests.exceptions.ConnectionError as e:
         print("req_stable error : ", e)
         return redirect(url_for("input"))
@@ -147,8 +148,77 @@ def logout():
         res = requests.post(f"http://{aws_addr}:3000/logout", json=data)
     except Exception as e:
         print("logout error : ", e)
-    
+
     return jsonify({})
+
+# 파이차트 데이터 
+@app.route("/pie_chart_data", methods=["GET"])
+def pie_chart_data():
+    user_id = session["user_id"]
+    data = {"user_id": user_id}
+    # 요청
+    try:
+        res = requests.post(f"http://{aws_addr}:3000/pieChart_data", json=data)
+        pie_data = res.json.get('data')
+    except Exception as e:
+        print("pieChart data load error : ", e)
+
+    return jsonify(pieData=pie_data)
+
+# 전체 대화 개수 
+@app.route('/total_conversations', methods=['GET'])
+def get_total_conversations():
+    user_id = session["user_id"]
+    data = {"user_id": user_id}
+    # 요청
+    try:
+        res = requests.post(f"http://{aws_addr}:3000/total_chat_count_data", json=data)
+        total_conversations = res.json.get('data')
+    except Exception as e:
+        print("num_chat data load error : ", e)
+
+    return jsonify(totalConversations=total_conversations['num_chat'])
+
+# 선차트 데이터(감정별 데이터) 
+@app.route('/update_chart_data', methods=['POST'])
+def update_chart_data():
+    emotion = request.get_json()['emotion']
+    user_id = session["user_id"]
+    data = {"emotion": emotion, "user_id": user_id}
+    # 요청
+    try:
+        res = requests.post(f"http://{aws_addr}:3000/generate_chart_data", json=data)
+        chart_data = res.json.get('data')
+    except Exception as e:
+        print("num_chat data load error : ", e)
+
+    return jsonify(chart_data=chart_data)
+
+
+# 대화 로그 
+@app.route("/admin_chatlog", methods=["GET"])
+def admin_chatlog():
+    user_id = session["user_id"]
+    data = {"user_id": user_id}
+    # 요청
+    try:
+        res = requests.post(f"http://{aws_addr}:3000/db_select_log", json=data)
+        chat_log_db = res.json.get('data')
+        chat_logs = []
+        for chat in chat_log_db:
+            question = chat['question']
+            answer = chat['answer']
+            q_time = chat['time']
+            user = f'User : {question} {q_time}'
+            bot = f'Bot : {answer}'
+            chat_logs.append(
+                {'sender': 'user', 'content': f'{question}', 'date': f'{q_time}'})
+            chat_logs.append(
+                {'sender': 'bot', 'content': f'{answer}', 'date': f'{""}'})
+    except Exception as e:
+        print("num_chat data load error : ", e)
+
+    return jsonify({'chatLog': chat_logs})
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from modules.gpt.chat import gpt_call, setting
 from modules.gpt.summary import make_summary
 from modules.gpt.emotion import chat_emotion
 from modules.aws import AwsQuery
-from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log, db_select_chatid
+from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log, db_select_chatid, db_select_log, pieChart_data, total_chat_count_data, generate_chart_data 
 
 # 비동기 처리
 import asyncio
@@ -217,6 +217,42 @@ def logout():
         shutil.rmtree(f"{user_id}")
         
     return jsonify({})
+
+# 파이차트 데이터 
+@app.route("/pie_chart_data", methods=["GET"])
+def pie_chart_data():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    pie_data = pieChart_data(user_id)
+    return jsonify({'data':pie_data})
+
+# 전체 대화 개수 
+@app.route('/total_conversations', methods=['GET'])
+def get_total_conversations():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    total_conversations = total_chat_count_data(user_id)
+    return jsonify({'data':total_conversations})
+
+# 선차트 데이터(감정별 데이터) 
+@app.route('/update_chart_data', methods=['POST'])
+def update_chart_data():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    emotion = data.get("emotion")
+    chart_data = generate_chart_data(emotion, user_id)
+
+    return jsonify({'data':chart_data})
+
+
+# 대화 로그 
+@app.route("/admin_chatlog", methods=["GET"])
+def admin_chatlog():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    chat_log_db = db_select_log(user_id)
+
+    return jsonify({'data':chat_log_db})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=3000, debug=True)

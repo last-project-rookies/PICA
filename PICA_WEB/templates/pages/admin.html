@@ -164,9 +164,21 @@
                     console.log('전체 대화 개수 로드 에러', error);
                 }
             });
-            // pieChart
-            var pieData = JSON.parse('{{ pie_data | tojson | escape }}');
-            showPieChart(pieData);
+            // pieChart 데이터 로드 및 시각화
+            $.ajax({
+                type: 'GET',
+                url: "/pie_chart_data", // Replace with the correct server endpoint URL for pie chart data
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log('파이 차트 데이터 로드 성공', response.pieData);
+                    var pieData = response.pieData; // 서버에서 받은 파이 차트 데이터
+                    showPieChart(pieData); // 파이 차트 시각화
+                },
+                error: function (request, status, error) {
+                    console.log('파이 차트 데이터 로드 에러', error);
+                }
+            });
         });
 
         //pieChart 시각화
