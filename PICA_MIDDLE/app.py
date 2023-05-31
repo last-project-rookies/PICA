@@ -74,6 +74,7 @@ def req_stable():
     fun_url = None
     try:
         # 2. 스테이블 디퓨전 서버에 POST 전송
+        # # 2. 스테이블 디퓨전 서버에 POST 전송
         # res = requests.post(
         #     "http://54.248.40.115:8080/img2img",
         #     json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
@@ -92,7 +93,7 @@ def req_stable():
         # 임시 url
         fun_url = (
             aws.CLOUD_FLONT_CDN
-            + f"/{user_id}/{nickname}/fun.jpg"
+            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
         )
         sad_url = (
             aws.CLOUD_FLONT_CDN

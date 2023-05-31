@@ -1,0 +1,310 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <!-- 임시 css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- reveal.js -->
+    <link rel="stylesheet" href="{{ url_for ('static', filename='slides/dist/reset.css')}}">
+    <link rel="stylesheet" href="{{ url_for ('static', filename='slides/dist/reveal.css')}}">
+    <link rel="stylesheet" href="{{ url_for ('static', filename='slides/dist/theme/white.css')}}">
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="{{ url_for ('static', filename='slides/plugin/highlight/monokai.css')}}">
+    
+    {% with message = get_flashed_messages() %}
+    {% if message %}
+    <script>
+        alert("{{ message[-1] }}")
+    </script>
+    {% endif %}
+    {% endwith %}
+    <title>input</title>
+</head>
+<body>
+    {% include 'public/header.html'%}
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <div class="contents">
+                    <div class="upload-box">
+                        <div id="drop-file" class="drag-file">
+                            <img src="https://img.icons8.com/pastel-glyph/2x/image-file.png" alt="파일 아이콘" class="image">
+                            <p class="message">Drag files to upload</p>
+                            <img src="" alt="미리보기 이미지" class="preview" style="max-width: 100%; max-height:100%">
+                        </div>
+                        <div class="input">
+                            <label class="file-label" id="chooseLabel"  for="chooseFile">Choose File</label>
+                            <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
+                            accept="image/png, image/jpeg">
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="contents">
+                    <div class="input input-group input-group-lg">
+                        <h4 style="display:block; padding:15px;">아이디를 입력하세요</h4>
+                        <input class="form-control" id="userID"  type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg"/>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="contents">
+                    <div class="input input-group input-group-lg">
+                        <label class="file-label"  for="nickname">input nickname</label>
+                        <input class="form-control" id="nickname"  type="text" />
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="contents">
+                    <div class="input input-group input-group-lg">
+                        <label class="file-label"  for="sex">input sex</label>
+                        <select name="sex" id="sex" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" >
+                            <option selected  value="male">남자</option>
+                            <option  value="female">여자</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="contents">
+                    <div class="input input-group input-group-lg">
+                        <label class="file-label"  for="face">input face</label>
+                        <select name="face" id="face" class="form-select form-select-lg mb-3" aria-label=".form-select-lg" >
+                            <option selected  value="cat">고양이상</option>
+                            <option  value="dog">강아지상</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="contents">
+                    <div class="input input-group input-group-lg">
+                        <label class="file-label"  for="mbti">input mbti</label>
+                        <select name="mbti" id="mbti" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                            <option selected value="INFP">INFP</option>
+                            <option  value="INFJ">INFJ</option>
+                            <option  value="INTP">INTP</option>
+                            <option  value="INTJ">INTJ</option>
+                            <option  value="ISFP">ISFP</option>
+                            <option  value="ISFJ">ISFJ</option>
+                            <option  value="ISTP">ISTP</option>
+                            <option  value="ISTJ">ISTJ</option>
+                            <option  value="ENFP">ENFP</option>
+                            <option  value="ENFJ">ENFJ</option>
+                            <option  value="ENTP">ENTP</option>
+                            <option  value="ENTJ">ENTJ</option>
+                            <option  value="ESFP">ESFP</option>
+                            <option  value="ESFJ">ESFJ</option>
+                            <option  value="ESTP">ESTP</option>
+                            <option  value="ESTJ">ESTJ</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="contents">
+                    <div class="input input-group input-group-lg">
+                        <label class="file-label" id="uploadLabel" for="uploadFile">Upload File</label>
+                        <input type="button" class="file" id="uploadFile">
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <style>
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contents .upload-box .drag-file{
+            width: 40vw;
+            min-width: 400px;
+            height: 55vh;
+            min-height: 200px;
+        }
+        .input-group>.form-control{
+            width: 100%;
+        }
+        .input-group>.form-select{
+            width: 100%;
+        }
+        .contents {
+            display:flex; 
+            align-items:center;
+            width: 100%;
+            justify-content:center;
+            flex-direction: column;
+
+        }
+        .file-label {
+            margin-top: 30px;
+            text-align: center;
+            padding: 10px 0;
+            width: 65%;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .input {
+            display:flex; 
+            align-items:center;
+            width: 60%;
+            justify-content:center;
+            flex-direction: column;
+        }
+        .input > label{
+            display:block;  
+            width: 100%; 
+            margin-bottom: 10px;
+            color: #ffff;
+            background-color: #16df7e;
+        }
+        .input > label:hover{
+            background: #206bfb;
+            box-shadow: 0 8px 28px rgba(32, 107, 251, 0.45);
+        }
+        .input > .file{
+            display:none;
+            margin-bottom: 30px;
+        }
+        .input > #chooseLabel, 
+        .input > #uploadLabel{
+            background-color: #16df7e;
+        }
+        .input > #chooseLabel:hover, 
+        .input > #uploadLabel:hover{
+            background: #206bfb;
+            box-shadow: 0 8px 28px rgba(32, 107, 251, 0.45);
+        }
+    </style>
+    <script src="{{ url_for ('static', filename='slides/dist/reveal.js')}}"></script>
+    <script>
+        Reveal.initialize();
+        function showLoading() {
+            $('#loading').show();
+            }
+            
+        function hideLoading() {
+            $('#loading').hide();
+            }
+    </script>
+    <script>
+        const button = document.getElementById("uploadFile")
+        const userID = document.getElementById("userID")
+        const nickname = document.getElementById("nickname")
+        const sex = document.getElementById("sex")
+        const face = document.getElementById("face")
+        const mbti = document.getElementById("mbti")
+
+        let b_file = null
+        // 버튼 이벤트
+        button.addEventListener('click', ()=>{
+            window.location.assign("{{ url_for('make') }}")
+            /**if (!b_file || userID.value == '') {
+                alert('모두 기입해주세요!')
+                return null
+            } else {
+                showLoading();
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url_for("req_stable")}}',
+                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value, "sex":sex.value, "face":face.value, "mbti": mbti.value}),
+                    dataType: "JSON",
+                    contentType: "application/json",  //"multipart/form-data",
+                    success: function(data){
+                        const url = data['url']
+                        console.log(url)
+                        fetch(url)
+                            .then((response) => window.location.assign("{{ url_for('make') }}"))
+                            .catch((error) =>  window.location.assign("{{ url_for('input') }}"));
+                    },
+                    error: function(request, status, error){
+                        console.log('업로드 에러~', error)
+                    }
+                })
+            }**/
+        })
+    
+        function DropFile(dropAreaId, fileListId) {
+            let dropArea = document.getElementById(dropAreaId);
+            let fileList = document.getElementById(fileListId);
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+    
+            function highlight(e) {
+                preventDefaults(e);
+                dropArea.classList.add("highlight");
+            }
+    
+            function unhighlight(e) {
+                preventDefaults(e);
+                dropArea.classList.remove("highlight");
+            }
+    
+            function handleDrop(e) {
+                unhighlight(e);
+                let dt = e.dataTransfer;
+                let files = dt.files;
+    
+                handleFiles(files);
+    
+                const fileList = document.getElementById(fileListId);
+                if (fileList) {
+                    fileList.scrollTo({ top: fileList.scrollHeight });
+                }
+            }
+    
+            function handleFiles(files) {
+                files = [...files];
+                files.forEach(previewFile);
+            }
+    
+            function previewFile(file) {
+                renderFile(file);
+            }
+            function renderFile(file) {
+                let reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onloadend = function () {
+                    let img = dropArea.getElementsByClassName("preview")[0];
+                    img.src = reader.result;
+                    img.style.width = "100%"
+                    b_file = reader.result.split(',').pop()
+                    img.style.display = "block";
+                };
+            }
+    
+            dropArea.addEventListener("dragenter", highlight, false);
+            dropArea.addEventListener("dragover", highlight, false);
+            dropArea.addEventListener("dragleave", unhighlight, false);
+            dropArea.addEventListener("drop", handleDrop, false);
+    
+            return {
+                handleFiles
+            };
+        }
+    
+        const dropFile = new DropFile("drop-file", "files");
+    </script>
+</body>
+
+
+</html>
