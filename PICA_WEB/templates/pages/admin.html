@@ -18,12 +18,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-        }
-
-        h1 {
-            margin-top: 45px;
-            margin-bottom: 25px;
+            flex-direction: row;
         }
 
         div {
@@ -33,7 +28,8 @@
         button {
             background-color: #16df7e;
             color: #ffffff;
-            border-color: #333333;
+            border-color: #cccccc;
+            margin-bottom: 10px;
         }
 
         .big-number-chart {
@@ -45,11 +41,6 @@
             border-radius: 8px;
             margin-top: 45px;
             font-size: 50px;
-        }
-
-        .card-title {
-            font-weight: bold;
-            font-size: 42px;
         }
 
         #chatLog {
@@ -89,7 +80,7 @@
 </head>
 
 <body>
-    <div class="container" style="margin-bottom:100px;">
+    <div class="container" style="margin-bottom:80px;">
         {% include 'public/header.html'%}
     </div>
     <div class="container">
@@ -98,7 +89,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">오늘 하루 감정 분석 결과</h5>
+                        <div class="card-title">오늘 하루 감정 분석 결과</div>
                         <div class="chart-container">
                             <canvas id="pieChart"></canvas>
                         </div>
@@ -108,20 +99,22 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">감정별 분석 결과</h5>
+                        <div class="card-title">감정별 분석 결과</div>
                         <div class="chart-container">
                             <canvas id="lineChart"></canvas>
                         </div>
                         <div class="mt-3">
                             <!-- <button onclick="showLineChartWithData([0.5, 0.8, 0.3, 0.2, 0.6, 0.9, 0.4, 0.7])">행복</button> -->
-                            <button id="happinessBtn">행복</button>
-                            <button id="excitedBtn">신남</button>
-                            <button id="sadnessBtn">슬픔</button>
-                            <button id="boredBtn">지루</button>
-                            <button id="disgustBtn">혐오</button>
-                            <button id="angerBtn">분노</button>
-                            <button id="calmBtn">고요</button>
-                            <button id="comfortableBtn">편안</button>
+                            <div class="contents">
+                                <button id="happinessBtn">행복</button>
+                                <button id="excitedBtn">신남</button>
+                                <button id="sadnessBtn">슬픔</button>
+                                <button id="boredBtn">지루</button>
+                                <button id="disgustBtn">혐오</button>
+                                <button id="angerBtn">분노</button>
+                                <button id="calmBtn">고요</button>
+                                <button id="comfortableBtn">편안</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,7 +122,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">전체 대화 개수</h5>
+                        <div class="card-title">전체 대화 개수</div>
                         <div class="big-number-chart" id="totalConversations"></div>
                         <div class="center-div">
                             <button id="toggleButton">대화 로그 열기</button>
@@ -348,11 +341,11 @@
             }
         }
 
-        function addChatMessage(message, isUser) {
+        function addChatMessage(message, isUser, date) {
             var messageClass = isUser ? 'user-message' : 'bot-message';
             var chatMessage = document.createElement('li');
             chatMessage.classList.add(messageClass);
-            chatMessage.textContent = message;
+            chatMessage.innerHTML = '<span style="display: flex; align-items: flex-end;">' + message + " " + '<span class="message-date" style="color:#cccccc; font-size:10px;">' + date + '</span></span>';
 
             chatLog.appendChild(chatMessage);
         }
@@ -371,7 +364,7 @@
                     chatLogData.forEach(function (message) {
                         var isUser = message.sender === "user";
                         console.log(message.content, isUser)
-                        addChatMessage(message.content, isUser);
+                        addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
                     });
 
                     toggleChatLog(); // Toggle the chat log visibility
