@@ -9,7 +9,7 @@ app.config["JSON_AS_ASCII"] = False
 # aws_addr = '13.125.120.92' 
 aws_addr = 'pica-middle-1' 
 
-####### 라우터 
+#################################################### 라우터 
 
 # 홈 페이지(캐릭터 입력 & 관리자 페이지)
 @app.route("/")
@@ -46,7 +46,7 @@ def chatbot():
 def admin():
     return render_template("pages/admin.html")
 
-######## 로직
+#################################################### 로직
 
 # chatbot 페이지 로드직후 default 이미지 가져오기
 @app.route("/get_img")
@@ -97,7 +97,15 @@ def req_stable():
     
     session["nickname"] = nickname
     session["user_id"] = user_id
-    data = {"b_img": b_img, "user_id": user_id, "nickname": nickname}
+    data = {
+        "b_img": b_img, 
+        "user_id": user_id, 
+        "nickname": nickname,
+        "sex": sex,
+        "face": face,
+        "mbti": mbti
+        }
+    
     url = None
     # 요청
     try:
@@ -129,7 +137,7 @@ def send_message():
         print("send_message error : ", e)
     return jsonify({"info": {"nickname": nickname, "answer": msg}, "video_url": video_url})
 
-
+# 로그아웃
 @app.route("/logout")
 def logout():
     user_id = session["user_id"]

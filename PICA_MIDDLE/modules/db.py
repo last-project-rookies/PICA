@@ -77,7 +77,7 @@ async def db_insert(table_name, values):
 @async_action
 async def db_delete(id_value):
     """
-    - descript = db에서 user 테이블에서 데이터 삭제(casecade)
+    - descript = user 테이블에서 데이터 삭제(casecade)
     - arg
         - id_value : `int` = user테이블의 고유값 삭제
     """
@@ -88,12 +88,16 @@ async def db_delete(id_value):
 
 def db_select_chatid(user_id):
     """
+    - descript = log 테이블에서 해당 사용자의 대화기록 조회
+    - arg
+        - user_id :`int` = user테이블의 고유값 삭제
     """
     sql = f"select id from log where user_id = '{user_id}';"
     result = None
     with db.cursor() as cursor:
         cursor.execute(sql)
         result = cursor.fetchall()
+        # 마지막 대화 기록만 반환
     return result[-1][0]
 
 if __name__ == "__main__":

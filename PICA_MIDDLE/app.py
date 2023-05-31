@@ -31,6 +31,8 @@ def async_action(f):
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_MIDDLE"
 aws = AwsQuery()
+conversation, memory_vectorstore, static_vectorstore = None, None, None
+
 
 # get_img 요청 처리
 @app.route("/get_img", methods=["GET", "POST"])
@@ -51,7 +53,7 @@ def delete_img():
     nickname = data.get("nickname")
     filename = data.get("filename")
     # aws s3 데이터 삭제
-    th_aws_delete = threading.Thread(target=aws.s3_delete, args=(user_id, nickname, filename))
+    th_aws_delete = threading.Thread(target=aws.s3_delete, args=(user_id, nickname))
     th_aws_delete.start()
     th_aws_delete.join()
     # db & session 삭제
@@ -71,7 +73,17 @@ def req_stable():
     b_img = data.get("b_img")
     user_id = data.get("user_id")
     nickname = data.get("nickname")
+    sex = data.get("sex")
+    face = data.get("face")
+    mbti = data.get("mbti")
+
+    # 기본 이미지 
     fun_url = None
+
+    # 캐릭터 대화 세팅
+    global conversation, memory_vectorstore, static_vectorstore
+    conversation, memory_vectorstore, static_vectorstore = setting(user_get=user_id, name_get=nickname, mbti_get=mbti, age_get="22", user_id_get=user_id)
+    
     try:
         # 2. 스테이블 디퓨전 서버에 POST 전송
         # # 2. 스테이블 디퓨전 서버에 POST 전송
@@ -123,6 +135,15 @@ def req_stable():
     # 웹에 전달
     return jsonify({"url": fun_url})
 
+# finish_req_stable 결정된 stable 이미지 업로드
+@app.route("/finish_req_stable", methods=["GET", "POST"])
+def finish_req_stable():
+    pass
+
+# re_req_stable 재요청 처리
+@app.route("/re_req_stable", methods=["GET", "POST"])
+def re_req_stable():
+    pass
 
 # send_message 요청 처리
 @app.route("/send_message", methods=["GET", "POST"])
@@ -135,8 +156,8 @@ def send_message():
         time_str = time.strftime("%Y-%m-%d %H:%M:%S")
 
         # 1. lang_chain
-        # setting -> 유저 정보 -> 로그인 할떄 세팅
-        conversation, memory_vectorstore, static_vectorstore = setting(user_get="이건우", name_get="이루다", mbti_get="ISTJ", age_get="22", user_id_get=user_id)
+        # setting -> 유저 정보 -> 캐릭터 생성할 때 세팅
+        global conversation, memory_vectorstore, static_vectorstore
         chat = asyncio.run(gpt_call(voice, conversation, memory_vectorstore, static_vectorstore))
 
         # 2. emotion 분석
@@ -172,6 +193,7 @@ def send_message():
 
     return jsonify({"msg": chat, "video_url": video_url})
 
+# 요약본 S3 업로드 (비동기처리)
 @async_action
 async def log_summary_upload(user_id):
     chat_log = db_select_log()
@@ -182,7 +204,7 @@ async def log_summary_upload(user_id):
     aws.s3_log_upload(user_id, data=chat_summary)
     
 
-
+# 로그아웃 로직
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
     data = request.get_json()
@@ -199,4 +221,3 @@ def logout():
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=3000, debug=True)
     # read_summary()
-# waitress-serve --port=3000 --channel-timeout=30 app:app
