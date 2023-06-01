@@ -85,6 +85,12 @@
     </div>
     <div class="container">
         &nbsp;
+        <select id="user_select" onchange="change_user()">
+            <option selected value="pica">pica</option>
+            {% for user in users.values() %}
+            <option value="{{user}}">{{user}}</option>
+            {% endfor %}
+        </select>
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
@@ -139,6 +145,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
+        $(window).on('load',async function(){
+            await change_user()
+            setTimeout(() => console.log("change_user"), 2000);
+        })
+        let selected_user = document.getElementById("user_select")
+        console.log(selected_user.value)
         var pieChart;
         var lineChart;
         var totalConversations;
@@ -148,11 +160,18 @@
         // });
 
         // pieChart 웹 실행시 표현 (+ 빅 넘버 차트 값 불러옴)
-        document.addEventListener('DOMContentLoaded', function () {
+        async function change_user() {
+            if (pieChart) {
+                pieChart.destroy();
+            }
+            if (lineChart) {
+                lineChart.destroy();
+            }
             // bigNumChart 시각화
-            $.ajax({
-                type: 'GET',
+            await $.ajax({
+                type: 'POST',
                 url: "/total_conversations",
+                data : JSON.stringify({"user":selected_user.value}),
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (response) {
@@ -165,9 +184,10 @@
                 }
             });
             // pieChart 데이터 로드 및 시각화
-            $.ajax({
-                type: 'GET',
+            await $.ajax({
+                type: 'POST',
                 url: "/pie_chart_data", // Replace with the correct server endpoint URL for pie chart data
+                data : JSON.stringify({"user":selected_user.value}),
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (response) {
@@ -179,7 +199,7 @@
                     console.log('파이 차트 데이터 로드 에러', error);
                 }
             });
-        });
+        };
 
         //pieChart 시각화
         function showPieChart(data) {
@@ -318,13 +338,13 @@
             updateLineChart('편안', 'rgba(0, 255, 0, ');
         });
         // 서버로 버튼 텍스트 전송 및 데이터 업데이트
-        function updateLineChart(emotion, color) {
-            $.ajax({
+        async function updateLineChart(emotion, color) {
+            await $.ajax({
                 type: 'POST',
                 url: "/update_chart_data",
                 dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify({ emotion: emotion }),
+                data: JSON.stringify({ "emotion": emotion ,"user":selected_user.value}),
                 success: function (response) {
                     console.log('차트 데이터 업데이트 성공', response);
                     var chartData = response.chart_data; // 서버에서 받은 차트 데이터
@@ -362,10 +382,11 @@
             chatLog.appendChild(chatMessage);
         }
 
-        $('#toggleButton').on('click', () => {
-            $.ajax({
-                type: 'GET',
+        $('#toggleButton').on('click', async () => {
+            await $.ajax({
+                type: 'POST',
                 url: "/admin_chatlog", // Replace with the correct server endpoint URL
+                data : JSON.stringify({"user":selected_user.value}),
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (response) {
