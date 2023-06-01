@@ -384,8 +384,7 @@ h6 {
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
-  background: #16df7e;
-  box-shadow: 0 8px 28px rgba(22, 223, 126, 0.45);
+  background: #22cc88;
 }
 .btn-get-started {
   font-family: "Raleway", sans-serif;
@@ -400,8 +399,7 @@ h6 {
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
-  background: #16df7e;
-  box-shadow: 0 8px 28px rgba(22, 223, 126, 0.45);
+  background: #22cc88;
   margin: 0px 10px;
 }
 #hero .btn-get-started:hover {

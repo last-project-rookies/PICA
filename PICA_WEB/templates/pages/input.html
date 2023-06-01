@@ -253,7 +253,7 @@
             width: 100%; 
             margin-bottom: 10px;
             color: #ffff;
-            background-color: #16df7e;
+            background-color: #22cc88;
         }
         .input > label:not(.input-hidden)hover{
             background: #206bfb;
@@ -265,7 +265,7 @@
         }
         .input > #chooseLabel, 
         .input > #uploadLabel{
-            background-color: #16df7e;
+            background-color: #22cc88;
         }
         .input > #chooseLabel:hover, 
         .input > #uploadLabel:hover{
@@ -294,12 +294,12 @@
 
         input[type=radio]:hover + label>img {
             border: 1px solid #fff;
-            box-shadow: 0 0 3px 3px #16df7e;
+            box-shadow: 0 0 3px 3px #22cc88;
         }
 
         input[type=radio]:checked + label>img {
             border: 1px solid #fff;
-            box-shadow: 0 0 3px 3px #16df7e;
+            box-shadow: 0 0 3px 3px #22cc88;
         }
 
         .virtual-personal-setting{
@@ -375,6 +375,7 @@
                         //fetch(url)
                         //    .then((response) => window.location.assign("{{ url_for('make') }}"))
                         //    .catch((error) =>  window.location.assign("{{ url_for('input') }}"));
+                        hideLoading();
                     },
                     error: function(request, status, error){
                         console.log('업로드 에러~', error)
