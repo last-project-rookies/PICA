@@ -1,12 +1,392 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+    <title>감정분석</title>
+    <style>
+        .center-div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contents {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        div {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #16df7e;
+            color: #ffffff;
+            border-color: #cccccc;
+            margin-bottom: 10px;
+        }
+
+        .big-number-chart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 45px;
+            font-size: 50px;
+        }
+
+        #chatLog {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 300px;
+            overflow-y: scroll;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        #chatLog li {
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        #chatLog li:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-message {
+            background-color: #dcf8c6;
+            color: #333333;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .bot-message {
+            background-color: #f0f0f0;
+            color: #333333;
+            border-radius: 8px;
+            padding: 8px;
+        }
+    </style>
 </head>
+
 <body>
-    관리자 페이지
+    <div class="container" style="margin-bottom:80px;">
+        {% include 'public/header.html'%}
+    </div>
+    <div class="container">
+        &nbsp;
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">오늘 하루 감정 분석 결과</div>
+                        <div class="chart-container">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">감정별 분석 결과</div>
+                        <div class="chart-container">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                        <div class="mt-3">
+                            <!-- <button onclick="showLineChartWithData([0.5, 0.8, 0.3, 0.2, 0.6, 0.9, 0.4, 0.7])">행복</button> -->
+                            <div class="contents">
+                                <button id="happinessBtn">행복</button>
+                                <button id="excitedBtn">신남</button>
+                                <button id="sadnessBtn">슬픔</button>
+                                <button id="boredBtn">지루</button>
+                                <button id="disgustBtn">혐오</button>
+                                <button id="angerBtn">분노</button>
+                                <button id="calmBtn">고요</button>
+                                <button id="comfortableBtn">편안</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">전체 대화 개수</div>
+                        <div class="big-number-chart" id="totalConversations"></div>
+                        <div class="center-div">
+                            <button id="toggleButton">대화 로그 열기</button>
+                        </div>
+                        <ul id="chatLog" style="display: none;"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'public/footer.html'%}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        var pieChart;
+        var lineChart;
+        var totalConversations;
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //   showPieChart([10, 20, 30, 40, 50, 60, 70, 80]);
+        // });
+
+        // pieChart 웹 실행시 표현 (+ 빅 넘버 차트 값 불러옴)
+        document.addEventListener('DOMContentLoaded', function () {
+            // bigNumChart 시각화
+            $.ajax({
+                type: 'GET',
+                url: "/total_conversations",
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log('전체 대화 개수 로드 성공', response.totalConversations);
+                    totalConversations = response.totalConversations; // 서버에서 받은 전체 대화 개수
+                    document.getElementById('totalConversations').textContent = totalConversations;
+                },
+                error: function (request, status, error) {
+                    console.log('전체 대화 개수 로드 에러', error);
+                }
+            });
+            // pieChart 데이터 로드 및 시각화
+            $.ajax({
+                type: 'GET',
+                url: "/pie_chart_data", // Replace with the correct server endpoint URL for pie chart data
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log('파이 차트 데이터 로드 성공', response.pieData);
+                    var pieData = response.pieData; // 서버에서 받은 파이 차트 데이터
+                    showPieChart(pieData); // 파이 차트 시각화
+                },
+                error: function (request, status, error) {
+                    console.log('파이 차트 데이터 로드 에러', error);
+                }
+            });
+        });
+
+        //pieChart 시각화
+        function showPieChart(data) {
+            var pieChartCtx = document.getElementById('pieChart').getContext('2d');
+            pieChart = new Chart(pieChartCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['행복', '신남', '슬픔', '지루', '혐오', '분노', '고요', '편안'],
+                    datasets: [{
+                        label: 'Data',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)',
+                            'rgba(255, 0, 0, 0.5)',
+                            'rgba(0, 255, 0, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 0, 0, 1)',
+                            'rgba(0, 255, 0, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        // 마우스를 가져가면 백분율이 보임
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.label;
+                                    var percent = context.raw.toFixed(2);
+                                    return label + ': ' + percent + '%';
+                                }
+                            }
+                        }
+                        // 직접 차트 위에 백분율 표시
+                        //       datalabels: {
+                        //         anchor: 'end',
+                        //         align: 'start',
+                        //         font: {
+                        //           size: 12
+                        //         },
+                        //         formatter: function(context) {
+                        //           var percent = context.raw;
+                        //           return percent + '%';
+                        //         }
+                        //       }
+                    }
+                }
+            });
+
+            // Chart.register(ChartDataLabels);
+        }
+
+        //lineChart 시각화
+        var lineChartCanvas = document.getElementById('lineChart');
+
+        function showLineChartWithData(emotion, data, color) {
+            if (lineChart) {
+                lineChart.destroy();
+            }
+
+            lineChartCanvas.style.display = 'block'; // 차트 캔버스 표시
+
+            var lineChartCtx = lineChartCanvas.getContext('2d');
+            lineChart = new Chart(lineChartCtx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: totalConversations }, (_, index) => index + 1),
+                    datasets: [{
+                        label: emotion,
+                        data: data,
+                        backgroundColor: color + '0.5)',
+                        borderColor: color + '1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        },
+                        x: {
+                            offset: true,
+                            grace: '10%'
+                        }
+                    }
+                }
+            });
+        }
+
+        // 라인 차트 버튼 클릭 이벤트 처리
+        $('#happinessBtn').on('click', function () {
+            updateLineChart('행복', 'rgba(255, 99, 132, ');
+        });
+
+        $('#excitedBtn').on('click', function () {
+            updateLineChart('신남', 'rgba(54, 162, 235, ');
+        });
+
+        $('#sadnessBtn').on('click', function () {
+            updateLineChart('슬픔', 'rgba(255, 206, 86, ');
+        });
+
+        $('#boredBtn').on('click', function () {
+            updateLineChart('지루', 'rgba(75, 192, 192, ');
+        });
+
+        $('#disgustBtn').on('click', function () {
+            updateLineChart('혐오', 'rgba(153, 102, 255, ');
+        });
+
+        $('#angerBtn').on('click', function () {
+            updateLineChart('분노', 'rgba(255, 159, 64, ');
+        });
+
+        $('#calmBtn').on('click', function () {
+            updateLineChart('고요', 'rgba(255, 0, 0, ');
+        });
+
+        $('#comfortableBtn').on('click', function () {
+            updateLineChart('편안', 'rgba(0, 255, 0, ');
+        });
+        // 서버로 버튼 텍스트 전송 및 데이터 업데이트
+        function updateLineChart(emotion, color) {
+            $.ajax({
+                type: 'POST',
+                url: "/update_chart_data",
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({ emotion: emotion }),
+                success: function (response) {
+                    console.log('차트 데이터 업데이트 성공', response);
+                    var chartData = response.chart_data; // 서버에서 받은 차트 데이터
+                    showLineChartWithData(emotion, chartData, color); // 라인 차트 업데이트
+                },
+                error: function (request, status, error) {
+                    console.log('차트 데이터 업데이트 에러', error);
+                }
+            });
+        }
+
+        //Chatlog 시각화
+        var chatLogVisible = false;
+        var toggleButton = document.getElementById('toggleButton');
+        var chatLog = document.getElementById('chatLog');
+
+        function toggleChatLog() {
+            chatLogVisible = !chatLogVisible;
+
+            if (chatLogVisible) {
+                chatLog.style.display = "block";
+                toggleButton.textContent = "대화 로그 닫기";
+            } else {
+                chatLog.style.display = "none";
+                toggleButton.textContent = "대화 로그 열기";
+            }
+        }
+
+        function addChatMessage(message, isUser, date) {
+            var messageClass = isUser ? 'user-message' : 'bot-message';
+            var chatMessage = document.createElement('li');
+            chatMessage.classList.add(messageClass);
+            chatMessage.innerHTML = '<span style="display: flex; align-items: flex-end;">' + message + " " + '<span class="message-date" style="color:#cccccc; font-size:10px;">' + date + '</span></span>';
+
+            chatLog.appendChild(chatMessage);
+        }
+
+        $('#toggleButton').on('click', () => {
+            $.ajax({
+                type: 'GET',
+                url: "/admin_chatlog", // Replace with the correct server endpoint URL
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log('채팅로드성공');
+                    var chatLogData = response.chatLog; // Server-provided chat log data
+                    chatLog.innerHTML = ""; // Clear previous chat messages
+
+                    chatLogData.forEach(function (message) {
+                        var isUser = message.sender === "user";
+                        console.log(message.content, isUser)
+                        addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
+                    });
+
+                    toggleChatLog(); // Toggle the chat log visibility
+                },
+                error: function (request, status, error) {
+                    console.log('채팅 로드 에러', error);
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>

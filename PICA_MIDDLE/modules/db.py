@@ -129,6 +129,73 @@ def db_select_chatid(user_id):
         # 마지막 대화 기록만 반환
     return result[-1][0]
 
+
+# 대화로그 출력 함수 
+def db_select_log( user_id ):
+    result = None
+    with db.cursor() as cursor:
+            # 마지막 행의 accum_emotion 데이터 추출
+            query = f"SELECT question, answer, time FROM log WHERE user_id = {user_id}"
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+    return result
+
+
+# pieChart 데이터 함수
+def pieChart_data(user_id):
+    result = None
+    with db.cursor() as cursor:
+        # 마지막 행의 accum_emotion 데이터 추출
+        query = f"SELECT avg_happiness, avg_excited, avg_sadness, avg_bored, avg_disgust, avg_anger, avg_calm, avg_comfortable FROM accum_emotion WHERE user_id = {user_id}"
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+    # 백분율로 변환
+    # 정수로 변환하여 백분율로 계산
+    # print(result)
+    if result is None:
+        return []  # 빈 리스트 반환
+
+    # 각 열의 값을 숫자로 변환
+    values = [float(value) for value in result.values()]
+    total = sum(values)
+    percentages = [value * 100 / total for value in values]
+    # print(percentages)  # [0, 0, 0, 70, 0, 0, 5, 25]
+    return percentages
+
+
+# pieChart 데이터 함수
+def total_chat_count_data(user_id):
+    result = None
+    with db.cursor() as cursor:
+        # 마지막 행의 accum_emotion 데이터 추출
+        query = f"SELECT num_chat FROM accum_emotion WHERE user_id = {user_id}"
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+    return result
+
+
+# lineChart 데이터 함수
+def generate_chart_data(emotion, user_id):
+    emotion_list = {'행복':'happiness', '신남':'excited', '슬픔':'excited', '지루':'bored', '혐오':'disgust', '분노':'anger', '고요':'calm', '편안':'comfortable'}
+    emotion = emotion_list[emotion]
+    result = None
+    with db.cursor() as cursor:
+        # 마지막 행의 accum_emotion 데이터 추출
+        query = f"SELECT {emotion} FROM emotion WHERE user_id = {user_id}"
+        cursor.execute(query)
+        result = cursor.fetchall()
+
+    if result is None:
+        return []  # 빈 리스트 반환
+
+    # 각 열의 값을 숫자로 변환
+    values = [float(dic[emotion]) for dic in result]
+    return values
+
+
 if __name__ == "__main__":
     # db_insert("user", "name, password", "'test2', 456")
     # db_delete("user", 1)
