@@ -24,7 +24,12 @@
     <title>input</title>
 </head>
 <body>
+    
     {% include 'public/header.html'%}
+    <!-- 로딩 -->
+    <div id="loading" style="display: none;">
+        <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_p8bfn5to.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop  autoplay></lottie-player>
+    </div>
     <div class="reveal">
         <div class="slides">
             <section>
@@ -64,8 +69,8 @@
                     <div class="input input-group input-group-lg">
                         <label class="file-label"  for="sex">input sex</label>
                         <select name="sex" id="sex" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" >
-                            <option selected  value="male">남자</option>
-                            <option  value="female">여자</option>
+                            <option selected  value="man">남자</option>
+                            <option  value="girl">여자</option>
                         </select>
                     </div>
                 </div>
@@ -215,8 +220,7 @@
         let b_file = null
         // 버튼 이벤트
         button.addEventListener('click', ()=>{
-            window.location.assign("{{ url_for('make') }}")
-            /**if (!b_file || userID.value == '') {
+            if (!b_file || userID.value == '') {
                 alert('모두 기입해주세요!')
                 return null
             } else {
@@ -230,15 +234,16 @@
                     success: function(data){
                         const url = data['url']
                         console.log(url)
-                        fetch(url)
-                            .then((response) => window.location.assign("{{ url_for('make') }}"))
-                            .catch((error) =>  window.location.assign("{{ url_for('input') }}"));
+                        window.location.assign("{{ url_for('make') }}")
+                        //fetch(url)
+                        //    .then((response) => window.location.assign("{{ url_for('make') }}"))
+                        //    .catch((error) =>  window.location.assign("{{ url_for('input') }}"));
                     },
                     error: function(request, status, error){
                         console.log('업로드 에러~', error)
                     }
                 })
-            }**/
+            }
         })
     
         function DropFile(dropAreaId, fileListId) {

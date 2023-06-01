@@ -2,6 +2,31 @@
 <html lang="en">
 <head>
     <title>make</title>
+</head>
+<body>
+    {% include 'public/header.html'%}
+    <!-- 로딩 -->
+    <div id="loading" style="display: none;">
+        <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_p8bfn5to.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+    </div>
+    <section id="hero" class="d-flex align-items-center" style="height: 100vh;">
+        <div class="container">
+            <div class="contents">
+                <h1 style="display:block; margin: 30px; padding:30px;">캐릭터가 맘에 드신가요?</h1>
+                <div class="stable">
+                    <img src="" alt="" width="312vw" height="312vh"/>
+                    <!-- <img src="" alt="" width="312vw" height="312vh"/> -->
+                </div>
+                <div class="center-div">
+                    <!-- <button class="btn-get-started scrollto" style="margin: 10px; border:0px">재요청</button> -->
+                    <button onclick="re_req_stable()" class="btn-get-started scrollto" style="margin: 10px;">재요청</button>
+                    <button onclick="finish_req_stable()" class="btn-get-started scrollto" style="margin: 10px;">진행</button>
+                </div>
+            </div>
+          </div>
+      </section>
+
+    {% include 'public/footer.html'%}
     <style>
         .center-div {
             display: flex;
@@ -15,46 +40,72 @@
             align-items: center;
             flex-direction: column;
         }
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
     </style>
-</head>
-<body>
-    {% include 'public/header.html'%}
-
-    <section id="hero" class="d-flex align-items-center" style="height: 100vh;">
-        <div class="container">
-            <div class="contents">
-                <h1 style="display:block; margin: 30px; padding:30px;">캐릭터가 맘에 드신가요?</h1>
-                <div class="stable">
-                    <img src="" alt="" width="312vw" height="312vh"/>
-                </div>
-                <div class="center-div">
-                    <!-- <button class="btn-get-started scrollto" style="margin: 10px; border:0px">재요청</button> -->
-                    <a href="{{url_for('input')}}" class="btn-get-started scrollto" style="margin: 10px;">재요청</a>
-                    <a href="{{url_for('chatbot')}}" class="btn-get-started scrollto" style="margin: 10px;">진행</a>
-                </div>
-            </div>
-          </div>
-      </section>
-
-    {% include 'public/footer.html'%}
     <script>
-        /**const img = document.querySelector('.stable > img')
-        $(window).on('load', function () {
-            // default 이미지 삽입
+        function showLoading() {
+            $('#loading').show();
+            }
+            
+        function hideLoading() {
+            $('#loading').hide();
+            }
+    </script>
+    <script>
+        const img = document.querySelector('.stable > img')
+        $(window).on('load',function(){
+            img.src = "data:image/jpeg;base64,{{img}}"
+            setTimeout(() => console.log("get_img"), 2000);
+        })
+        function re_req_stable(){
+            showLoading()
             $.ajax({
-                url: "{{ url_for('get_img') }}",
+                url: "{{ url_for('re_req_stable') }}",
                 type: "GET",
                 success: function(data) {
-                    img.src = data['url']
-                    img.width = 500;
-                    img.height = 500;
+                    hideLoading()
+                    img.src = "data:image/jpeg;base64," + data["b_img"]
                 },
                 error: function(xhr) {
+                    hideLoading()
                     console.log("Error:", xhr.responseText);
-                    //window.location.assign("{{ url_for('input') }}")
+                    alert("이미지를 재요청하지 못하였습니다")
+                    window.location.assign("{{ url_for('make')}}")
                 }
             });
-        });**/
+        }
+        function finish_req_stable(){
+            showLoading()
+            $.ajax({
+                url: "{{ url_for('finish_req_stable') }}",
+                type: "GET",
+                success: function(data) {
+                    hideLoading()
+                    window.location.replace("{{ url_for('chatbot') }}")
+                },
+                error: function(xhr) {
+                    hideLoading()
+                    console.log("Error:", xhr.responseText);
+                    alert("이미지를 업로드 하지 못했습니다.")
+                    window.location.assign("{{ url_for('make')}}")
+                }
+            });
+        }
     </script>
 </body>
 </html>
