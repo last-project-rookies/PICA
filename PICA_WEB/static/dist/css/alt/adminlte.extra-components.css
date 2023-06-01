@@ -893,7 +893,6 @@
 .direct-chat-messages {
   -webkit-transform: translate(0, 0);
   transform: translate(0, 0);
-  height: 250px;
   overflow: auto;
   padding: 10px;
 }
