@@ -172,7 +172,7 @@ def get_total_conversations():
     data = {"user_id": user_id}
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/total_chat_count_data", json=data)
+        res = requests.post(f"http://{aws_addr}:3000/total_conversations", json=data)
         total_conversations = res.json.get('data')
     except Exception as e:
         print("num_chat data load error : ", e)
@@ -187,7 +187,7 @@ def update_chart_data():
     data = {"emotion": emotion, "user_id": user_id}
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/generate_chart_data", json=data)
+        res = requests.post(f"http://{aws_addr}:3000/update_chart_data", json=data)
         chart_data = res.json.get('data')
     except Exception as e:
         print("num_chat data load error : ", e)
@@ -202,7 +202,7 @@ def admin_chatlog():
     data = {"user_id": user_id}
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/db_select_log", json=data)
+        res = requests.post(f"http://{aws_addr}:3000/admin_chatlog", json=data)
         chat_log_db = res.json.get('data')
         chat_logs = []
         for chat in chat_log_db:
@@ -220,6 +220,18 @@ def admin_chatlog():
 
     return jsonify({'chatLog': chat_logs})
 
+# 감정 분석 대상 user_id 불러오기
+@app.route('/get_text', methods=['GET'])
+def get_text():
+    user_id = session["user_id"]
+    data = {"user_id": user_id}
+    try:
+        res = requests.post(f"http://{aws_addr}:3000/get_text", json=data)
+        text = res.json.get('data')
+    except Exception as e:
+        print("name data load error : ", e)
+
+    return jsonify(text["name"])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3333, debug=True)
