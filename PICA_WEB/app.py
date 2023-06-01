@@ -252,6 +252,7 @@ def update_chart_data():
     try:
         res = requests.post(f"http://{aws_addr}:3000/update_chart_data", json=data)
         chart_data = res.json().get("data")
+
     except Exception as e:
         print("num_chat data load error : ", e)
 
@@ -282,6 +283,18 @@ def admin_chatlog():
 
     return jsonify({"chatLog": chat_logs})
 
+# 감정 분석 대상 user_id 불러오기
+@app.route('/get_text', methods=['GET'])
+def get_text():
+    user_id = session["user_id"]
+    data = {"user_id": user_id}
+    try:
+        res = requests.post(f"http://{aws_addr}:3000/get_text", json=data)
+        text = res.json.get('data')
+    except Exception as e:
+        print("name data load error : ", e)
+
+    return jsonify(text["name"])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3333, debug=True)

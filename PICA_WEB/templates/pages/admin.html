@@ -76,6 +76,13 @@
             border-radius: 8px;
             padding: 8px;
         }
+
+        #userButton {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+        
     </style>
 </head>
 
@@ -95,7 +102,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">오늘 하루 감정 분석 결과</div>
+                        <div class="card-title">오늘 하루 <span id="emotionResult"></span>님 감정 분석 결과</div>
                         <div class="chart-container">
                             <canvas id="pieChart"></canvas>
                         </div>
@@ -124,8 +131,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">전체 대화 개수</div>
@@ -137,6 +142,9 @@
                     </div>
                 </div>
             </div>
+            <div class="center-div">
+                <button id="userButton">상담 요청 하기</button>
+            </div>
         </div>
     </div>
     {% include 'public/footer.html'%}
@@ -145,12 +153,46 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
+
+        // USER ID 불러오기
+        $(document).ready(function() {
+        // AJAX 요청
+        $.ajax({
+            url: '/get_text',
+            method: 'GET',
+            dataType: 'text',
+            success: function(response) {
+            // 요청이 성공하면 받아온 텍스트를 'emotionResult' id를 가진 요소에 설정
+            $('#emotionResult').text(response);
+            },
+            error: function(xhr, status, error) {
+            // 요청이 실패했을 때 처리할 코드
+            console.log('USER_ID 요청 실패:', error);
+            }
+        });
+        });
+
         $(window).on('load',async function(){
             await change_user()
             setTimeout(() => console.log("change_user"), 2000);
-        })
+            await $.ajax({
+              url: '/get_text',
+              method: 'GET',
+              dataType: 'text',
+              success: function(response) {
+              // 요청이 성공하면 받아온 텍스트를 'emotionResult' id를 가진 요소에 설정
+              $('#emotionResult').text(response);
+              },
+              error: function(xhr, status, error) {
+              // 요청이 실패했을 때 처리할 코드
+              console.log('USER_ID 요청 실패:', error);
+              }
+              });
+          });
+          })
         let selected_user = document.getElementById("user_select")
         console.log(selected_user.value)
+
         var pieChart;
         var lineChart;
         var totalConversations;

@@ -232,6 +232,16 @@ def generate_chart_data(emotion, user_id):
     values = [float(dic[0]) for dic in result]
     return values
 
+def db_select_last_userID():
+    result = None
+    with db.cursor() as cursor:
+        # 마지막 행의 accum_emotion 데이터 추출
+        query = f"select name from user ORDER BY id DESC LIMIT 1;"
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+    return result
+
 
 if __name__ == "__main__":
     # db_insert("user", "name, password", "'test2', 456")

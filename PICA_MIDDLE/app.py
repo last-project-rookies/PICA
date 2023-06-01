@@ -4,6 +4,7 @@ from modules.gpt.chat import gpt_call, setting
 from modules.gpt.summary import make_summary
 from modules.gpt.emotion import chat_emotion
 from modules.aws import AwsQuery
+
 from modules.db import (
     db_select_id,
     db_insert,
@@ -18,6 +19,7 @@ from modules.db import (
     generate_chart_data,
     db_select_user,
 )
+
 
 
 # 비동기 처리
@@ -326,6 +328,14 @@ def admin_chatlog():
     print(chat_log_db)
     return jsonify({"data": chat_log_db})
 
+
+# user_id 불러오기
+@app.route('/get_text', methods=['GET'])
+def get_text():
+    # 서버에서 가져올 텍스트를 이 부분에서 처리하고 가져오는 로직을 구현합니다.
+    text = db_select_last_userID()
+
+    return jsonify({'data':text})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000, debug=True)
