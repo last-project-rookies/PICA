@@ -1,7 +1,14 @@
 import pymysql
 
 # 데이터베이스 연결
-db = pymysql.connect(host="pica-database.coysatc2jipz.ap-northeast-2.rds.amazonaws.com",port=3306, user="root", password="12341234", charset="utf8", connect_timeout=31536000)
+db = pymysql.connect(
+    host="pica-database.coysatc2jipz.ap-northeast-2.rds.amazonaws.com",
+    port=3306,
+    user="root",
+    password="12341234",
+    charset="utf8",
+    connect_timeout=31536000,
+)
 
 # 커서 객체 생성
 cursor = db.cursor()
@@ -18,7 +25,8 @@ cursor.execute(sql)
 sql = """
     CREATE TABLE if not EXISTS user (
         id INT(11) NOT NULL AUTO_INCREMENT,
-        name VARCHAR(20) NOT NULL UNIQUE,
+        user_id VARCHAR(20) NOT NULL UNIQUE,
+        user_name VARCHAR(20) NOT NULL,
         PRIMARY KEY (id)
     );
 """

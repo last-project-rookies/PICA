@@ -1,14 +1,6 @@
 import pymysql
 
-# from modules.mariadb import db
-db = pymysql.connect(
-    host="pica-database.coysatc2jipz.ap-northeast-2.rds.amazonaws.com",
-    port=3306,
-    user="root",
-    db="pica",
-    password="12341234",
-    charset="utf8",
-)
+from modules.mariadb import db
 
 # 비동기 처리
 import asyncio
@@ -76,7 +68,7 @@ def db_select_mbti(id):
     return result[0]
 
 
-def db_select_id(name_value):
+def db_select_id(user_id):
     """
     - descript = user 테이블에서 id 고유값 조회시 사용
     - arg
@@ -84,7 +76,7 @@ def db_select_id(name_value):
     - return
         - result[0] : `int` = id 고유값
     """
-    sql = f"select id from user where name = '{name_value}';"
+    sql = f"select id from user where user_id = '{user_id}';"
     result = None
     with db.cursor() as cursor:
         cursor.execute(sql)
@@ -114,7 +106,7 @@ async def db_insert(table_name, values):
 
     """
     if table_name == "user":
-        sql = f"insert into {table_name}(name) values('{values}');"
+        sql = f"insert into {table_name}(user_id, user_name) values({values});"
     elif table_name == "url":
         sql = f"insert into {table_name}(url_fun, url_sad, url_angry, user_id) values({values});"
     elif table_name == "log":
@@ -231,16 +223,6 @@ def generate_chart_data(emotion, user_id):
     # generate_chart_data-values [0.9, 0.5, 0.9]
     values = [float(dic[0]) for dic in result]
     return values
-
-def db_select_last_userID():
-    result = None
-    with db.cursor() as cursor:
-        # 마지막 행의 accum_emotion 데이터 추출
-        query = f"select name from user ORDER BY id DESC LIMIT 1;"
-        cursor.execute(query)
-        result = cursor.fetchone()
-
-    return result
 
 
 if __name__ == "__main__":
