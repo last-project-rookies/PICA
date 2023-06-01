@@ -3,16 +3,17 @@
 <head>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <!-- 임시 css -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <!-- reveal.js -->
     <link rel="stylesheet" href="{{ url_for ('static', filename='slides/dist/reset.css')}}">
     <link rel="stylesheet" href="{{ url_for ('static', filename='slides/dist/reveal.css')}}">
-    <link rel="stylesheet" href="{{ url_for ('static', filename='slides/dist/theme/white.css')}}">
+    <!-- <link rel="stylesheet" href="{{ url_for ('static', filename='slides/dist/theme/white.css')}}"> -->
     <!-- Theme used for syntax highlighted code -->
     <link rel="stylesheet" href="{{ url_for ('static', filename='slides/plugin/highlight/monokai.css')}}">
+    
     
     {% with message = get_flashed_messages() %}
     {% if message %}
@@ -41,7 +42,7 @@
                             <img src="" alt="미리보기 이미지" class="preview" style="max-width: 100%; max-height:100%">
                         </div>
                         <div class="input">
-                            <label class="file-label" id="chooseLabel"  for="chooseFile">Choose File</label>
+                            <label class="file-label" id="chooseLabel"  for="chooseFile">파일 선택</label>
                             <input class="file" id="chooseFile" type="file" onchange="dropFile.handleFiles(this.files)"
                             accept="image/png, image/jpeg">
                         </div>
@@ -51,46 +52,79 @@
             <section>
                 <div class="contents">
                     <div class="input input-group input-group-lg">
-                        <h4 style="display:block; padding:15px;">아이디를 입력하세요</h4>
-                        <input class="form-control" id="userID"  type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg"/>
+                        <h4>아이디를 입력하세요</h4>
+                        <input class="form-control" id="userID"  type="text"/>
                     </div>
                 </div>
             </section>
             <section>
                 <div class="contents">
                     <div class="input input-group input-group-lg">
-                        <label class="file-label"  for="nickname">input nickname</label>
-                        <input class="form-control" id="nickname"  type="text" />
+                        <h4>이름을 입력하세요</h4>
+                        <input class="form-control" id="username"  type="text"/>
                     </div>
                 </div>
             </section>
             <section>
                 <div class="contents">
                     <div class="input input-group input-group-lg">
-                        <label class="file-label"  for="sex">input sex</label>
-                        <select name="sex" id="sex" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" >
-                            <option selected  value="man">남자</option>
-                            <option  value="girl">여자</option>
-                        </select>
+                        <h4>가상인물의 이름을 입력해주세요</h4>
+                        <input class="form-control" id="nickname"  type="text"/>
                     </div>
                 </div>
             </section>
             <section>
                 <div class="contents">
                     <div class="input input-group input-group-lg">
-                        <label class="file-label"  for="face">input face</label>
-                        <select name="face" id="face" class="form-select form-select-lg mb-3" aria-label=".form-select-lg" >
+                        <h4>가상인물의 성별을 입력해주세요</h4>
+                        <!-- <select name="sex" id="sex" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" >
+                            <option selected  value="male">남자</option>
+                            <option  value="female">여자</option>
+                        </select> -->
+                    </div>
+                    <div class="virtual-radio">
+                        <input class="input-hidden" type="radio" name="sex" value="man" id="male">
+                        <label class="virtual-setting" for="male">
+                            <img src="static/assets/img/male.png"/>
+                        </label>
+                        <input class="input-hidden"type="radio" name="sex" value="girl" id="female">
+                        <label class="virtual-setting" for="female">
+                            <img src="static/assets/img/female.png"/>
+                        </label>
+
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="contents">
+                    <div class="input input-group input-group-lg">
+                        <h4>가상인물의 얼굴상을 입력해주세요</h4>
+                        <!-- <select name="face" id="face" class="form-select form-select-lg mb-3" aria-label=".form-select-lg" >
                             <option selected  value="cat">고양이상</option>
                             <option  value="dog">강아지상</option>
-                        </select>
+                        </select> -->
+                        <!-- <select name="sex" id="sex" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" >
+                            <option selected  value="male">남자</option>
+                            <option  value="female">여자</option>
+                        </select> -->
+                    </div>
+                    <div class="virtual-radio">
+                        <input class="input-hidden" type="radio" name="mood" value="cat" id="cat">
+                        <label class="virtual-setting" for="cat">
+                            <img src="static/assets/img/cat.png"/>
+                        </label>
+                        <input class="input-hidden"type="radio" name="mood" value="dog" id="dog">
+                        <label class="virtual-setting" for="dog">
+                            <img src="static/assets/img/dog.png"/>
+                        </label>
                     </div>
                 </div>
             </section>
             <section>
                 <div class="contents">
                     <div class="input input-group input-group-lg">
-                        <label class="file-label"  for="mbti">input mbti</label>
-                        <select name="mbti" id="mbti" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                        <h4>가상인물의 mbti를 입력해주세요</h4>
+                        <!-- <select name="mbti" id="mbti" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
                             <option selected value="INFP">INFP</option>
                             <option  value="INFJ">INFJ</option>
                             <option  value="INTP">INTP</option>
@@ -107,7 +141,47 @@
                             <option  value="ESFJ">ESFJ</option>
                             <option  value="ESTP">ESTP</option>
                             <option  value="ESTJ">ESTJ</option>
-                        </select>
+                        </select> -->
+                    </div>
+                    <div class="virtual-radio">
+                        <input class="input-hidden" type="radio" name="m" value="I" id="I">
+                        <label class="virtual-personal-setting" for="I">
+                            I
+                        </label>
+                        <input class="input-hidden"type="radio" name="m" value="E" id="E">
+                        <label class="virtual-personal-setting" for="E">
+                            E
+                        </label>
+                    </div>
+                    <div class="virtual-radio">
+                        <input class="input-hidden" type="radio" name="b" value="S" id="S">
+                        <label class="virtual-personal-setting" for="S">
+                            S
+                        </label>
+                        <input class="input-hidden"type="radio" name="b" value="N" id="N">
+                        <label class="virtual-personal-setting" for="N">
+                            N
+                        </label>
+                    </div>
+                    <div class="virtual-radio">
+                        <input class="input-hidden" type="radio" name="t" value="F" id="F">
+                        <label class="virtual-personal-setting" for="F">
+                            F
+                        </label>
+                        <input class="input-hidden"type="radio" name="t" value="T" id="T">
+                        <label class="virtual-personal-setting" for="T">
+                            T
+                        </label>
+                    </div>
+                    <div class="virtual-radio">
+                        <input class="input-hidden" type="radio" name="i" value="P" id="P">
+                        <label class="virtual-personal-setting" for="P">
+                            P
+                        </label>
+                        <input class="input-hidden"type="radio" name="i" value="J" id="J">
+                        <label class="virtual-personal-setting" for="J">
+                            J
+                        </label>
                     </div>
                 </div>
             </section>
@@ -180,7 +254,7 @@
             color: #ffff;
             background-color: #16df7e;
         }
-        .input > label:hover{
+        .input > label:not(.input-hidden)hover{
             background: #206bfb;
             box-shadow: 0 8px 28px rgba(32, 107, 251, 0.45);
         }
@@ -197,6 +271,68 @@
             background: #206bfb;
             box-shadow: 0 8px 28px rgba(32, 107, 251, 0.45);
         }
+        label.virtual-setting{
+            background-color: white;
+            margin: 0px 0px 0px 0px;
+            width: 30%;
+            height: 30%
+        }
+        .virtual-setting img{
+            width: 100px;
+            height: 100px;
+        }
+        .input-hidden {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .virtual-radio{
+            margin-top: 30px;
+            width: 700px;
+        }
+
+        input[type=radio]:hover + label>img {
+            border: 1px solid #fff;
+            box-shadow: 0 0 3px 3px #16df7e;
+        }
+
+        input[type=radio]:checked + label>img {
+            border: 1px solid #fff;
+            box-shadow: 0 0 3px 3px #16df7e;
+        }
+
+        .virtual-personal-setting{
+            font-size: 50px;
+            margin: 10px 50px;
+        }
+
+        .virtual-personal-setting:hover{
+            color:rgba(32, 107, 251, 0.45);
+        }
+
+        input[type=radio]:checked + label {
+            color:rgba(32, 107, 251, 0.45);
+        }
+
+        .contents .input input{
+            width: 500px;
+        }
+
+        .form-control{
+            text-align: center;
+            border: 0;
+            border-bottom: 2px solid gray;
+            margin-top: 30px;
+            width: 100px;
+        }
+
+        .form-control:focus{
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(to right, #11998e, #38ef7d);
+            border-image-slice: 1;
+        }
+
+
     </style>
     <script src="{{ url_for ('static', filename='slides/dist/reveal.js')}}"></script>
     <script>

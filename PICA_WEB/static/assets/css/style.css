@@ -73,7 +73,7 @@ h6 {
   background: #fff;
   transition: all 0.5s;
   z-index: 997;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 #header.header-scrolled {
@@ -82,7 +82,7 @@ h6 {
 }
 
 #header .logo {
-  font-size: 32px;
+  font-size: 18px;
   margin: 0;
   padding: 0;
   line-height: 1;
@@ -98,11 +98,11 @@ h6 {
   max-height: 40px;
 }
 
-@media (max-width: 991px) {
+/* @media (max-width: 991px) {
   #header {
     padding: 12px 0;
   }
-}
+} */
 
 /*--------------------------------------------------------------
 # Navigation Menu
@@ -362,7 +362,7 @@ h6 {
 
 #hero h1 {
   margin: 0;
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 700;
   line-height: 56px;
   color: #3e4450;
@@ -371,16 +371,16 @@ h6 {
 #hero h2 {
   color: #858ea1;
   margin: 10px 0 30px 0;
-  font-size: 24px;
+  font-size: 16px;
 }
 
 #hero .btn-get-started {
   font-family: "Raleway", sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 1px;
   display: inline-block;
-  padding: 8px 30px 10px 30px;
+  padding: 8px 10px 10px 10px;
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
@@ -390,10 +390,13 @@ h6 {
 .btn-get-started {
   font-family: "Raleway", sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 1px;
   display: inline-block;
-  padding: 0px 30px 0px 30px;
+  padding: 0px 15px 0px 15px;
+  margin: 0 auto;
+  width: 120px;
+  text-align: center;
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
@@ -432,12 +435,28 @@ h6 {
 }
 
 #hero .animated {
-  animation: up-down 2s ease-in-out infinite alternate-reverse both;
+  animation: up-down 1.5s ease-in-out infinite alternate-reverse both;
+}
+
+#hero .hero-img img {
+  margin-top: 30px;
+  width: 70%;
 }
 
 @media (max-width: 991px) {
   #hero {
     height: 100vh;
+  }
+
+  #hero h1 {
+    font-size: 24px;
+    line-height: 36px;
+  }
+
+  #hero h2 {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 30px;
   }
 
   #hero .animated {
@@ -449,8 +468,10 @@ h6 {
   }
 
   #hero .hero-img img {
-    width: 50%;
+    margin-top: 70px;
+    width: 30%;
   }
+
 }
 
 @media (max-width: 768px) {
@@ -470,13 +491,26 @@ h6 {
   }
 
   #hero .hero-img img {
-    width: 70%;
+    margin-top: 40px;
+    width: 30%;
   }
 }
 
 @media (max-width: 575px) {
   #hero .hero-img img {
-    width: 80%;
+    margin-top: 40px;
+    width: 30%;
+  }
+
+  #hero h1 {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  #hero h2 {
+    font-size: 14px;
+    line-height: 24px;
+    margin-bottom: 30px;
   }
 }
 

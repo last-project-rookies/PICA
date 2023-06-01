@@ -112,7 +112,7 @@ sql = """
         avg_sadness DECIMAL(5,3) NOT NULL DEFAULT 0,
         avg_bored DECIMAL(5,3) NOT NULL DEFAULT 0,
         avg_disgust DECIMAL(5,3) NOT NULL DEFAULT 0,
-        avg_avg_anger DECIMAL(5,3) NOT NULL DEFAULT 0,
+        avg_anger DECIMAL(5,3) NOT NULL DEFAULT 0,
         avg_calm DECIMAL(5,3) NOT NULL DEFAULT 0,
         avg_comfortable DECIMAL(5,3) NOT NULL DEFAULT 0,
         num_chat SMALLINT NOT NULL DEFAULT 0,
