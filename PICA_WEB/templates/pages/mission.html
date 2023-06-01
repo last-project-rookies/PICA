@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body style="height: 100%;">
+    {% include 'public/header.html'%}
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+        <title>게시판</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 20px;
+            }
+
+            .board-container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .board-title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                padding-top: 20px;
+                text-align: center;
+            }
+
+            .board-item {
+                border: 1px solid #16df72;
+                margin-bottom: 20px;
+                padding: 25px;
+                border-radius: 5px;
+            }
+
+            .board-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .board-item-title {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .board-item-content {
+                font-size: 14px;
+                color: #6c757d;
+            }
+
+            .board-item-meta {
+                font-size: 12px;
+                color: #6c757d;
+            }
+
+            .progress-container {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                margin-bottom: 20px;
+            }
+
+            .progress-label {
+                margin-right: 10px;
+            }
+
+            .progress-bar {
+                width: 200px;
+                height: 20px;
+                background-color: #f3f3f3;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            .progress-bar-fill {
+                height: 100%;
+                background-color: #16df72;
+                transition: width 0.5s;
+            }
+
+            .comment-section {
+                margin-top: 20px;
+                margin-bottom: 0px;
+                border-top: 1px solid #16df72;
+                padding-top: 10px;
+            }
+
+            .comment-item {
+                display: flex;
+                margin-bottom: 10px;
+            }
+
+            .comment-item-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                overflow: hidden;
+                margin-right: 10px;
+            }
+
+            .comment-item-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .comment-item-content {
+                font-size: 14px;
+                color: #333;
+                margin-top: 4px;
+            }
+
+            .like-section {
+                display: flex;
+                align-items: center;
+                margin-top: 10px;
+            }
+
+            .like-button {
+                display: inline-flex;
+                align-items: center;
+                padding: 5px 10px;
+                border-radius: 20px;
+                background-color: #f2f3f5;
+                color: #333;
+                font-size: 12px;
+                cursor: pointer;
+            }
+
+            .like-button:hover {
+                background-color: #e0e0e0;
+            }
+
+            .like-icon {
+                font-size: 12px;
+                margin-right: 5px;
+            }
+
+            #chatBtn {
+                background-color: #16df7e;
+                color: #ffffff;
+                border-color: #cccccc;
+                margin-bottom: 20px;
+                font-size: 18px;
+                font-weight: bold;
+                padding: 10px 20px;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <div class="container" style="margin-bottom:80px;">
+            {% include 'public/header.html'%}
+            <header id="header" class="fixed-top" style="background-color: #16df7e;">
+                <div class="container d-flex align-items-center justify-content-between">
+
+                    <a class="logo" href="{{url_for('home')}}" style="color: #ffff;">PICA</a>
+                    <!-- Uncomment below if you prefer to use an image logo -->
+                    <!-- <a href="index.html" class="logo"><img src="static/assets/img/logo.png" alt="" class="img-fluid"></a>-->
+                    <nav id="navbar" class="navbar">
+                        <ul>
+                            <li><button class="btn-get-started scrollto" id="chatBtn" onclick="chat_btn()">채팅창</button></li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+        </div>
+        <script>
+            function chat_btn(){
+                window.location.replace("{{ url_for('chatbot') }}")
+            }
+        </script>
+        <div class="container board-container">
+            <div class="board-title">게시판</div>
+            <div class="progress-container">
+                <div class="progress-label">미션 진행도:</div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: 50%;"></div>
+                </div>
+            </div>
+
+            <div class="board-item">
+                <div class="board-item-title">게시글 제목 1</div>
+                <div class="board-item-content">게시글 내용입니다. 이곳에 게시글의 요약이 들어갈 수 있습니다.</div>
+                <div class="board-item-meta">작성자 | 작성일시</div>
+                <div class="comment-section">
+                    <div class="comment-item">
+                        <div class="comment-item-avatar">
+                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                        </div>
+                        <div class="comment-item-content">댓글 내용 1</div>
+                    </div>
+                    <div class="comment-item">
+                        <div class="comment-item-avatar">
+                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                        </div>
+                        <div class="comment-item-content">댓글 내용 2</div>
+                    </div>
+                    <div class="comment-item">
+                        <div class="comment-item-avatar">
+                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                        </div>
+                        <div class="comment-item-content">댓글 내용 3</div>
+
+                    </div>
+                    <div class="like-section">
+                        <div class="like-button">
+                            <i class="fas fa-heart like-icon"></i> 좋아요
+                        </div>
+                        <div class="like-button">
+                            <i class="fas fa-comment like-icon"></i> 댓글 달기
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="board-item">
+                <div class="board-item-title">게시글 제목 2</div>
+                <div class="board-item-content">게시글 내용입니다. 이곳에 게시글의 요약이 들어갈 수 있습니다.</div>
+                <div class="board-item-meta">작성자 | 작성일시</div>
+                <div class="comment-section">
+                    <div class="comment-item">
+                        <div class="comment-item-avatar">
+                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                        </div>
+                        <div class="comment-item-content">댓글 내용 4</div>
+                    </div>
+                    <div class="comment-item">
+                        <div class="comment-item-avatar">
+                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                        </div>
+                        <div class="comment-item-content">댓글 내용 5</div>
+                    </div>
+                    <div class="like-section">
+                        <div class="like-button">
+                            <i class="fas fa-heart like-icon"></i> 좋아요
+                        </div>
+                        <div class="like-button">
+                            <i class="fas fa-comment like-icon"></i> 댓글 달기
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="board-item" style="margin-bottom: 20px;">
+                <div class="board-item-title">게시글 제목 3</div>
+                <div class="board-item-content">게시글 내용입니다. 이곳에 게시글의 요약이 들어갈 수 있습니다.</div>
+                <div class="board-item-meta">작성자 | 작성일시</div>
+                <div class="comment-section">
+                    <div class="comment-item">
+                        <div class="comment-item-avatar">
+                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                        </div>
+                        <div class="comment-item-content">댓글 내용 6</div>
+                    </div>
+                    <div class="like-section">
+                        <div class="like-button">
+                            <i class="fas fa-heart like-icon"></i> 좋아요
+                        </div>
+                        <div class="like-button">
+                            <i class="fas fa-comment like-icon"></i> 댓글 달기
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    {% include 'public/footer.html'%}
+</html>
