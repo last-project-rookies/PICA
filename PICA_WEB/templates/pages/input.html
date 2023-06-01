@@ -82,7 +82,7 @@
                             <option  value="female">여자</option>
                         </select> -->
                     </div>
-                    <div class="virtual-radio">
+                    <div class="virtual-radio" id="sex">
                         <input class="input-hidden" type="radio" name="sex" value="man" id="male">
                         <label class="virtual-setting" for="male">
                             <img src="static/assets/img/male.png"/>
@@ -348,15 +348,26 @@
     </script>
     <script>
         const button = document.getElementById("uploadFile")
-        const userID = document.getElementById("userID")
-        const nickname = document.getElementById("nickname")
-        const sex = document.getElementById("sex")
-        const face = document.getElementById("face")
-        const mbti = document.getElementById("mbti")
 
         let b_file = null
         // 버튼 이벤트
         button.addEventListener('click', ()=>{
+            const userID = document.getElementById("userID")
+            const username = document.getElementById("username")
+            const nickname = document.getElementById("nickname")
+            const sex = $("input[name=sex]:checked").val();
+            const face = $("input[name=mood]:checked").val();
+            const m = $("input[name=m]:checked").val();
+            const b = $("input[name=b]:checked").val();
+            const t = $("input[name=t]:checked").val();
+            const i = $("input[name=i]:checked").val();
+            console.log(userID.value)
+            console.log(username.value)
+            console.log(nickname.value)
+            console.log(sex)
+            console.log(face)
+            console.log(m+b+t+i)
+
             if (!b_file || userID.value == '') {
                 alert('모두 기입해주세요!')
                 return null
@@ -365,7 +376,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '{{url_for("req_stable")}}',
-                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value, "sex":sex.value, "face":face.value, "mbti": mbti.value}),
+                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "user_name":username.value,"nickname": nickname.value, "sex":sex, "face":face, "mbti": m+b+t+i}),
                     dataType: "JSON",
                     contentType: "application/json",  //"multipart/form-data",
                     success: function(data){
