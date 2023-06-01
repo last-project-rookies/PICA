@@ -598,7 +598,7 @@ progress {
 }
 
 .img-fluid {
-  max-width: 100%;
+  max-width: 70%;
   height: auto;
 }
 
@@ -1988,6 +1988,7 @@ progress {
   margin-top: 0.25rem;
   font-size: 0.875em;
   color: #6c757d;
+  
 }
 
 .form-control {
@@ -1998,7 +1999,7 @@ progress {
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
-  background-color: #fff;
+  background-color: #000;
   background-clip: padding-box;
   border: 1px solid #ced4da;
   -webkit-appearance: none;
