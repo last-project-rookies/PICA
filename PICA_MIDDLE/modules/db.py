@@ -37,6 +37,20 @@ def db_select_url(id):
         result = cursor.fetchone()
     return result
 
+def db_select_mbti(id):
+    """
+    - descript = db에서 url 조회시 사용
+    - arg
+        - id : `int` = user테이블에서 고유 번호
+    - return
+        - result : `tuple` = (id, mbti, face, sex, nickname, user_id)
+    """
+    sql = f"select mbti from vir_character where user_id = {id};"
+    result = None
+    with db.cursor() as cursor:
+        cursor.execute(sql)
+        result = cursor.fetchone()
+    return result[0]
 
 def db_select_id(name_value):
     """
@@ -60,6 +74,19 @@ async def db_insert(table_name, values):
     - arg
         - table_name : `string` = user테이블 name 컬럼(아이디)
         - values : `int | string` = 데이터
+        
+        CREATE TABLE if not EXISTS vir_character (
+        id INT(11) NOT NULL AUTO_INCREMENT,
+        mbti VARCHAR(4) NOT NULL,
+        face TINYINT(1) NOT NULL,
+        sex TINYINT(1) NOT NULL,
+        nickname VARCHAR(20) NOT NULL,
+        user_id INT(11) NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES user(id)
+        ON DELETE CASCADE
+    );
+    
     """
     if table_name == "user":
         sql = f"insert into {table_name}(name) values('{values}');"
@@ -69,7 +96,9 @@ async def db_insert(table_name, values):
         sql = f"insert into {table_name}(question, answer, a_status, video_url, user_id, time) values({values});"
     elif table_name == "accum_emotion":
         sql = f"insert into {table_name}(user_id) values({values});"
-
+    elif table_name == "vir_character":
+        sql = f"insert into {table_name}(mbti, face, sex, nickname, user_id) values({values});"
+        
     with db.cursor() as cursor:
         cursor.execute(sql)
     db.commit()

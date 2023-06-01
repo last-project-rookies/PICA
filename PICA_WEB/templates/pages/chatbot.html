@@ -142,23 +142,11 @@
         }
     </style>
     <script>
-        const img = document.querySelector('.video-container > center > img')
-        $(window).on('load', function () {
-            // default 이미지 삽입
-            $.ajax({
-                url: "{{ url_for('get_img') }}",
-                type: "GET",
-                success: function(data) {
-                    img.src = data['url']
-                    img.width = 500;
-                    img.height = 500;
-                },
-                error: function(xhr) {
-                    console.log("Error:", xhr.responseText);
-                    //window.location.assign("{{ url_for('input') }}")
-                }
-            });
-        });
+        const img = document.querySelector('.center-div > img')
+        $(window).on('load',function(){
+            img.src = "data:image/jpeg;base64,{{img}}"
+            setTimeout(() => console.log("get_img"), 2000);
+        })
         function logout_btn(){
             window.location.replace("{{ url_for('home')}}")
             $.ajax({
