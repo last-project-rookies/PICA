@@ -64,6 +64,10 @@ def admin():
         users=user_table,
     )
 
+# 미션 페이지
+@app.route("/mission")
+def mission():
+    return render_template("pages/mission.html")
 
 #################################################### 로직
 
