@@ -14,8 +14,7 @@ cursor.execute(sql)
 sql = "USE pica;"
 cursor.execute(sql)
 
-# 테이블 생성
-# password INT(11) NOT NULL,
+# user 테이블 생성
 sql = """
     CREATE TABLE if not EXISTS user (
         id INT(11) NOT NULL AUTO_INCREMENT,
@@ -24,6 +23,8 @@ sql = """
     );
 """
 cursor.execute(sql)
+
+# url 테이블 생성
 sql = """
     CREATE TABLE if not EXISTS url (
         id INT(11) NOT NULL AUTO_INCREMENT,
@@ -37,7 +38,8 @@ sql = """
     );
 """
 cursor.execute(sql)
-# log -> 영상 url 세팅
+
+# log 테이블 생성
 sql = """
     CREATE TABLE if not EXISTS log (
         id INT(11) NOT NULL AUTO_INCREMENT,
@@ -53,6 +55,8 @@ sql = """
     );
 """
 cursor.execute(sql)
+
+# emotion 테이블 생성 (감정 분석 로그)
 sql = """
     CREATE TABLE if not EXISTS emotion (
         id INT(11) NOT NULL AUTO_INCREMENT,
@@ -74,6 +78,8 @@ sql = """
     );
 """
 cursor.execute(sql)
+
+# vir_character 테이블 생성 (캐릭터 정보)
 sql = """
     CREATE TABLE if not EXISTS vir_character (
         id INT(11) NOT NULL AUTO_INCREMENT,
@@ -88,6 +94,8 @@ sql = """
     );
 """
 cursor.execute(sql)
+
+# accum_emotion 테이블 생성(감정분석 누적값)
 sql = """
     CREATE TABLE if not EXISTS accum_emotion (
         id INT(11) NOT NULL AUTO_INCREMENT,
@@ -115,7 +123,9 @@ sql = """
     );
 """
 cursor.execute(sql)
-cursor.close()
-# 연결 종료
 
+# cursor 닫기
+cursor.close()
+
+# 연결 종료
 # db.close()

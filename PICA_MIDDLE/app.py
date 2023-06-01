@@ -4,7 +4,8 @@ from modules.gpt.chat import gpt_call, setting
 from modules.gpt.summary import make_summary
 from modules.gpt.emotion import chat_emotion
 from modules.aws import AwsQuery
-from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log, db_select_chatid
+from modules.db import db_select_id, db_insert, db_delete, db_select_url, db_select_log, db_select_chatid, db_select_mbti, db_select_log, pieChart_data, total_chat_count_data, generate_chart_data 
+
 
 # 비동기 처리
 import asyncio
@@ -21,6 +22,7 @@ import shutil
 from datetime import datetime
 from pytz import timezone
 
+
 # 스레드 처리 세팅
 def async_action(f):
     @wraps(f)
@@ -31,16 +33,16 @@ def async_action(f):
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_MIDDLE"
 aws = AwsQuery()
+conversation, memory_vectorstore, static_vectorstore = None, None, None
 
-# get_img 요청 처리
-@app.route("/get_img", methods=["GET", "POST"])
-def get_img():
-    data = request.get_json()
-    user_id = data.get("user_id")
-    # db에서 cloudflont url 가져오기
-    urls = db_select_url(db_select_id(user_id))
-    return jsonify({"url": urls[1]})
-
+face_compile={
+    "dog":0,
+    "cat":1
+}
+sex_compile= {
+    "man":0,
+    "girl":1
+}
 
 # delete_img 요청 처리
 @app.route("/delete_img", methods=["GET", "POST"])
@@ -51,7 +53,7 @@ def delete_img():
     nickname = data.get("nickname")
     filename = data.get("filename")
     # aws s3 데이터 삭제
-    th_aws_delete = threading.Thread(target=aws.s3_delete, args=(user_id, nickname, filename))
+    th_aws_delete = threading.Thread(target=aws.s3_delete, args=(user_id, nickname))
     th_aws_delete.start()
     th_aws_delete.join()
     # db & session 삭제
@@ -71,57 +73,103 @@ def req_stable():
     b_img = data.get("b_img")
     user_id = data.get("user_id")
     nickname = data.get("nickname")
-    fun_url = None
+    sex = data.get("sex")
+    face = data.get("face")
+    mbti = data.get("mbti")
+
+    # 기본 이미지 
+    base_data = None
+    
     try:
-        # 2. 스테이블 디퓨전 서버에 POST 전송
-        # # 2. 스테이블 디퓨전 서버에 POST 전송
-        # res = requests.post(
-        #     "http://54.248.40.115:8080/img2img",
-        #     json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}"}),
-        # )
-        # print(res.status_code)
-
-        # res_text = res.json()
-        # fun_img = json.loads(res_text).get("img_name")
-        # sad_img = fun_img.replace('_fun','_sad')
-        # angry_img = fun_img.replace('_fun', '_angry')
-        # # 3. url 생성
-        # fun_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{fun_img}"
-        # sad_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{sad_img}"
-        # angry_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/{angry_img}"
-
-        # 임시 url
-        fun_url = (
-            aws.CLOUD_FLONT_CDN
-            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # 2. 스테이블 디퓨전 서버에 POST 전송 "face_id":face,
+        res = requests.post(
+            "http://54.248.40.115:8080/img2img",
+            json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}","sex":sex}),
         )
-        sad_url = (
-            aws.CLOUD_FLONT_CDN
-            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        )        
-        angry_url = (
-            aws.CLOUD_FLONT_CDN
-            + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        )
+        print(res.status_code)
+
+        res_text = res.json()
+        base_data = json.loads(res_text).get("base_data")
         
-        # 4. db- user, url 테이블 삽입
-        print(fun_url)
+        # # 임시 url
+        # fun_url = (
+        #     aws.CLOUD_FLONT_CDN
+        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # )
+        # sad_url = (
+        #     aws.CLOUD_FLONT_CDN
+        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # )        
+        # angry_url = (
+        #     aws.CLOUD_FLONT_CDN
+        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
+        # )
+        
+        
+        # 4. db- user 테이블 삽입
         th_user = threading.Thread(target=db_insert,args=("user", user_id))
         th_user.start()
         th_user.join()
         id_value = db_select_id(user_id)
+        th_user = threading.Thread(target=db_insert,args=("vir_character", f" '{mbti}', {face_compile[face]}, {sex_compile[sex]}, '{nickname}', {id_value}"))
+        th_user.start()
+        th_user.join()
         th_user = threading.Thread(target=db_insert,args=("accum_emotion", id_value))
         th_user.start()
         th_user.join()
-        th_url = threading.Thread(target=db_insert,args=("url", f"'{fun_url}', '{sad_url}', '{angry_url}', {id_value}"))
-        th_url.start()
-        th_url.join()
         
     except Exception as e:
         print("request error : ", e)
 
     # 웹에 전달
-    return jsonify({"url": fun_url})
+    return jsonify({"base_data": base_data})
+
+# re_req_stable 재요청 처리
+@app.route("/re_req_stable", methods=["GET", "POST"])
+def re_req_stable():
+    base_data = None
+    # 2. 스테이블 디퓨전 서버에 POST 전송
+    try :
+        res = requests.post(
+            "http://54.248.40.115:8080/reset2img"
+        )
+        res_text = res.json()
+        base_data = json.loads(res_text).get("base_data")
+    except Exception as e:
+        print("request error : ", e)
+
+    return jsonify({"base_data":base_data})
+
+# finish_req_stable 결정된 stable 이미지 업로드
+@app.route("/finish_req_stable", methods=["GET", "POST"])
+def finish_req_stable():
+    print("!!!!!!!!!!!!! finish_req_stable")
+    # 데이터 받아오기
+    data = request.get_json()
+    b_img = data.get("b_img")
+    user_id = data.get("user_id")
+    nickname = data.get("nickname")
+    
+    id_value = db_select_id(user_id)
+    mbti = db_select_mbti(id_value)
+    
+    # aws s3 이미지 업로드
+    th_aws_img_upload = threading.Thread(target=aws.s3_img_upload, args=(user_id, nickname, b_img))
+    th_aws_img_upload.start()
+    th_aws_img_upload.join()
+    # db - url 테이블 삽입
+    fun_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/fun.jpg"
+    sad_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/sad.jpg"
+    angry_url = aws.CLOUD_FLONT_CDN + f"/{user_id}/{nickname}/angry.jpg"
+    print(fun_url)
+    th_url = threading.Thread(target=db_insert,args=("url", f"'{fun_url}', '{sad_url}', '{angry_url}', {id_value}"))
+    th_url.start()
+    th_url.join()
+    
+    # 캐릭터 대화 세팅
+    global conversation, memory_vectorstore, static_vectorstore
+    conversation, memory_vectorstore, static_vectorstore = setting(user_get=user_id, name_get=nickname, mbti_get=mbti, age_get="22", user_id_get=user_id)
+    return jsonify({})
 
 
 # send_message 요청 처리
@@ -135,8 +183,8 @@ def send_message():
         time_str = time.strftime("%Y-%m-%d %H:%M:%S")
 
         # 1. lang_chain
-        # setting -> 유저 정보 -> 로그인 할떄 세팅
-        conversation, memory_vectorstore, static_vectorstore = setting(user_get="이건우", name_get="이루다", mbti_get="ISTJ", age_get="22", user_id_get=user_id)
+        # setting -> 유저 정보 -> 캐릭터 생성할 때 세팅
+        global conversation, memory_vectorstore, static_vectorstore
         chat = asyncio.run(gpt_call(voice, conversation, memory_vectorstore, static_vectorstore))
 
         # 2. emotion 분석
@@ -172,6 +220,7 @@ def send_message():
 
     return jsonify({"msg": chat, "video_url": video_url})
 
+# 요약본 S3 업로드 (비동기처리)
 @async_action
 async def log_summary_upload(user_id):
     chat_log = db_select_log()
@@ -182,7 +231,7 @@ async def log_summary_upload(user_id):
     aws.s3_log_upload(user_id, data=chat_summary)
     
 
-
+# 로그아웃 로직
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
     data = request.get_json()
@@ -196,7 +245,42 @@ def logout():
         
     return jsonify({})
 
+# 파이차트 데이터 
+@app.route("/pie_chart_data", methods=["GET"])
+def pie_chart_data():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    pie_data = pieChart_data(user_id)
+    return jsonify({'data':pie_data})
+
+# 전체 대화 개수 
+@app.route('/total_conversations', methods=['GET'])
+def get_total_conversations():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    total_conversations = total_chat_count_data(user_id)
+    return jsonify({'data':total_conversations})
+
+# 선차트 데이터(감정별 데이터) 
+@app.route('/update_chart_data', methods=['POST'])
+def update_chart_data():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    emotion = data.get("emotion")
+    chart_data = generate_chart_data(emotion, user_id)
+
+    return jsonify({'data':chart_data})
+
+
+# 대화 로그 
+@app.route("/admin_chatlog", methods=["GET"])
+def admin_chatlog():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    chat_log_db = db_select_log(user_id)
+
+    return jsonify({'data':chat_log_db})
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=3000, debug=True)
     # read_summary()
-# waitress-serve --port=3000 --channel-timeout=30 app:app
