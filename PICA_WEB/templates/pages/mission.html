@@ -40,10 +40,21 @@
                 margin-bottom: 0;
             }
 
-            .board-item-title {
+            /* .board-item-title {
                 font-size: 18px;
                 font-weight: bold;
                 margin-bottom: 5px;
+            } */
+
+            .board-title {
+                font-size: 32px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                padding-top: 20px;
+                text-align: center;
+                color: #333333; /* Custom color */
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Adding a text shadow */
+                /* You can add more custom styles to further enhance the appearance */
             }
 
             .board-item-content {
@@ -73,6 +84,7 @@
                 background-color: #f3f3f3;
                 border-radius: 10px;
                 overflow: hidden;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             }
 
             .progress-bar-fill {
@@ -175,34 +187,37 @@
             }
         </script>
         <div class="container board-container">
-            <div class="board-title">게시판</div>
+            <div class="board-title">미션 게시판</div>
             <div class="progress-container">
-                <div class="progress-label">미션 진행도:</div>
+                <div class="progress-label">나의 미션 진행율:</div>
                 <div class="progress-bar">
-                    <div class="progress-bar-fill" style="width: 50%;"></div>
+                    <div class="progress-bar-fill" style="width: 70%;"></div>
                 </div>
             </div>
 
             <div class="board-item">
                 <div class="board-item-title">게시글 제목 1</div>
-                <div class="board-item-content">게시글 내용입니다. 이곳에 게시글의 요약이 들어갈 수 있습니다.</div>
+                <div class="board-item-content">
+                    <span>게시글 내용입니다. 이곳에 게시글의 요약이 들어갈 수 있습니다.</span>
+                    <img src="static/img/seoul_young_concert.png" alt="Avatar" style="max-width: 100%;">
+                </div>
                 <div class="board-item-meta">작성자 | 작성일시</div>
                 <div class="comment-section">
                     <div class="comment-item">
                         <div class="comment-item-avatar">
-                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                            <img src="static/img/1.png" alt="Avatar">
                         </div>
                         <div class="comment-item-content">댓글 내용 1</div>
                     </div>
                     <div class="comment-item">
                         <div class="comment-item-avatar">
-                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                            <img src="static/img/2.png" alt="Avatar">
                         </div>
                         <div class="comment-item-content">댓글 내용 2</div>
                     </div>
                     <div class="comment-item">
                         <div class="comment-item-avatar">
-                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                            <img src="static/img/3.png" alt="Avatar">
                         </div>
                         <div class="comment-item-content">댓글 내용 3</div>
 
@@ -225,13 +240,13 @@
                 <div class="comment-section">
                     <div class="comment-item">
                         <div class="comment-item-avatar">
-                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                            <img src="static/img/4.png" alt="Avatar">
                         </div>
                         <div class="comment-item-content">댓글 내용 4</div>
                     </div>
                     <div class="comment-item">
                         <div class="comment-item-avatar">
-                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                            <img src="static/img/5.png" alt="Avatar">
                         </div>
                         <div class="comment-item-content">댓글 내용 5</div>
                     </div>
@@ -252,7 +267,7 @@
                 <div class="comment-section">
                     <div class="comment-item">
                         <div class="comment-item-avatar">
-                            <img src="https://via.placeholder.com/30" alt="Avatar">
+                            <img src="static/img/6.png" alt="Avatar">
                         </div>
                         <div class="comment-item-content">댓글 내용 6</div>
                     </div>
