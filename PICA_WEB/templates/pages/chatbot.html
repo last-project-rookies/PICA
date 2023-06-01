@@ -6,12 +6,10 @@
 </head>
 <body>
     {% include 'public/header.html'%}
-    <header id="header" class="fixed-top" style="background-color: #16df7e;">
+    <!-- <header id="header" class="fixed-top" style="background-color: #16df7e;">
         <div class="container d-flex align-items-center justify-content-between">
     
             <a class="logo" href="{{url_for('home')}}" style="color: #ffff;">PICA</a>
-            <!-- Uncomment below if you prefer to use an image logo -->
-            <!-- <a href="index.html" class="logo"><img src="static/assets/img/logo.png" alt="" class="img-fluid"></a>-->
             <nav id="navbar" class="navbar">
                 <ul>
                     <li><button class="btn-get-started scrollto" id="delete_btn" onclick="delete_btn()"> 이미지 삭제 </button></li>
@@ -19,7 +17,7 @@
                 </ul>
             </nav>
         </div>
-    </header>
+    </header> -->
     <section id="hero" class="d-flex align-items-center" style="height: 100vh;">
         <div class="container">
                 <!-- Main content -->
@@ -28,9 +26,10 @@
                             <!-- Left col -->
                             <section class="col-lg-12 connectedSortable">
                                 <div class="content">
-                                    <h3 style="display:block; padding-bottom:10px; text-align:center; min-width:100px">캐릭터 이름</h3>
+                                    <!-- <h5 style="display:block; padding-bottom:10px; text-align:center; min-width:100px">캐릭터 이름</h5> -->
                                     <div class="center-div">
-                                        <img src="static/assets/img/pica_img.png" width="210vw" height="210vh"/>
+                                        <img src="static/img/ai_img.png" style="width: 180px; height: 180px; border-radius:50%;"/>
+                                        <video></video>
                                     </div>
                                 </div>
                                 <!-- DIRECT CHAT -->
@@ -40,7 +39,36 @@
                                         <!-- Conversations are loaded here -->
                                         
                                         <div class="direct-chat-messages" id="chat_main_board">
-                                            
+                                           
+                                            <div class="direct-chat-msg">
+                                                <div class="direct-chat-infos clearfix">
+                                                    <!-- <span class="direct-chat-name float-left">김성언</span>
+                                                    <span class="direct-chat-timestamp float-right">14:48</span> -->
+                                                </div>
+                                                <!-- /.direct-chat-infos -->
+                                                <!-- <img class="direct-chat-img" src="../static/img/user_img.png"
+                                                    alt="message user image"> -->
+                                                <!-- /.direct-chat-img -->
+                                                <div class="direct-chat-text">
+                                                    안녕
+                                                </div>
+                                                <!-- /.direct-chat-text -->
+                                            </div>
+                                            <div class="direct-chat-msg right">
+                                                <div class="direct-chat-infos clearfix">
+                                                    <!-- <span class="direct-chat-name float-right">이루다</span>
+                                                    <span class="direct-chat-timestamp float-left">14:49</span> -->
+                                                </div>
+                                                <!-- /.direct-chat-infos -->
+                                                <img class="direct-chat-img" src="../static/img/ai_img.png"
+                                                    alt="message user image">
+                                                <!-- /.direct-chat-img -->
+                                                <div class="direct-chat-text">
+                                                    반가워!
+                                                </div>
+                                                <!-- /.direct-chat-text -->
+                                            </div>
+
                                         </div>
                                         <!--/.direct-chat-messages-->
         
@@ -58,11 +86,11 @@
                                         <div class="input-group">
                                             <!-- 채팅 입력 -->
                                             <!-- <button id="record" style="border: none; background-color: white; margin: 0px 2px;">녹음</button> -->
-                                            <button id='record' style="border: none; background-color: white; margin: 0px 2px;"  onClick="record()" > 녹음 </button>
-                                            <input id="chat_input" type="text" name="message" placeholder="Type Message ..." class="form-control">
+                                            <input id="chat_input" type="text" name="message" placeholder="" class="form-control">
+                                            <button id='record' style="border: none; background-color: white; padding-right: 10px; border-top: 1px solid #ced4da;"  onClick="record()" ><img id="record-img" src="static/assets/img/mic.png" width="20px"></button>
                                             <!-- 채팅 전송 이벤트 발생 버튼 -->
                                             <span id="chat_send" class="input-group-append ">
-                                                <button type="button" style='font-size: 16px; border: none;' >  ▷  </button>
+                                                <button type="button" style='border: none; background-color: #16df7e; padding-right: 20px; padding-left: 20px;' ><img src="static/assets/img/send-message.png" width="20px"></button> 
                                             </span>
                                         </div>
                                     </div>
@@ -114,20 +142,81 @@
             justify-content: center;
             align-items: center;
         }
+        
+        #hero{
+            padding-top: 45px;
+        }
+
+        section {
+            padding: 10px 0;
+            overflow: visible;
+        }
     
         .chat-container {
-        background-color: #f5f5f5;
-        border-radius: 5px;
-        padding: 10px;
-        max-width: 900px;
-        margin: 0 auto;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        min-height: 200px;
-        height: 40vh;
-        width: 65vw;
+            border-radius: 5px;
+            max-width: 900px;
+            margin: 0 auto;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            height: 55vh;
+            width: 65vw;
+            box-shadow: rgb(0 0 0 / 15%) 0px 10px 45px 5px;
+            border-radius: 25px;
         }
-        
+
+        .direct-chat-messages{
+            height: auto;
+        }
+
+        .input-group{
+            border-bottom-right-radius: 25px;
+            border-bottom-left-radius: 25px;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .card-footer {
+            padding: 0px;
+            margin: 0px;
+            border-bottom: 25px;
+            background-color: rgba(0,0,0,0);;
+        }
+
+        .form-control:focus{
+            border-color: #ced4da;
+        }
+
+        #chat_input{
+            border-left: 0px;
+            border-bottom: 0px;
+            border-right: 0px;
+            border-radius: 0px;
+            text-indent: 12px;
+        }
+
+        #chat_input:focus{
+            outline:none;
+        }
+
+        .direct-chat-text {
+            background-color: #96DBB4;
+            border: 1px solid #96DBB4;
+            margin-left: 30px;
+        }
+        .direct-chat-primary .right>.direct-chat-text {
+            background-color: #3CB371;
+            border-color: #3CB371;
+        }
+
+        .direct-chat-primary .right>.direct-chat-text::after, .direct-chat-primary .right>.direct-chat-text::before {
+            border-left-color: #3CB371;
+        }
+
+        .direct-chat-text::after, .direct-chat-text::before {
+            border-right-color: #96DBB4;
+        }
+
         /* On small screens, set height to 'auto' for sidenav and grid */
         @media screen and (max-width: 767px) {
         .sidenav {
@@ -143,10 +232,10 @@
     </style>
     <script>
         const img = document.querySelector('.center-div > img')
-        $(window).on('load',function(){
-            img.src = "data:image/jpeg;base64,{{img}}"
-            setTimeout(() => console.log("get_img"), 2000);
-        })
+        //$(window).on('load',function(){
+        //    img.src = "data:image/jpeg;base64,{{img}}"
+        //    setTimeout(() => console.log("get_img"), 2000);
+        //})
         function logout_btn(){
             window.location.replace("{{ url_for('home')}}")
             $.ajax({
@@ -177,7 +266,10 @@
         }
     </script>
     <script>
-        const video = document.querySelector('.video-container > center >  video');
+        
+        let startStop = true;
+        const video = document.querySelector('.center-div > video');
+
         video.style.display = "none"
         video.defaultPlaybackRate= 1.5
         window.SpeechRecognition =
@@ -199,28 +291,29 @@
                 } else {
                 interimTranscript += transcript;
                 }
+                $('#chat_input').val(interimTranscript)
             }
                 // 임시값 세팅
                 data = speechToText + interimTranscript
             });
         // 음성 인식 시작
-        let startStop = true
         function record(){
             const btn = document.getElementById('record')
             if (startStop) {
+                data = ""
+                $("#record-img")[0].src = "static/assets/img/on_mic.png"
+                console.log(1)
                 recognition.start()
                 startStop = false
-                btn.style.backgroundColor = 'red'
-                btn.style.color = 'white'
             }
             else {
+                $("#record-img")[0].src = "static/assets/img/mic.png"
                 recognition.stop()
                 startStop = true
-                btn.style.backgroundColor = ''
-                btn.style.color = ''
-                $('#chat_input').val(data)
-                sendMessage()
-                data = ""
+                if (data != ""){
+                    $('#chat_input').val(data)
+                    sendMessage()
+                }
             }
         }
         function sendMessage(){
@@ -236,7 +329,7 @@
                 dataType : 'JSON',
                 contentType: "application/json",
                 success: function(data){
-                    $('.video-container > center > img').remove('')
+                    $('.center-div > img').remove('')
                     console.log(data["video_url"])
                     video.style.display = ''
                     video.autoplay = true;
@@ -282,12 +375,12 @@
                 html = `
                 <div class="direct-chat-msg">
                     <div class="direct-chat-infos clearfix">
-                        <span class="direct-chat-name float-left">${name}</span>
-                        <span class="direct-chat-timestamp float-right">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span>
+                        <!-- <span class="direct-chat-name float-left">${name}</span>
+                        <span class="direct-chat-timestamp float-right">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span> -->
                     </div>
                     <!-- /.direct-chat-infos -->
-                    <img class="direct-chat-img" src="../static/img/user_img.png"
-                        alt="message user image">
+                    <!-- <img class="direct-chat-img" src="../static/img/user_img.png"
+                        alt="message user image"> -->
                     <!-- /.direct-chat-img -->
                     <div class="direct-chat-text">
                         ${msg}
@@ -305,8 +398,8 @@
                 html = `
                 <div class="direct-chat-msg right">
                     <div class="direct-chat-infos clearfix">
-                        <span class="direct-chat-name float-right">${name}</span>
-                        <span class="direct-chat-timestamp float-left">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span>
+                        <!-- <span class="direct-chat-name float-right">${name}</span>
+                        <span class="direct-chat-timestamp float-left">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span> -->
                     </div>
                     <!-- /.direct-chat-infos -->
                     <img class="direct-chat-img" src="../static/img/ai_img.png"
@@ -321,6 +414,7 @@
             $('#chat_main_board').append(html)
             // 화면 자동 스크롤 처리
             $('#chat_main_board').scrollTop($('#chat_main_board')[0].scrollHeight)
+            
         }
     </script>
 </body>
