@@ -68,6 +68,22 @@ def db_select_mbti(id):
     return result[0]
 
 
+def db_select_user_name(id):
+    """
+    - descript = db에서 url 조회시 사용
+    - arg
+        - id : `int` = user테이블에서 고유 번호
+    - return
+        - result : `tuple` = (id, mbti, face, sex, nickname, user_id)
+    """
+    sql = f"select user_name from user where id = {id};"
+    result = None
+    with db.cursor() as cursor:
+        cursor.execute(sql)
+        result = cursor.fetchone()
+    return result[0]
+
+
 def db_select_id(user_id):
     """
     - descript = user 테이블에서 id 고유값 조회시 사용

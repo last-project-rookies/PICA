@@ -54,9 +54,10 @@
 <body>
     {% include 'public/header.html'%}
     <!-- 로딩 -->
-    
+
     <div id="loading" style="display: none;">
         <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_p8bfn5to.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px"  loop  autoplay></lottie-player>
+
     </div>
     <section id="hero" class="d-flex align-items-center" style="height: 100vh;">
         <div class="container">
@@ -91,9 +92,9 @@
             img.src = "data:image/jpeg;base64,{{img}}"
             setTimeout(() => console.log("get_img"), 2000);
         })
-        function re_req_stable(){
+        async function re_req_stable(){
             showLoading()
-            $.ajax({
+            await $.ajax({
                 url: "{{ url_for('re_req_stable') }}",
                 type: "GET",
                 success: function(data) {
@@ -108,9 +109,9 @@
                 }
             });
         }
-        function finish_req_stable(){
+        async function finish_req_stable(){
             showLoading()
-            $.ajax({
+            await $.ajax({
                 url: "{{ url_for('finish_req_stable') }}",
                 type: "GET",
                 success: function(data) {
