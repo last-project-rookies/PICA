@@ -40,7 +40,7 @@
                                         
                                         <div class="direct-chat-messages" id="chat_main_board">
                                            
-                                            <div class="direct-chat-msg">
+                                            <div class="direct-chat-msg right">
                                                 <div class="direct-chat-infos clearfix">
                                                     <!-- <span class="direct-chat-name float-left">김성언</span>
                                                     <span class="direct-chat-timestamp float-right">14:48</span> -->
@@ -54,7 +54,7 @@
                                                 </div>
                                                 <!-- /.direct-chat-text -->
                                             </div>
-                                            <div class="direct-chat-msg right">
+                                            <div class="direct-chat-msg">
                                                 <div class="direct-chat-infos clearfix">
                                                     <!-- <span class="direct-chat-name float-right">이루다</span>
                                                     <span class="direct-chat-timestamp float-left">14:49</span> -->
@@ -64,7 +64,7 @@
                                                     alt="message user image">
                                                 <!-- /.direct-chat-img -->
                                                 <div class="direct-chat-text">
-                                                    반가워!
+                                                    안녕 난 이루다야. 반가워 내 mbti는 ENFP이고 영화보는 걸 좋아해 우리 재밌게 대화하자!
                                                 </div>
                                                 <!-- /.direct-chat-text -->
                                             </div>
@@ -90,7 +90,7 @@
                                             <button id='record' style="border: none; background-color: white; padding-right: 10px; border-top: 1px solid #ced4da;"  onClick="record()" ><img id="record-img" src="static/assets/img/mic.png" width="20px"></button>
                                             <!-- 채팅 전송 이벤트 발생 버튼 -->
                                             <span id="chat_send" class="input-group-append ">
-                                                <button type="button" style='border: none; background-color: #16df7e; padding-right: 20px; padding-left: 20px;' ><img src="static/assets/img/send-message.png" width="20px"></button> 
+                                                <button type="button" style='border: none; background-color: #22cc88; padding-right: 20px; padding-left: 20px;' ><img src="static/assets/img/send-message.png" width="20px"></button> 
                                             </span>
                                         </div>
                                     </div>
@@ -202,19 +202,40 @@
         .direct-chat-text {
             background-color: #96DBB4;
             border: 1px solid #96DBB4;
-            margin-left: 30px;
+            max-width: 300px;
+            float: left;
+            margin: 0 0 0 15px;
         }
+        
         .direct-chat-primary .right>.direct-chat-text {
-            background-color: #3CB371;
-            border-color: #3CB371;
+            background-color: #22cc88;
+            border-color: #22cc88;
+            float: right;
+            margin-right: 15px;
         }
 
         .direct-chat-primary .right>.direct-chat-text::after, .direct-chat-primary .right>.direct-chat-text::before {
-            border-left-color: #3CB371;
+            border-left-color: #22cc88;
         }
 
         .direct-chat-text::after, .direct-chat-text::before {
             border-right-color: #96DBB4;
+        }
+
+
+        @media (max-width: 767px){
+            .direct-chat-text {
+                max-width: 250px;
+            }
+            .chat-container.card.direct-chat.direct-chat-primary{
+                width: auto;
+            }
+        }
+
+        @media (max-width: 418px){
+            .direct-chat-text {
+                max-width: 200px;
+            }
         }
 
         /* On small screens, set height to 'auto' for sidenav and grid */
@@ -373,7 +394,7 @@
             if (dir == 'left') {
                 // 내가 보낸 메세지(질문)
                 html = `
-                <div class="direct-chat-msg">
+                <div class="direct-chat-msg right">
                     <div class="direct-chat-infos clearfix">
                         <!-- <span class="direct-chat-name float-left">${name}</span>
                         <span class="direct-chat-timestamp float-right">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span> -->
@@ -396,7 +417,7 @@
                 let minutes = today.getMinutes();  // 분
                 // 관리자가 보낸 메세지(답변)
                 html = `
-                <div class="direct-chat-msg right">
+                <div class="direct-chat-msg">
                     <div class="direct-chat-infos clearfix">
                         <!-- <span class="direct-chat-name float-right">${name}</span>
                         <span class="direct-chat-timestamp float-left">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span> -->
