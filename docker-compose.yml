@@ -1,21 +1,21 @@
 # 서비스, 컨테이너는 의존성 고려하여 순서대로 기술
 version: 'test'
 services:
-  # procy
-  procy:
-    build: 
-      context: PICA_PROCY_WEB
+  # # procy
+  # procy:
+  #   build: 
+  #     context: PICA_PROCY_WEB
     
-    ports:
-      - 80:80
+  #   ports:
+  #     - 80:80
     
-    restart: always
+  #   restart: always
 
-    depends_on:
-      - web
+  #   depends_on:
+  #     - web
 
-    networks:
-      - web_frontend_net
+  #   networks:
+  #     - web_frontend_net
 
   # backend
   web:
@@ -28,10 +28,10 @@ services:
     stdin_open: true
     stop_signal: SIGINT
     restart: always
-    # depends_on:
-    #   - middle
+    depends_on:
+      - middle
     networks:
-      - web_frontend_net
+      # - web_frontend_net
       - was_backend_net
 
 
@@ -54,7 +54,7 @@ services:
 # 네트워크
 networks:
   # 프론트 방향 네트워크
-  web_frontend_net:
+  # web_frontend_net:
   # 백엔드 방향 네트워크
   was_backend_net:
 
