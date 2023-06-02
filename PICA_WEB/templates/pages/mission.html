@@ -16,9 +16,6 @@
                 padding: 0;
                 margin: 0;
             }
-            body {
-                padding-top: 20px;
-            }
 
             .board-container {
                 max-width: 600px;
@@ -186,6 +183,15 @@
                 margin-right: 10px;
                 margin-bottom: 5px;
             }
+            .btn-get-started{
+                margin-right: 0px;
+                margin-left: 0px;
+                border-right-width: 0px;
+                border-top-width: 0px;
+                border-left-width: 0px;
+                border-bottom-width: 0px;
+                width: 100px;
+            }
         </style>
 
     </head>
@@ -195,14 +201,9 @@
             {% include 'public/header.html'%}
             <header id="header" class="fixed-top" style="background-color: #22cc88;">
                 <div class="container d-flex align-items-center justify-content-between">
-
                     <a class="logo" href="{{url_for('home')}}" style="color: #ffff;">PICA</a>
-                    <!-- Uncomment below if you prefer to use an image logo -->
-                    <!-- <a href="index.html" class="logo"><img src="static/assets/img/logo.png" alt="" class="img-fluid"></a>-->
-                    <nav id="navbar" class="navbar">
-                        <ul>
-                            <li><button class="btn-get-started" id="chatBtn" onclick="chat_btn()">채팅창</button></li>
-                        </ul>
+                    <nav style="padding: 0px; margin: 0px;" id="navbar" class="navbar">
+                        <button class="btn-get-started" id="quest_btn" onclick="chat_btn()">채팅창</button>
                     </nav>
                 </div>
             </header>
