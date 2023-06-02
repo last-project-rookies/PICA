@@ -7,7 +7,6 @@ db = pymysql.connect(
     user="root",
     password="12341234",
     charset="utf8",
-    connect_timeout=31536000,
 )
 
 # 커서 객체 생성
@@ -136,4 +135,7 @@ cursor.execute(sql)
 cursor.close()
 
 # 연결 종료
-# db.close()
+db.close()
+
+print("Connection DataBase : pica")
+print("Create tables : user, log, url, emotion, vir_character, accum_emotion")
