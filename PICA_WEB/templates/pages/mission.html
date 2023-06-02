@@ -12,6 +12,10 @@
         <title>게시판</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <style>
+            .navbar {
+                padding: 0;
+                margin: 0;
+            }
             body {
                 padding-top: 20px;
             }
@@ -25,8 +29,12 @@
                 font-size: 24px;
                 font-weight: bold;
                 margin-bottom: 20px;
-                padding-top: 20px;
+                padding-top: 10px;
                 text-align: center;
+            }
+
+            .col-md-6{
+                margin-bottom: 20px;
             }
 
             .board-item {
@@ -40,17 +48,17 @@
                 margin-bottom: 0;
             }
 
-            /* .board-item-title {
-                font-size: 18px;
+            .board-item-title {
+                font-size: 24px;
                 font-weight: bold;
                 margin-bottom: 5px;
-            } */
+            }
 
             .board-title {
                 font-size: 32px;
                 font-weight: bold;
                 margin-bottom: 10px;
-                padding-top: 20px;
+                padding-top: 10px;
                 text-align: center;
                 color: #333333; /* Custom color */
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Adding a text shadow */
@@ -58,13 +66,19 @@
             }
 
             .board-item-content {
-                font-size: 14px;
+                font-size: 18px;
                 color: #6c757d;
             }
 
             .board-item-meta {
+                margin-top: 5px;
                 font-size: 12px;
                 color: #6c757d;
+            }
+
+            #board-img{
+                max-width: 100%;
+                margin-top: 5px;
             }
 
             .progress-container {
@@ -76,6 +90,7 @@
 
             .progress-label {
                 margin-right: 10px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
             }
 
             .progress-bar {
@@ -160,6 +175,17 @@
                 font-weight: bold;
                 padding: 10px 20px;
             }
+            .category {
+                display: inline-block;
+                padding: 5px 5px;
+                background-color: #16df72;
+                color: #fff;
+                font-size: 12px;
+                font-weight: bold;
+                border-radius: 5px;
+                margin-right: 10px;
+                margin-bottom: 5px;
+            }
         </style>
 
     </head>
@@ -187,86 +213,98 @@
             }
         </script>
         <div class="container board-container">
-            <div class="board-title">미션 게시판</div>
+            <div class="board-title">Quest Board</div>
             <div class="progress-container">
-                <div class="progress-label">나의 미션 진행율:</div>
+                <div class="progress-label">My quest progress rate </div>
                 <div class="progress-bar">
                     <div class="progress-bar-fill" style="width: 70%;"></div>
                 </div>
             </div>
-
-            <div class="board-item">
-                <div class="board-item-title">2023년 서울청년 마음나눔 토크콘서트 참여자 모집</div>
-                <div class="board-item-content">
-                    <span style="font-weight:bold;">청년이 존중 받는 사회 "더 가까이, 더 구체적으로"</span><br>
-                    <span>서울 청년들과 함께 마음을 나누고 활력 충전의 시간과 메시지를 드리기 위한 서울특별시 청년활동지원센터 [서울청년 마음나눔 토크 콘서트]에 청년 여러분을 초대합니다.</span><br>
-                    <span>2023.04.24.(월) ~ 선착순 마감</span>
-                    <img src="static/img/seoul_young_concert.png" alt="Avatar" style="max-width: 100%;">
-                </div>
-                <div class="board-item-meta">작성자 | 작성일시</div>
-                <div class="comment-section">
-                    <div class="comment-item">
-                        <div class="comment-item-avatar">
-                            <img src="static/img/1.png" alt="Avatar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="board-item">
+                        <span class="category" >청년복지센터 미션</span>
+                        <i class="fas fa-star" style="color: gold; margin-right: 5px;"></i>
+                        <div class="board-item-title">2023년 서울청년 마음나눔 토크콘서트 참여자 모집</div>
+                        <div class="board-item-content">
+                            <span style="font-weight:bold;">청년이 존중 받는 사회 "더 가까이, 더 구체적으로"</span><br>
+                            <span>서울 청년들과 함께 마음을 나누고 활력 충전의 시간과 메시지를 드리기 위한 서울특별시 청년활동지원센터 [서울청년 마음나눔 토크 콘서트]에 청년 여러분을 초대합니다.</span><br>
+                            <span>2023.04.24.(월) ~ 선착순 마감</span>
+                            <img id="board-img" src="static/img/seoul_young_concert.png" alt="Avatar">
                         </div>
-                        <div class="comment-item-content">댓글 내용 1</div>
-                    </div>
-                    <div class="comment-item">
-                        <div class="comment-item-avatar">
-                            <img src="static/img/2.png" alt="Avatar">
-                        </div>
-                        <div class="comment-item-content">댓글 내용 2</div>
-                    </div>
-                    <div class="comment-item">
-                        <div class="comment-item-avatar">
-                            <img src="static/img/3.png" alt="Avatar">
-                        </div>
-                        <div class="comment-item-content">댓글 내용 3</div>
-
-                    </div>
-                    <div class="like-section">
-                        <div class="like-button">
-                            <i class="fas fa-heart like-icon"></i> 좋아요
-                        </div>
-                        <div class="like-button">
-                            <i class="fas fa-comment like-icon"></i> 댓글 달기
+                        <div class="board-item-meta">서울시청년활동지원센터 | 2023.04.20.(금)</div>
+                        <div class="comment-section">
+                            <div class="comment-item">
+                                <div class="comment-item-avatar">
+                                    <img src="static/img/1.png" alt="Avatar">
+                                </div>
+                                <div class="comment-item-content">미션완료^^ 즐겁게 잘 다녀왔습니다ㅎㅎ</div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-item-avatar">
+                                    <img src="static/img/2.png" alt="Avatar">
+                                </div>
+                                <div class="comment-item-content">백세희님 김지용님 너무 좋은 시간이였습니다. 미션 완료.</div>
+                            </div>
+                            <div class="like-section">
+                                <div class="like-button">
+                                    <i class="fas fa-heart like-icon"></i> 좋아요 42
+                                </div>
+                                <div class="like-button">
+                                    <i class="fas fa-comment like-icon"></i> 댓글 달기 16
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="board-item">
-                <div class="board-item-title">게시글 제목 2</div>
-                <div class="board-item-content">게시글 내용입니다. 이곳에 게시글의 요약이 들어갈 수 있습니다.</div>
-                <div class="board-item-meta">작성자 | 작성일시</div>
-                <div class="comment-section">
-                    <div class="comment-item">
-                        <div class="comment-item-avatar">
-                            <img src="static/img/4.png" alt="Avatar">
+                <div class="col-md-6">
+                    <div class="board-item">
+                        <span class="category">자유 미션</span>
+                        <i class="fas fa-star" style="color: gold; margin-right: 5px;"></i>
+                        <div class="board-item-title">제주도에 다녀왔습니다!</div>
+                        <div class="board-item-content">
+                            <span style="font-weight:bold;"> 벗꽃축제 with 나의 우기 </span><br>
+                            <span>우리 우기랑 제주도 가서 즐거운 시간보냈습니다.<br> 너무 너무 행복한 시간이였습니다.<br> 오랜만에 밖을 나오게 해준 우리 우기 고마워!ㅎㅎ</span>
+                            <img id="board-img" src="static/img/board_img.png" alt="Avatar">
                         </div>
-                        <div class="comment-item-content">댓글 내용 4</div>
-                    </div>
-                    <div class="comment-item">
-                        <div class="comment-item-avatar">
-                            <img src="static/img/5.png" alt="Avatar">
-                        </div>
-                        <div class="comment-item-content">댓글 내용 5</div>
-                    </div>
-                    <div class="like-section">
-                        <div class="like-button">
-                            <i class="fas fa-heart like-icon"></i> 좋아요
-                        </div>
-                        <div class="like-button">
-                            <i class="fas fa-comment like-icon"></i> 댓글 달기
+                        <div class="board-item-meta">쿼카 | 2023.04.15.(토) </div>
+                        <div class="comment-section">
+                            <div class="comment-item">
+                                <div class="comment-item-avatar">
+                                    <img src="static/img/4.png" alt="Avatar">
+                                </div>
+                                <div class="comment-item-content">우와 정말 좋은 시간을 보내셨네요! 멋지십니다!!</div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-item-avatar">
+                                    <img src="static/img/5.png" alt="Avatar">
+                                </div>
+                                <div class="comment-item-content">벗꽃이 너무 아름다워요ㅎㅎ 좋은 시간 보내셨네요~~</div>
+                            </div>
+                            <div class="like-section">
+                                <div class="like-button">
+                                    <i class="fas fa-heart like-icon" style="color: red;"></i> 좋아요 65
+                                </div>
+                                <div class="like-button">
+                                    <i class="fas fa-comment like-icon"></i> 댓글 달기 51
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="board-item" style="margin-bottom: 20px;">
+            <!-- <div class="board-item" style="margin-bottom: 20px;">
+                <span class="category">청년복지센터 미션</span>
                 <div class="board-item-title">게시글 제목 3</div>
                 <div class="board-item-content">게시글 내용입니다. 이곳에 게시글의 요약이 들어갈 수 있습니다.</div>
                 <div class="board-item-meta">작성자 | 작성일시</div>
                 <div class="comment-section">
+                    <div class="comment-item">
+                        <div class="comment-item-avatar">
+                            <img src="static/img/3.png" alt="Avatar">
+                        </div>
+                        <div class="comment-item-content">댓글 내용 5</div>
+
+                    </div>
                     <div class="comment-item">
                         <div class="comment-item-avatar">
                             <img src="static/img/6.png" alt="Avatar">
@@ -275,13 +313,13 @@
                     </div>
                     <div class="like-section">
                         <div class="like-button">
-                            <i class="fas fa-heart like-icon"></i> 좋아요
+                            <i class="fas fa-heart like-icon"></i> 좋아요 25
                         </div>
                         <div class="like-button">
-                            <i class="fas fa-comment like-icon"></i> 댓글 달기
+                            <i class="fas fa-comment like-icon"></i> 댓글 달기 13
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </body>
