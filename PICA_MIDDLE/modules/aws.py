@@ -28,14 +28,14 @@ class AwsQuery:
             aws_access_key_id=keys["ACCESS_KEY_ID"],
             aws_secret_access_key=keys["ACCESS_SECRET_KEY"],
             config=Config(signature_version="s3v4"),
-            region_name="ap-northeast-2",
+            region_name=keys["REGION"],
         )
         self.SQS = boto3.client(
             "sqs",
             aws_access_key_id=keys["ACCESS_KEY_ID"],
             aws_secret_access_key=keys["ACCESS_SECRET_KEY"],
             config=Config(signature_version="s3v4"),
-            region_name="ap-northeast-2",
+            region_name=keys["REGION"],
         )
         # 버킷
         self.BUCKET_NAME = "pica-s3"
