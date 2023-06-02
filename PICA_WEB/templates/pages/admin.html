@@ -26,12 +26,10 @@
         }
 
         button {
-            background-color: #16df7e;
-            color: #ffffff;
-            border-color: #cccccc;
+            background-color: #22cc88;
+            border: 0px;
             margin-bottom: 10px;
         }
-
         .big-number-chart {
             display: flex;
             justify-content: center;
@@ -79,30 +77,59 @@
 
         #userButton {
             font-size: 18px;
-            font-weight: bold;
-            padding: 10px 20px;
+            padding: 8px 10px;
+            border: 0px;
         }
-        
+
+        .container.d-flex.align-items-center.justify-content-between {
+            margin-bottom: 0px;
+        }
+
+        #user_select {
+            margin: 20px 0px;
+        }
+
+        #toggleButton {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
     </style>
 </head>
-
 <body>
-    <div class="container" style="margin-bottom:80px;">
-        {% include 'public/header.html'%}
-    </div>
-    <div class="container">
+    {% include 'public/header.html'%}
+    <style>
+        .contents > .btn-get-started {
+            padding: 0px 4px;
+            margin: 0px 2px;
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #22cc88;
+        }
+
+        .contents > .btn-get-started:hover{
+            background-color: #22cc88;
+            box-shadow: 0 0px 0px;
+        }
+    </style>
+    <div style="margin-top: 10px;" class="container">
         &nbsp;
-        <select id="user_select" onchange="change_user()">
-            <option selected value="pica">pica</option>
-            {% for user in users.values() %}
-            <option value="{{user}}">{{user}}</option>
-            {% endfor %}
-        </select>
         <div class="row">
+            <div style="padding: 0px 7.5px;">
+               <select id="user_select" onchange="change_user()">
+                  {% for user in users %}
+                  {% if user[1] == "pica" %}
+                  <option value="{{user[1]}}" selected>{{user[2]}}</option>
+                  {% else %}
+                  <option value="{{user[1]}}">{{user[2]}}</option>
+                  {% endif %}
+                  {% endfor %}
+              </select>
+            </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">오늘 하루 <span id="emotionResult"></span>님 감정 분석 결과</div>
+                        <div class="card-title">오늘 하루<span id="emotionResult"></span>님 감정 분석 결과</div>
                         <div class="chart-container">
                             <canvas id="pieChart"></canvas>
                         </div>
@@ -119,14 +146,14 @@
                         <div class="mt-3">
                             <!-- <button onclick="showLineChartWithData([0.5, 0.8, 0.3, 0.2, 0.6, 0.9, 0.4, 0.7])">행복</button> -->
                             <div class="contents">
-                                <button id="happinessBtn">행복</button>
-                                <button id="excitedBtn">신남</button>
-                                <button id="sadnessBtn">슬픔</button>
-                                <button id="boredBtn">지루</button>
-                                <button id="disgustBtn">혐오</button>
-                                <button id="angerBtn">분노</button>
-                                <button id="calmBtn">고요</button>
-                                <button id="comfortableBtn">편안</button>
+                                <button class="btn-get-started" id="happinessBtn">행복</button>
+                                <button class="btn-get-started" id="excitedBtn">신남</button>
+                                <button class="btn-get-started" id="sadnessBtn">슬픔</button>
+                                <button class="btn-get-started" id="boredBtn">지루</button>
+                                <button class="btn-get-started" id="disgustBtn">혐오</button>
+                                <button class="btn-get-started" id="angerBtn">분노</button>
+                                <button class="btn-get-started" id="calmBtn">고요</button>
+                                <button class="btn-get-started" id="comfortableBtn">편안</button>
                             </div>
                         </div>
                     </div>
@@ -136,14 +163,14 @@
                         <div class="card-title">전체 대화 개수</div>
                         <div class="big-number-chart" id="totalConversations"></div>
                         <div class="center-div">
-                            <button id="toggleButton">대화 로그 열기</button>
+                            <button class="btn-get-started" id="toggleButton">대화 로그 열기</button>
                         </div>
                         <ul id="chatLog" style="display: none;"></ul>
                     </div>
                 </div>
             </div>
             <div class="center-div">
-                <button id="userButton">상담 요청 하기</button>
+                <button class="btn-get-started" id="userButton">상담하기</button>
             </div>
         </div>
     </div>
@@ -153,45 +180,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-
-        // USER ID 불러오기
-        $(document).ready(function() {
-        // AJAX 요청
-        $.ajax({
-            url: '/get_text',
-            method: 'GET',
-            dataType: 'text',
-            success: function(response) {
-            // 요청이 성공하면 받아온 텍스트를 'emotionResult' id를 가진 요소에 설정
-            $('#emotionResult').text(response);
-            },
-            error: function(xhr, status, error) {
-            // 요청이 실패했을 때 처리할 코드
-            console.log('USER_ID 요청 실패:', error);
-            }
-        });
-        });
+        let selected_user = document.getElementById("user_select")
 
         $(window).on('load',async function(){
-            await change_user()
-            setTimeout(() => console.log("change_user"), 2000);
-            await $.ajax({
-              url: '/get_text',
-              method: 'GET',
-              dataType: 'text',
-              success: function(response) {
-              // 요청이 성공하면 받아온 텍스트를 'emotionResult' id를 가진 요소에 설정
-              $('#emotionResult').text(response);
-              },
-              error: function(xhr, status, error) {
-              // 요청이 실패했을 때 처리할 코드
-              console.log('USER_ID 요청 실패:', error);
-              }
-              });
+          await change_user()
+          setTimeout(() => console.log("change_user"), 2000);
         });
-
-        let selected_user = document.getElementById("user_select")
-        console.log(selected_user.value)
 
         var pieChart;
         var lineChart;
@@ -203,6 +197,7 @@
 
         // pieChart 웹 실행시 표현 (+ 빅 넘버 차트 값 불러옴)
         async function change_user() {
+            $('#emotionResult').text($('#user_select option:checked').text());
             if (pieChart) {
                 pieChart.destroy();
             }
@@ -217,7 +212,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log('전체 대화 개수 로드 성공', response.totalConversations);
                     totalConversations = response.totalConversations; // 서버에서 받은 전체 대화 개수
                     document.getElementById('totalConversations').textContent = totalConversations;
                 },
@@ -233,7 +227,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log('파이 차트 데이터 로드 성공', response.pieData);
                     var pieData = response.pieData; // 서버에서 받은 파이 차트 데이터
                     showPieChart(pieData); // 파이 차트 시각화
                 },
@@ -346,38 +339,59 @@
                 }
             });
         }
+        function initWhite(){
+            $('.contents > .btn-get-started').each((idx, x)=>{
+                x.style.backgroundColor = "#fff";
+            })
+        }
 
         // 라인 차트 버튼 클릭 이벤트 처리
         $('#happinessBtn').on('click', function () {
             updateLineChart('행복', 'rgba(255, 99, 132, ');
+            initWhite();
+            document.getElementById('happinessBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#excitedBtn').on('click', function () {
             updateLineChart('신남', 'rgba(54, 162, 235, ');
+            initWhite();
+            document.getElementById('excitedBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#sadnessBtn').on('click', function () {
             updateLineChart('슬픔', 'rgba(255, 206, 86, ');
+            initWhite();
+            document.getElementById('sadnessBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#boredBtn').on('click', function () {
             updateLineChart('지루', 'rgba(75, 192, 192, ');
+            initWhite();
+            document.getElementById('boredBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#disgustBtn').on('click', function () {
             updateLineChart('혐오', 'rgba(153, 102, 255, ');
+            initWhite();
+            document.getElementById('disgustBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#angerBtn').on('click', function () {
             updateLineChart('분노', 'rgba(255, 159, 64, ');
+            initWhite();
+            document.getElementById('angerBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#calmBtn').on('click', function () {
             updateLineChart('고요', 'rgba(255, 0, 0, ');
+            initWhite();
+            document.getElementById('calmBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#comfortableBtn').on('click', function () {
             updateLineChart('편안', 'rgba(0, 255, 0, ');
+            initWhite();
+            document.getElementById('comfortableBtn').style.backgroundColor = '#22cc88';
         });
         // 서버로 버튼 텍스트 전송 및 데이터 업데이트
         async function updateLineChart(emotion, color) {
@@ -388,7 +402,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify({ "emotion": emotion ,"user":selected_user.value}),
                 success: function (response) {
-                    console.log('차트 데이터 업데이트 성공', response);
                     var chartData = response.chart_data; // 서버에서 받은 차트 데이터
                     showLineChartWithData(emotion, chartData, color); // 라인 차트 업데이트
                 },
@@ -417,28 +430,26 @@
 
             if (chatLogVisible) {
                 await $.ajax({
-                type: 'POST',
-                url: "/admin_chatlog", // Replace with the correct server endpoint URL
-                data : JSON.stringify({"user":selected_user.value}),
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (response) {
-                    console.log('채팅로드성공');
-                    var chatLogData = response.chatLog; // Server-provided chat log data
-                    chatLog.innerHTML = ""; // Clear previous chat messages
+                    type: 'POST',
+                    url: "/admin_chatlog", // Replace with the correct server endpoint URL
+                    data : JSON.stringify({"user":selected_user.value}),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (response) {
+                        var chatLogData = response.chatLog; // Server-provided chat log data
+                        chatLog.innerHTML = ""; // Clear previous chat messages
 
-                    chatLogData.forEach(function (message) {
-                        var isUser = message.sender === "user";
-                        console.log(message.content, isUser)
-                        addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
-                    });
+                        chatLogData.forEach(function (message) {
+                            var isUser = message.sender === "user";
+                            addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
+                        });
 
-                    chatLog.style.display = "block";
-                    toggleButton.textContent = "대화 로그 닫기"; // Toggle the chat log visibility
-                },
-                error: function (request, status, error) {
-                    console.log('채팅 로드 에러', error);
-                }
+                        chatLog.style.display = "block";
+                        toggleButton.textContent = "대화 로그 닫기"; // Toggle the chat log visibility
+                    },
+                    error: function (request, status, error) {
+                        console.log('채팅 로드 에러', error);
+                    }
                 });
             } else {
                 chatLog.style.display = "none";

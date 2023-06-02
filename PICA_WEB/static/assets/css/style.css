@@ -73,16 +73,16 @@ h6 {
   background: #fff;
   transition: all 0.5s;
   z-index: 997;
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 #header.header-scrolled {
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
-  padding: 12px 0;
+  padding: 0px 0;
 }
 
 #header .logo {
-  font-size: 18px;
+  font-size: 22px;
   margin: 0;
   padding: 0;
   line-height: 1;
@@ -384,8 +384,7 @@ h6 {
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
-  background: #16df7e;
-  box-shadow: 0 8px 28px rgba(22, 223, 126, 0.45);
+  background: #22cc88;
 }
 .btn-get-started {
   font-family: "Raleway", sans-serif;
@@ -400,8 +399,7 @@ h6 {
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
-  background: #16df7e;
-  box-shadow: 0 8px 28px rgba(22, 223, 126, 0.45);
+  background: #22cc88;
   margin: 0px 10px;
 }
 #hero .btn-get-started:hover {
@@ -443,11 +441,7 @@ h6 {
   width: 70%;
 }
 
-@media (max-width: 991px) {
-  #hero {
-    height: 100vh;
-  }
-
+@media (max-width: 991.5px) {
   #hero h1 {
     font-size: 24px;
     line-height: 36px;
@@ -468,49 +462,20 @@ h6 {
   }
 
   #hero .hero-img img {
-    margin-top: 70px;
+    margin-top: 30px;
     width: 30%;
   }
-
 }
 
 @media (max-width: 768px) {
   #hero {
     height: auto;
   }
-
-  #hero h1 {
-    font-size: 28px;
-    line-height: 36px;
-  }
-
-  #hero h2 {
-    font-size: 18px;
-    line-height: 24px;
-    margin-bottom: 30px;
-  }
-
-  #hero .hero-img img {
-    margin-top: 40px;
-    width: 30%;
-  }
 }
 
 @media (max-width: 575px) {
   #hero .hero-img img {
-    margin-top: 40px;
-    width: 30%;
-  }
-
-  #hero h1 {
-    font-size: 18px;
-    line-height: 24px;
-  }
-
-  #hero h2 {
-    font-size: 14px;
-    line-height: 24px;
-    margin-bottom: 30px;
+    width: 40%;
   }
 }
 
@@ -1259,7 +1224,7 @@ section {
   content: "/";
 }
 
-@media (max-width: 992px) {
+@media (max-width: 991px) {
   .breadcrumbs {
     margin-top: 58px;
   }
@@ -1394,7 +1359,7 @@ section {
   font-size: 13px;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 991px) {
 
   #footer .copyright,
   #footer .credits {

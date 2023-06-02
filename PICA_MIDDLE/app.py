@@ -18,8 +18,8 @@ from modules.db import (
     total_chat_count_data,
     generate_chart_data,
     db_select_user,
+    db_select_user_name,
 )
-
 
 
 # 비동기 처리
@@ -85,6 +85,7 @@ def req_stable():
     b_img = data.get("b_img")
     user_id = data.get("user_id")
     nickname = data.get("nickname")
+    user_name = data.get("user_name")
     sex = data.get("sex")
     face = data.get("face")
     mbti = data.get("mbti")
@@ -96,7 +97,14 @@ def req_stable():
         # 2. 스테이블 디퓨전 서버에 POST 전송 "face_id":face,
         res = requests.post(
             "http://54.248.40.115:8080/img2img",
-            json.dumps({"base64_file": b_img, "user_id": user_id + f"/{nickname}", "sex": sex}),
+            json.dumps(
+                {
+                    "base64_file": b_img,
+                    "user_id": user_id + f"/{nickname}",
+                    "face_id": face,
+                    "sex": sex,
+                }
+            ),
         )
         print(res.status_code)
 
@@ -118,7 +126,7 @@ def req_stable():
         # )
 
         # 4. db- user 테이블 삽입
-        th_user = threading.Thread(target=db_insert, args=("user", user_id))
+        th_user = threading.Thread(target=db_insert, args=("user", f" '{user_id}', '{user_name}'"))
         th_user.start()
         th_user.join()
         id_value = db_select_id(user_id)
@@ -160,14 +168,14 @@ def re_req_stable():
 # finish_req_stable 결정된 stable 이미지 업로드
 @app.route("/finish_req_stable", methods=["GET", "POST"])
 def finish_req_stable():
-    print("!!!!!!!!!!!!! finish_req_stable")
     # 데이터 받아오기
     data = request.get_json()
     b_img = data.get("b_img")
     user_id = data.get("user_id")
+    print(user_id)
     nickname = data.get("nickname")
-
     id_value = db_select_id(user_id)
+    user_name = db_select_user_name(id_value)
     mbti = db_select_mbti(id_value)
 
     # aws s3 이미지 업로드
@@ -188,7 +196,7 @@ def finish_req_stable():
     # 캐릭터 대화 세팅
     global conversation, memory_vectorstore, static_vectorstore
     conversation, memory_vectorstore, static_vectorstore = setting(
-        user_get=user_id, name_get=nickname, mbti_get=mbti, age_get="22", user_id_get=user_id
+        user_get=user_name, name_get=nickname, mbti_get=mbti, age_get="22", user_id_get=user_id
     )
     return jsonify({})
 
@@ -268,7 +276,7 @@ def logout():
     th_upload = threading.Thread(target=log_summary_upload, args=(user_id,))
     th_upload.start()
     th_upload.join()
-    if os.path.exists(f"user_id"):
+    if os.path.exists(f"{user_id}"):
         shutil.rmtree(f"{user_id}")
 
     return jsonify({})
@@ -277,10 +285,7 @@ def logout():
 @app.route("/user_table_request", methods=["GET", "POST"])
 def user_table_request():
     result = db_select_user()
-    data = dict()
-    for idx, val in result:
-        data[idx] = val
-    return jsonify({"data": data})
+    return jsonify({"data": result})
 
 
 # 파이차트 데이터
@@ -298,9 +303,7 @@ def pie_chart_data():
 def get_total_conversations():
     data = request.get_json()
     user_id = data.get("user_id")
-    print(user_id)
     id_value = db_select_id(user_id)
-    print(id_value)
     total_conversations = total_chat_count_data(id_value)
     return jsonify({"data": total_conversations})
 
@@ -325,17 +328,8 @@ def admin_chatlog():
     user_id = data.get("user_id")
     id_value = db_select_id(user_id)
     chat_log_db = db_select_chat_log(id_value)
-    print(chat_log_db)
     return jsonify({"data": chat_log_db})
 
-
-# user_id 불러오기
-@app.route('/get_text', methods=['GET'])
-def get_text():
-    # 서버에서 가져올 텍스트를 이 부분에서 처리하고 가져오는 로직을 구현합니다.
-    text = db_select_last_userID()
-
-    return jsonify({'data':text})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000, debug=True)

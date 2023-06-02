@@ -82,7 +82,7 @@
                             <option  value="female">여자</option>
                         </select> -->
                     </div>
-                    <div class="virtual-radio">
+                    <div class="virtual-radio" id="sex">
                         <input class="input-hidden" type="radio" name="sex" value="man" id="male">
                         <label class="virtual-setting" for="male">
                             <img src="static/assets/img/male.png"/>
@@ -188,7 +188,8 @@
             <section>
                 <div class="contents">
                     <div class="input input-group input-group-lg">
-                        <label class="file-label" id="uploadLabel" for="uploadFile">Upload File</label>
+                        <div id="info_check">입력한 정보를 확인해주세요</div>
+                        <label class="file-label" id="uploadLabel" for="uploadFile">생성</label>
                         <input type="button" class="file" id="uploadFile">
                     </div>
                 </div>
@@ -252,7 +253,7 @@
             width: 100%; 
             margin-bottom: 10px;
             color: #ffff;
-            background-color: #16df7e;
+            background-color: #22cc88;
         }
         .input > label:not(.input-hidden)hover{
             background: #206bfb;
@@ -264,7 +265,7 @@
         }
         .input > #chooseLabel, 
         .input > #uploadLabel{
-            background-color: #16df7e;
+            background-color: #22cc88;
         }
         .input > #chooseLabel:hover, 
         .input > #uploadLabel:hover{
@@ -293,12 +294,12 @@
 
         input[type=radio]:hover + label>img {
             border: 1px solid #fff;
-            box-shadow: 0 0 3px 3px #16df7e;
+            box-shadow: 0 0 3px 3px #22cc88;
         }
 
         input[type=radio]:checked + label>img {
             border: 1px solid #fff;
-            box-shadow: 0 0 3px 3px #16df7e;
+            box-shadow: 0 0 3px 3px #22cc88;
         }
 
         .virtual-personal-setting{
@@ -347,15 +348,26 @@
     </script>
     <script>
         const button = document.getElementById("uploadFile")
-        const userID = document.getElementById("userID")
-        const nickname = document.getElementById("nickname")
-        const sex = document.getElementById("sex")
-        const face = document.getElementById("face")
-        const mbti = document.getElementById("mbti")
 
         let b_file = null
         // 버튼 이벤트
         button.addEventListener('click', ()=>{
+            const userID = document.getElementById("userID")
+            const username = document.getElementById("username")
+            const nickname = document.getElementById("nickname")
+            const sex = $("input[name=sex]:checked").val();
+            const face = $("input[name=mood]:checked").val();
+            const m = $("input[name=m]:checked").val();
+            const b = $("input[name=b]:checked").val();
+            const t = $("input[name=t]:checked").val();
+            const i = $("input[name=i]:checked").val();
+            console.log(userID.value)
+            console.log(username.value)
+            console.log(nickname.value)
+            console.log(sex)
+            console.log(face)
+            console.log(m+b+t+i)
+
             if (!b_file || userID.value == '') {
                 alert('모두 기입해주세요!')
                 return null
@@ -364,7 +376,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '{{url_for("req_stable")}}',
-                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "nickname": nickname.value, "sex":sex.value, "face":face.value, "mbti": mbti.value}),
+                    data: JSON.stringify({"b_img":b_file, "userID":userID.value, "user_name":username.value,"nickname": nickname.value, "sex":sex, "face":face, "mbti": m+b+t+i}),
                     dataType: "JSON",
                     contentType: "application/json",  //"multipart/form-data",
                     success: function(data){
@@ -374,6 +386,7 @@
                         //fetch(url)
                         //    .then((response) => window.location.assign("{{ url_for('make') }}"))
                         //    .catch((error) =>  window.location.assign("{{ url_for('input') }}"));
+                        hideLoading();
                     },
                     error: function(request, status, error){
                         console.log('업로드 에러~', error)
