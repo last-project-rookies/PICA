@@ -69,7 +69,7 @@ def delete_img():
     th_aws_delete.start()
     th_aws_delete.join()
     # db & session 삭제
-    id_value = db_select_id(f"{user_id}")
+    id_value = db_select_id(user_id)
     th_delete = threading.Thread(target=db_delete, args=(id_value,))
     th_delete.start()
     th_delete.join()
@@ -129,7 +129,7 @@ def req_stable():
         th_user = threading.Thread(target=db_insert, args=("user", f" '{user_id}', '{user_name}'"))
         th_user.start()
         th_user.join()
-        id_value = db_select_id(f"{user_id}")
+        id_value = db_select_id(user_id)
         th_user = threading.Thread(
             target=db_insert,
             args=(
@@ -174,7 +174,7 @@ def finish_req_stable():
     user_id = data.get("user_id")
     print(user_id)
     nickname = data.get("nickname")
-    id_value = db_select_id(f"{user_id}")
+    id_value = db_select_id(user_id)
     user_name = db_select_user_name(id_value)
     mbti = db_select_mbti(id_value)
 
@@ -226,14 +226,14 @@ def send_message():
                 break
 
         # 3. 감정 결과 fun,sad,angry -> urls[1], urls[2], urls[3]
-        urls = db_select_url(db_select_id(f"{user_id}"))
+        urls = db_select_url(db_select_id(user_id))
 
         # 4. d-id
         # video_url = asyncio.run(make_d_id(chat, urls[a_status]))
         video_url = ""
 
         # 5. 각종 log db 저장
-        id_value = db_select_id(f"{user_id}")
+        id_value = db_select_id(user_id)
         th_log = threading.Thread(
             target=db_insert,
             args=(
@@ -276,7 +276,7 @@ def logout():
     th_upload = threading.Thread(target=log_summary_upload, args=(user_id,))
     th_upload.start()
     th_upload.join()
-    if os.path.exists(f"user_id"):
+    if os.path.exists(f"{user_id}"):
         shutil.rmtree(f"{user_id}")
 
     return jsonify({})
@@ -293,7 +293,7 @@ def user_table_request():
 def pie_chart_data():
     data = request.get_json()
     user_id = data.get("user_id")
-    id_value = db_select_id(f"{user_id}")
+    id_value = db_select_id(user_id)
     pie_data = pieChart_data(id_value)
     return jsonify({"data": pie_data})
 
@@ -303,7 +303,7 @@ def pie_chart_data():
 def get_total_conversations():
     data = request.get_json()
     user_id = data.get("user_id")
-    id_value = db_select_id(f"{user_id}")
+    id_value = db_select_id(user_id)
     total_conversations = total_chat_count_data(id_value)
     return jsonify({"data": total_conversations})
 
@@ -314,7 +314,7 @@ def update_chart_data():
     data = request.get_json()
     user_id = data.get("user_id")
     emotion = data.get("emotion")
-    id_value = db_select_id(f"{user_id}")
+    id_value = db_select_id(user_id)
 
     chart_data = generate_chart_data(emotion, id_value)
 
@@ -326,7 +326,7 @@ def update_chart_data():
 def admin_chatlog():
     data = request.get_json()
     user_id = data.get("user_id")
-    id_value = db_select_id(f"{user_id}")
+    id_value = db_select_id(user_id)
     chat_log_db = db_select_chat_log(id_value)
     return jsonify({"data": chat_log_db})
 

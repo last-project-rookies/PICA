@@ -116,12 +116,15 @@
         &nbsp;
         <div class="row">
             <div style="padding: 0px 7.5px;">
-                <select class="form-select" id="user_select" onchange="change_user()">
-                    <option selected value="pica">pica</option>
-                    {% for user in users %}
-                    <option value="{{user[1]}}">{{user[2]}}</option>
-                    {% endfor %}
-                </select>
+               <select id="user_select" onchange="change_user()">
+                  {% for user in users %}
+                  {% if user[1] == "pica" %}
+                  <option value="{{user[1]}}" selected>{{user[2]}}</option>
+                  {% else %}
+                  <option value="{{user[1]}}">{{user[2]}}</option>
+                  {% endif %}
+                  {% endfor %}
+              </select>
             </div>
             <div class="col-md-6">
                 <div class="card">
@@ -209,7 +212,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log('전체 대화 개수 로드 성공', response.totalConversations);
                     totalConversations = response.totalConversations; // 서버에서 받은 전체 대화 개수
                     document.getElementById('totalConversations').textContent = totalConversations;
                 },
@@ -225,7 +227,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log('파이 차트 데이터 로드 성공', response.pieData);
                     var pieData = response.pieData; // 서버에서 받은 파이 차트 데이터
                     showPieChart(pieData); // 파이 차트 시각화
                 },
@@ -401,7 +402,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify({ "emotion": emotion ,"user":selected_user.value}),
                 success: function (response) {
-                    console.log('차트 데이터 업데이트 성공', response);
                     var chartData = response.chart_data; // 서버에서 받은 차트 데이터
                     showLineChartWithData(emotion, chartData, color); // 라인 차트 업데이트
                 },
@@ -436,13 +436,11 @@
                     dataType: 'json',
                     contentType: 'application/json',
                     success: function (response) {
-                        console.log('채팅로드성공');
                         var chatLogData = response.chatLog; // Server-provided chat log data
                         chatLog.innerHTML = ""; // Clear previous chat messages
 
                         chatLogData.forEach(function (message) {
                             var isUser = message.sender === "user";
-                            console.log(message.content, isUser)
                             addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
                         });
 

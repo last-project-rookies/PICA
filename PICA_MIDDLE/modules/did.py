@@ -3,6 +3,7 @@ import asyncio
 import json
 
 # "source_url": f"https://google-extension2.s3.ap-northeast-2.amazonaws.com/upload/{key}"
+TOKEN = "Basic Y21welpHNWhhMlp0ZW1nMk1VQm5iV0ZwYkM1amIyMDpTeG5OYUNnbkpKYkl5WGRsNTRpRlQ="
 
 
 async def create_did(key, img_url):
@@ -36,7 +37,7 @@ async def create_did(key, img_url):
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "authorization": "Basic YzJWdmJtZGxiMjR3T0RSQVoyMWhhV3d1WTI5dDpQN0ljdzR4QUN4SGhBWVJLSWF5U08=",
+        "authorization": TOKEN,
     }
 
     response = requests.post(url, json=payload, headers=headers)
@@ -56,7 +57,7 @@ async def get_did(talk_id):
 
     headers = {
         "accept": "application/json",
-        "authorization": "Basic YzJWdmJtZGxiMjR3T0RSQVoyMWhhV3d1WTI5dDpQN0ljdzR4QUN4SGhBWVJLSWF5U08=",
+        "authorization": TOKEN,
     }
 
     response = requests.get(url, headers=headers)
@@ -74,18 +75,27 @@ async def make_d_id(msg, URL):
     - return
         - result_url : `string` = d-id 영상 url
     """
+    result_url = None
+
     creation = json.loads(await create_did(msg, URL))
-    print(creation)
-    while True:
-        result = json.loads(await get_did(creation["id"]))
-        result_url = result.get("result_url")
-        if result_url:
-            break
+    if (
+        creation.get("kind") == "InsufficientCreditsError"
+        or creation.get("kind") == "InternalServerError"
+        or creation.get("kind") == "NotFoundError"
+    ):
+        result_url = URL
+        print("d-id error")
+    else:
+        while True:
+            result = json.loads(await get_did(creation.get("id")))
+            result_url = result.get("result_url")
+            if result_url:
+                break
     print("생성~")
     return result_url
 
 
 if __name__ == "__main__":
-    img_url = "https://d2frc9lzfoaix3.cloudfront.net/youknow.jpg"
+    img_url = "https://pica-s3.s3.ap-northeast-2.amazonaws.com/%EC%95%84%EC%9D%B4%EC%9C%A0.jpg"
     tmp = asyncio.run(make_d_id("안녕하세요", img_url))
     print(tmp)
