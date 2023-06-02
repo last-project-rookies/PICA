@@ -6,18 +6,41 @@
 </head>
 <body>
     {% include 'public/header.html'%}
-    <!-- <header id="header" class="fixed-top" style="background-color: #16df7e;">
+    <header id="header" class="fixed-top" style="background-color: #22cc88;">
         <div class="container d-flex align-items-center justify-content-between">
     
             <a class="logo" href="{{url_for('home')}}" style="color: #ffff;">PICA</a>
             <nav id="navbar" class="navbar">
-                <ul>
-                    <li><button class="btn-get-started scrollto" id="delete_btn" onclick="delete_btn()"> 이미지 삭제 </button></li>
-                    <li><button class="btn-get-started scrollto" id="logout_btn" onclick="logout_btn()"> 로그아웃 </button></li>
-                </ul>
+                <button style="
+                    margin-right: 0px;
+                    margin-left: 0px;
+                    border-right-width: 0px;
+                    border-top-width: 0px;
+                    border-left-width: 0px;
+                    border-bottom-width: 0px;
+                    width: 100px;"
+                    class="btn-get-started " id="quest_btn" onclick="location.href = '/mission'">퀘스트</button>
+                <button style="
+                    margin-right: 0px;
+                    margin-left: 0px;
+                    border-right-width: 0px;
+                    border-top-width: 0px;
+                    border-left-width: 0px;
+                    border-bottom-width: 0px;
+                    width: 100px;"
+                    class="btn-get-started " id="delete_btn" onclick="delete_btn()">이미지삭제</button>
+                <button style="
+                    margin-left: 0px;
+                    border-right-width: 0px;
+                    border-top-width: 0px;
+                    border-left-width: 0px;
+                    border-bottom-width: 0px;
+                    width: 100px;"
+                    class="btn-get-started " id="logout_btn" onclick="logout_btn()">로그아웃</button>
             </nav>
+    
         </div>
-    </header> -->
+      </header>
     <section id="hero" class="d-flex align-items-center" style="height: 100vh;">
         <div class="container">
                 <!-- Main content -->
@@ -90,7 +113,7 @@
                                             <button id='record' style="border: none; background-color: white; padding-right: 10px; border-top: 1px solid #ced4da;"  onClick="record()" ><img id="record-img" src="static/assets/img/mic.png" width="20px"></button>
                                             <!-- 채팅 전송 이벤트 발생 버튼 -->
                                             <span id="chat_send" class="input-group-append ">
-                                                <button type="button" style='border: none; background-color: #22cc88; padding-right: 20px; padding-left: 20px;' ><img src="static/assets/img/send-message.png" width="20px"></button> 
+                                                <button type="button" style='border: none; background-color: #22cc88; padding-right: 20px; padding-left: 20px;' onclick="sendMessage()"><img src="static/assets/img/send-message.png" width="20px"></button> 
                                             </span>
                                         </div>
                                     </div>
@@ -250,6 +273,8 @@
         }
         .row.content {height:auto;} 
         }
+
+
     </style>
     <script>
         const img = document.querySelector('.center-div > img')

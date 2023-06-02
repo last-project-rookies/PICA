@@ -27,11 +27,9 @@
 
         button {
             background-color: #22cc88;
-            color: #ffffff;
-            border-color: #cccccc;
+            border: 0px;
             margin-bottom: 10px;
         }
-
         .big-number-chart {
             display: flex;
             justify-content: center;
@@ -79,30 +77,56 @@
 
         #userButton {
             font-size: 18px;
-            font-weight: bold;
-            padding: 10px 20px;
+            padding: 8px 10px;
+            border: 0px;
         }
-        
+
+        .container.d-flex.align-items-center.justify-content-between {
+            margin-bottom: 0px;
+        }
+
+        #user_select {
+            margin: 20px 0px;
+        }
+
+        #toggleButton {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
     </style>
 </head>
-
 <body>
-    <div class="container" style="margin-bottom:80px;">
-        {% include 'public/header.html'%}
-    </div>
-    <div class="container">
+    {% include 'public/header.html'%}
+    <style>
+        .contents > .btn-get-started {
+            padding: 0px 4px;
+            margin: 0px 2px;
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #22cc88;
+        }
+
+        .contents > .btn-get-started:hover{
+            background-color: #22cc88;
+            box-shadow: 0 0px 0px;
+        }
+    </style>
+    <div style="margin-top: 10px;" class="container">
         &nbsp;
-        <select id="user_select" onchange="change_user()">
-            <option selected value="pica">pica</option>
-            {% for user in users %}
-            <option value="{{user[1]}}">{{user[2]}}</option>
-            {% endfor %}
-        </select>
         <div class="row">
+            <div style="padding: 0px 7.5px;">
+                <select class="form-select" id="user_select" onchange="change_user()">
+                    <option selected value="pica">pica</option>
+                    {% for user in users %}
+                    <option value="{{user[1]}}">{{user[2]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">오늘 하루 <span id="emotionResult"></span>님 감정 분석 결과</div>
+                        <div class="card-title">오늘 하루<span id="emotionResult"></span>님 감정 분석 결과</div>
                         <div class="chart-container">
                             <canvas id="pieChart"></canvas>
                         </div>
@@ -119,14 +143,14 @@
                         <div class="mt-3">
                             <!-- <button onclick="showLineChartWithData([0.5, 0.8, 0.3, 0.2, 0.6, 0.9, 0.4, 0.7])">행복</button> -->
                             <div class="contents">
-                                <button id="happinessBtn">행복</button>
-                                <button id="excitedBtn">신남</button>
-                                <button id="sadnessBtn">슬픔</button>
-                                <button id="boredBtn">지루</button>
-                                <button id="disgustBtn">혐오</button>
-                                <button id="angerBtn">분노</button>
-                                <button id="calmBtn">고요</button>
-                                <button id="comfortableBtn">편안</button>
+                                <button class="btn-get-started" id="happinessBtn">행복</button>
+                                <button class="btn-get-started" id="excitedBtn">신남</button>
+                                <button class="btn-get-started" id="sadnessBtn">슬픔</button>
+                                <button class="btn-get-started" id="boredBtn">지루</button>
+                                <button class="btn-get-started" id="disgustBtn">혐오</button>
+                                <button class="btn-get-started" id="angerBtn">분노</button>
+                                <button class="btn-get-started" id="calmBtn">고요</button>
+                                <button class="btn-get-started" id="comfortableBtn">편안</button>
                             </div>
                         </div>
                     </div>
@@ -136,14 +160,14 @@
                         <div class="card-title">전체 대화 개수</div>
                         <div class="big-number-chart" id="totalConversations"></div>
                         <div class="center-div">
-                            <button id="toggleButton">대화 로그 열기</button>
+                            <button class="btn-get-started" id="toggleButton">대화 로그 열기</button>
                         </div>
                         <ul id="chatLog" style="display: none;"></ul>
                     </div>
                 </div>
             </div>
             <div class="center-div">
-                <button id="userButton">상담 요청 하기</button>
+                <button class="btn-get-started" id="userButton">상담하기</button>
             </div>
         </div>
     </div>
@@ -314,38 +338,59 @@
                 }
             });
         }
+        function initWhite(){
+            $('.contents > .btn-get-started').each((idx, x)=>{
+                x.style.backgroundColor = "#fff";
+            })
+        }
 
         // 라인 차트 버튼 클릭 이벤트 처리
         $('#happinessBtn').on('click', function () {
             updateLineChart('행복', 'rgba(255, 99, 132, ');
+            initWhite();
+            document.getElementById('happinessBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#excitedBtn').on('click', function () {
             updateLineChart('신남', 'rgba(54, 162, 235, ');
+            initWhite();
+            document.getElementById('excitedBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#sadnessBtn').on('click', function () {
             updateLineChart('슬픔', 'rgba(255, 206, 86, ');
+            initWhite();
+            document.getElementById('sadnessBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#boredBtn').on('click', function () {
             updateLineChart('지루', 'rgba(75, 192, 192, ');
+            initWhite();
+            document.getElementById('boredBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#disgustBtn').on('click', function () {
             updateLineChart('혐오', 'rgba(153, 102, 255, ');
+            initWhite();
+            document.getElementById('disgustBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#angerBtn').on('click', function () {
             updateLineChart('분노', 'rgba(255, 159, 64, ');
+            initWhite();
+            document.getElementById('angerBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#calmBtn').on('click', function () {
             updateLineChart('고요', 'rgba(255, 0, 0, ');
+            initWhite();
+            document.getElementById('calmBtn').style.backgroundColor = '#22cc88';
         });
 
         $('#comfortableBtn').on('click', function () {
             updateLineChart('편안', 'rgba(0, 255, 0, ');
+            initWhite();
+            document.getElementById('comfortableBtn').style.backgroundColor = '#22cc88';
         });
         // 서버로 버튼 텍스트 전송 및 데이터 업데이트
         async function updateLineChart(emotion, color) {
@@ -371,18 +416,6 @@
         var toggleButton = document.getElementById('toggleButton');
         var chatLog = document.getElementById('chatLog');
 
-        function toggleChatLog() {
-            chatLogVisible = !chatLogVisible;
-
-            if (chatLogVisible) {
-                chatLog.style.display = "block";
-                toggleButton.textContent = "대화 로그 닫기";
-            } else {
-                chatLog.style.display = "none";
-                toggleButton.textContent = "대화 로그 열기";
-            }
-        }
-
         function addChatMessage(message, isUser, date) {
             var messageClass = isUser ? 'user-message' : 'bot-message';
             var chatMessage = document.createElement('li');
@@ -393,29 +426,37 @@
         }
 
         $('#toggleButton').on('click', async () => {
-            await $.ajax({
-                type: 'POST',
-                url: "/admin_chatlog", // Replace with the correct server endpoint URL
-                data : JSON.stringify({"user":selected_user.value}),
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (response) {
-                    console.log('채팅로드성공');
-                    var chatLogData = response.chatLog; // Server-provided chat log data
-                    chatLog.innerHTML = ""; // Clear previous chat messages
+            chatLogVisible = !chatLogVisible;
 
-                    chatLogData.forEach(function (message) {
-                        var isUser = message.sender === "user";
-                        console.log(message.content, isUser)
-                        addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
-                    });
+            if (chatLogVisible) {
+                await $.ajax({
+                    type: 'POST',
+                    url: "/admin_chatlog", // Replace with the correct server endpoint URL
+                    data : JSON.stringify({"user":selected_user.value}),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (response) {
+                        console.log('채팅로드성공');
+                        var chatLogData = response.chatLog; // Server-provided chat log data
+                        chatLog.innerHTML = ""; // Clear previous chat messages
 
-                    toggleChatLog(); // Toggle the chat log visibility
-                },
-                error: function (request, status, error) {
-                    console.log('채팅 로드 에러', error);
-                }
-            });
+                        chatLogData.forEach(function (message) {
+                            var isUser = message.sender === "user";
+                            console.log(message.content, isUser)
+                            addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
+                        });
+
+                        chatLog.style.display = "block";
+                        toggleButton.textContent = "대화 로그 닫기"; // Toggle the chat log visibility
+                    },
+                    error: function (request, status, error) {
+                        console.log('채팅 로드 에러', error);
+                    }
+                });
+            } else {
+                chatLog.style.display = "none";
+                toggleButton.textContent = "대화 로그 열기";
+            }
         });
     </script>
 </body>
