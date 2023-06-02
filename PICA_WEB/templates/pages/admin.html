@@ -188,8 +188,8 @@
               console.log('USER_ID 요청 실패:', error);
               }
               });
-          });
-          })
+        });
+
         let selected_user = document.getElementById("user_select")
         console.log(selected_user.value)
 
@@ -403,18 +403,6 @@
         var toggleButton = document.getElementById('toggleButton');
         var chatLog = document.getElementById('chatLog');
 
-        function toggleChatLog() {
-            chatLogVisible = !chatLogVisible;
-
-            if (chatLogVisible) {
-                chatLog.style.display = "block";
-                toggleButton.textContent = "대화 로그 닫기";
-            } else {
-                chatLog.style.display = "none";
-                toggleButton.textContent = "대화 로그 열기";
-            }
-        }
-
         function addChatMessage(message, isUser, date) {
             var messageClass = isUser ? 'user-message' : 'bot-message';
             var chatMessage = document.createElement('li');
@@ -425,7 +413,10 @@
         }
 
         $('#toggleButton').on('click', async () => {
-            await $.ajax({
+            chatLogVisible = !chatLogVisible;
+
+            if (chatLogVisible) {
+                await $.ajax({
                 type: 'POST',
                 url: "/admin_chatlog", // Replace with the correct server endpoint URL
                 data : JSON.stringify({"user":selected_user.value}),
@@ -442,12 +433,17 @@
                         addChatMessage(message.content, isUser, message.date); // Pass the date value to the addChatMessage function
                     });
 
-                    toggleChatLog(); // Toggle the chat log visibility
+                    chatLog.style.display = "block";
+                    toggleButton.textContent = "대화 로그 닫기"; // Toggle the chat log visibility
                 },
                 error: function (request, status, error) {
                     console.log('채팅 로드 에러', error);
                 }
-            });
+                });
+            } else {
+                chatLog.style.display = "none";
+                toggleButton.textContent = "대화 로그 열기";
+            }
         });
     </script>
 </body>
