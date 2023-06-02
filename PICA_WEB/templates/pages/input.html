@@ -77,10 +77,6 @@
                 <div class="contents">
                     <div class="input input-group input-group-lg">
                         <h4>가상인물의 성별을 입력해주세요</h4>
-                        <!-- <select name="sex" id="sex" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" >
-                            <option selected  value="male">남자</option>
-                            <option  value="female">여자</option>
-                        </select> -->
                     </div>
                     <div class="virtual-radio" id="sex">
                         <input class="input-hidden" type="radio" name="sex" value="man" id="male">
@@ -99,14 +95,6 @@
                 <div class="contents">
                     <div class="input input-group input-group-lg">
                         <h4>가상인물의 얼굴상을 입력해주세요</h4>
-                        <!-- <select name="face" id="face" class="form-select form-select-lg mb-3" aria-label=".form-select-lg" >
-                            <option selected  value="cat">고양이상</option>
-                            <option  value="dog">강아지상</option>
-                        </select> -->
-                        <!-- <select name="sex" id="sex" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" >
-                            <option selected  value="male">남자</option>
-                            <option  value="female">여자</option>
-                        </select> -->
                     </div>
                     <div class="virtual-radio">
                         <input class="input-hidden" type="radio" name="mood" value="cat" id="cat">
@@ -124,24 +112,6 @@
                 <div class="contents">
                     <div class="input input-group input-group-lg">
                         <h4>가상인물의 mbti를 입력해주세요</h4>
-                        <!-- <select name="mbti" id="mbti" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                            <option selected value="INFP">INFP</option>
-                            <option  value="INFJ">INFJ</option>
-                            <option  value="INTP">INTP</option>
-                            <option  value="INTJ">INTJ</option>
-                            <option  value="ISFP">ISFP</option>
-                            <option  value="ISFJ">ISFJ</option>
-                            <option  value="ISTP">ISTP</option>
-                            <option  value="ISTJ">ISTJ</option>
-                            <option  value="ENFP">ENFP</option>
-                            <option  value="ENFJ">ENFJ</option>
-                            <option  value="ENTP">ENTP</option>
-                            <option  value="ENTJ">ENTJ</option>
-                            <option  value="ESFP">ESFP</option>
-                            <option  value="ESFJ">ESFJ</option>
-                            <option  value="ESTP">ESTP</option>
-                            <option  value="ESTJ">ESTJ</option>
-                        </select> -->
                     </div>
                     <div class="virtual-radio">
                         <input class="input-hidden" type="radio" name="m" value="I" id="I">
@@ -305,6 +275,7 @@
         .virtual-personal-setting{
             font-size: 50px;
             margin: 10px 50px;
+            text-align: center;
         }
 
         .virtual-personal-setting:hover{
@@ -332,7 +303,6 @@
             border-image: linear-gradient(to right, #11998e, #38ef7d);
             border-image-slice: 1;
         }
-
 
     </style>
     <script src="{{ url_for ('static', filename='slides/dist/reveal.js')}}"></script>
@@ -368,7 +338,7 @@
             console.log(face)
             console.log(m+b+t+i)
 
-            if (!b_file || userID.value == '') {
+            if (!b_file || userID.value == '' || username.value == ''|| sex == undefined || face == undefined || m == undefined || b == undefined || t == undefined || i == undefined ) {
                 alert('모두 기입해주세요!')
                 return null
             } else {

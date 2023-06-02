@@ -6,37 +6,24 @@
 </head>
 <body>
     {% include 'public/header.html'%}
+    <style>
+        .btn-get-started{
+            margin-right: 0px;
+            margin-left: 0px;
+            border-right-width: 0px;
+            border-top-width: 0px;
+            border-left-width: 0px;
+            border-bottom-width: 0px;
+            width: 100px;
+        }
+    </style>
     <header id="header" class="fixed-top" style="background-color: #22cc88;">
         <div class="container d-flex align-items-center justify-content-between">
-    
             <a class="logo" href="{{url_for('home')}}" style="color: #ffff;">PICA</a>
             <nav id="navbar" class="navbar">
-                <button style="
-                    margin-right: 0px;
-                    margin-left: 0px;
-                    border-right-width: 0px;
-                    border-top-width: 0px;
-                    border-left-width: 0px;
-                    border-bottom-width: 0px;
-                    width: 100px;"
-                    class="btn-get-started " id="quest_btn" onclick="location.href = '/mission'">퀘스트</button>
-                <button style="
-                    margin-right: 0px;
-                    margin-left: 0px;
-                    border-right-width: 0px;
-                    border-top-width: 0px;
-                    border-left-width: 0px;
-                    border-bottom-width: 0px;
-                    width: 100px;"
-                    class="btn-get-started " id="delete_btn" onclick="delete_btn()">이미지삭제</button>
-                <button style="
-                    margin-left: 0px;
-                    border-right-width: 0px;
-                    border-top-width: 0px;
-                    border-left-width: 0px;
-                    border-bottom-width: 0px;
-                    width: 100px;"
-                    class="btn-get-started " id="logout_btn" onclick="logout_btn()">로그아웃</button>
+                <button class="btn-get-started" id="quest_btn" onclick="location.href = '/mission'">퀘스트</button>
+                <button class="btn-get-started" id="delete_btn" onclick="delete_btn()">이미지삭제</button>
+                <button style="margin-right: 3px;" class="btn-get-started" id="logout_btn" onclick="logout_btn()">로그아웃</button>
             </nav>
     
         </div>
@@ -51,7 +38,7 @@
                                 <div class="content">
                                     <!-- <h5 style="display:block; padding-bottom:10px; text-align:center; min-width:100px">캐릭터 이름</h5> -->
                                     <div class="center-div">
-                                        <img src="static/img/ai_img.png" style="width: 180px; height: 180px; border-radius:50%;"/>
+                                        <img src="static/img/ai_img.png" style="width: 25vh; height: 25vh; border-radius:50%;"/>
                                         <video></video>
                                     </div>
                                 </div>
@@ -189,7 +176,7 @@
         }
 
         .direct-chat-messages{
-            height: auto;
+            height: 49vh;
         }
 
         .input-group{
@@ -259,6 +246,11 @@
             .direct-chat-text {
                 max-width: 200px;
             }
+            .btn-get-started{
+                font-size: 10px;
+                padding: 0px 5px;
+                width: 70px;
+            }
         }
 
         /* On small screens, set height to 'auto' for sidenav and grid */
@@ -278,10 +270,12 @@
     </style>
     <script>
         const img = document.querySelector('.center-div > img')
-        //$(window).on('load',function(){
-        //    img.src = "data:image/jpeg;base64,{{img}}"
-        //    setTimeout(() => console.log("get_img"), 2000);
-        //})
+        $(window).on('load',function(){
+            if ("{{img}}" != ""){
+                img.src = "data:image/jpeg;base64,{{img}}"
+                setTimeout(() => console.log("get_img"), 2000);
+            }
+        })
         function logout_btn(){
             window.location.replace("{{ url_for('home')}}")
             $.ajax({
@@ -364,6 +358,9 @@
         }
         function sendMessage(){
             msg = $('#chat_input').val()
+            if (strip(msg)==""){
+                return "null value";
+            }
             // 1-1. 메세지 입력창 비움
             $('#chat_input').val('')
             // 1-2. 입력 내용 채팅창에 추가(왼쪽)
@@ -375,13 +372,14 @@
                 dataType : 'JSON',
                 contentType: "application/json",
                 success: function(data){
-                    $('.center-div > img').remove('')
-                    console.log(data["video_url"])
-                    video.style.display = ''
+                    $('.center-div > img').remove('');
+                    console.log(data["video_url"]);
+                    video.style.display = '';
                     video.autoplay = true;
                     video.muted = false;
-                    video.width = 500;
-                    video.height = 500;
+                    video.style.width = "30vw";
+                    video.style.height = "30vh";
+                    video.style.borderRadius = "50%";
                     video.src = data["video_url"];
                     resMessage(data['info'])
                 },
@@ -459,6 +457,7 @@
             }
             $('#chat_main_board').append(html)
             // 화면 자동 스크롤 처리
+            console.log( $('#chat_main_board').scrollTop($('#chat_main_board')[0].scrollHeight))
             $('#chat_main_board').scrollTop($('#chat_main_board')[0].scrollHeight)
             
         }
