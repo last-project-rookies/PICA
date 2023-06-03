@@ -49,7 +49,6 @@ def chatbot():
     except Exception as e:
         flash("이미지가 삭제되었습니다. 새로운 캐릭터를 만들어주세요!")
         return redirect(url_for("input"))
-    return render_template("pages/chatbot.html")
 
 
 # 관리자 페이지

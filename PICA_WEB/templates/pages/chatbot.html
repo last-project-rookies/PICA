@@ -49,36 +49,6 @@
                                         <!-- Conversations are loaded here -->
                                         
                                         <div class="direct-chat-messages" id="chat_main_board">
-                                           
-                                            <div class="direct-chat-msg right">
-                                                <div class="direct-chat-infos clearfix">
-                                                    <!-- <span class="direct-chat-name float-left">김성언</span>
-                                                    <span class="direct-chat-timestamp float-right">14:48</span> -->
-                                                </div>
-                                                <!-- /.direct-chat-infos -->
-                                                <!-- <img class="direct-chat-img" src="../static/img/user_img.png"
-                                                    alt="message user image"> -->
-                                                <!-- /.direct-chat-img -->
-                                                <div class="direct-chat-text">
-                                                    안녕
-                                                </div>
-                                                <!-- /.direct-chat-text -->
-                                            </div>
-                                            <div class="direct-chat-msg">
-                                                <div class="direct-chat-infos clearfix">
-                                                    <!-- <span class="direct-chat-name float-right">이루다</span>
-                                                    <span class="direct-chat-timestamp float-left">14:49</span> -->
-                                                </div>
-                                                <!-- /.direct-chat-infos -->
-                                                <img class="direct-chat-img" src="../static/img/ai_img.png"
-                                                    alt="message user image">
-                                                <!-- /.direct-chat-img -->
-                                                <div class="direct-chat-text">
-                                                    안녕 난 이루다야. 반가워 내 mbti는 ENFP이고 영화보는 걸 좋아해 우리 재밌게 대화하자!
-                                                </div>
-                                                <!-- /.direct-chat-text -->
-                                            </div>
-
                                         </div>
                                         <!--/.direct-chat-messages-->
         
@@ -358,9 +328,6 @@
         }
         function sendMessage(){
             msg = $('#chat_input').val()
-            if (strip(msg)==""){
-                return "null value";
-            }
             // 1-1. 메세지 입력창 비움
             $('#chat_input').val('')
             // 1-2. 입력 내용 채팅창에 추가(왼쪽)
@@ -422,10 +389,6 @@
                         <!-- <span class="direct-chat-name float-left">${name}</span>
                         <span class="direct-chat-timestamp float-right">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span> -->
                     </div>
-                    <!-- /.direct-chat-infos -->
-                    <!-- <img class="direct-chat-img" src="../static/img/user_img.png"
-                        alt="message user image"> -->
-                    <!-- /.direct-chat-img -->
                     <div class="direct-chat-text">
                         ${msg}
                     </div>
@@ -446,7 +409,7 @@
                         <span class="direct-chat-timestamp float-left">${year + '.' + month + '.' + date + ' ' + hours + ':' + minutes}</span> -->
                     </div>
                     <!-- /.direct-chat-infos -->
-                    <img class="direct-chat-img" src="../static/img/ai_img.png"
+                    <img class="direct-chat-img" src="data:image/jpeg;base64,{{img}}"
                         alt="message user image">
                     <!-- /.direct-chat-img -->
                     <div class="direct-chat-text">

@@ -10,7 +10,7 @@ from langchain.prompts import PromptTemplate
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
 HUGGINGFACEHUB_API_TOKEN = ""
 SERPAPI_API_KEY = ""
 
