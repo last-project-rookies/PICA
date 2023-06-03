@@ -2,7 +2,9 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for, f
 import asyncio
 import requests
 import time
+import io
 import base64
+from PIL import Image
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_WEB"
@@ -102,9 +104,17 @@ def req_stable():
     sex = request.get_json()["sex"]
     face = request.get_json()["face"]
     mbti = request.get_json()["mbti"]
-
+    
     session["nickname"] = nickname
     session["user_id"] = user_id
+
+    buffer = io.BytesIO()
+    imgdata = base64.b64decode(b_img)
+    img = Image.open(io.BytesIO(imgdata))
+    new_img = img.resize((768, 768))  # x, y
+    new_img.save(buffer, format="PNG")
+    img_b64 = base64.b64encode(buffer.getvalue())
+    b_img = str(img_b64)[2:-1]
 
     data = {
         "b_img": b_img,
