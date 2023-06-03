@@ -228,7 +228,7 @@ def db_select_chat_log(user_id):
     result = None
     with db.cursor() as cursor:
         # 마지막 행의 accum_emotion 데이터 추출
-        query = f"SELECT question, answer, time FROM log WHERE user_id = {user_id}"
+        query = f"SELECT question, answer, DATE_FORMAT(time, '%Y-%m-%d %H:%i:%s') FROM log WHERE user_id = {user_id}"
         cursor.execute(query)
         result = cursor.fetchall()
 
