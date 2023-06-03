@@ -53,7 +53,7 @@
                 <div class="contents">
                     <div class="input input-group input-group-lg">
                         <h4>아이디를 입력하세요</h4>
-                        <input class="form-control" id="userID"  type="text"/>
+                        <input class="form-control" id="userID"  type="text" oninput="removeSpacesAndSpecialChars(event)"/>
                     </div>
                 </div>
             </section>
@@ -61,7 +61,7 @@
                 <div class="contents">
                     <div class="input input-group input-group-lg">
                         <h4>이름을 입력하세요</h4>
-                        <input class="form-control" id="username"  type="text"/>
+                        <input class="form-control" id="username"  type="text" oninput="removeSpacesAndSpecialCharsAndkorean(event)"/>
                     </div>
                 </div>
             </section>
@@ -69,7 +69,7 @@
                 <div class="contents">
                     <div class="input input-group input-group-lg">
                         <h4>가상인물의 이름을 입력해주세요</h4>
-                        <input class="form-control" id="nickname"  type="text"/>
+                        <input class="form-control" id="nickname"  type="text" oninput="removeSpacesAndSpecialChars(event)"/>
                     </div>
                 </div>
             </section>
@@ -427,6 +427,18 @@
         }
     
         const dropFile = new DropFile("drop-file", "files");
+
+        function removeSpacesAndSpecialChars(event) {
+            const inputField = event.target;
+            const value = inputField.value.replace(/\s+/g, ''); // 스페이스 제거
+            inputField.value = value.replace(/[^a-zA-Z0-9]/g, ''); // 특수문자 제거
+        }
+
+        function removeSpacesAndSpecialCharsAndkorean(event) {
+            const inputField = event.target;
+            const value = inputField.value.replace(/\s+/g, ''); // 스페이스 제거
+            inputField.value = value.replace(/[^ㄱ-ㅎ가-힇a-zA-Z0-9]/g, ''); // 특수문자 제거
+        }
     </script>
 </body>
 
