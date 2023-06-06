@@ -56,8 +56,14 @@ face_compile = {"dog": 0, "cat": 1}
 sex_compile = {"man": 0, "girl": 1}
 
 
+# middle 서버 확인용 페이지
+@app.route("/contents/example")
+def example():
+    return "middle example"
+
+
 # delete_img 요청 처리
-@app.route("/delete_img", methods=["GET", "POST"])
+@app.route("/contents/delete_img", methods=["GET", "POST"])
 def delete_img():
     data = request.get_json()
     # url 받아오기
@@ -78,7 +84,7 @@ def delete_img():
 
 
 # req_stable 요청 처리
-@app.route("/req_stable", methods=["GET", "POST"])
+@app.route("/contents/req_stable", methods=["GET", "POST"])
 def req_stable():
     # 데이터 받아오기
     data = request.get_json()
@@ -111,20 +117,6 @@ def req_stable():
         res_text = res.json()
         base_data = json.loads(res_text).get("base_data")
 
-        # # 임시 url
-        # fun_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
-        # sad_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
-        # angry_url = (
-        #     aws.CLOUD_FLONT_CDN
-        #     + f"/{user_id}/{nickname}/bacf6439-4e0d-4676-87a1-c650ce3e503b_fun.jpg"
-        # )
-
         # 4. db- user 테이블 삽입
         th_user = threading.Thread(target=db_insert, args=("user", f" '{user_id}', '{user_name}'"))
         th_user.start()
@@ -151,7 +143,7 @@ def req_stable():
 
 
 # re_req_stable 재요청 처리
-@app.route("/re_req_stable", methods=["GET", "POST"])
+@app.route("/contents/re_req_stable", methods=["GET", "POST"])
 def re_req_stable():
     base_data = None
     # 2. 스테이블 디퓨전 서버에 POST 전송
@@ -166,7 +158,7 @@ def re_req_stable():
 
 
 # finish_req_stable 결정된 stable 이미지 업로드
-@app.route("/finish_req_stable", methods=["GET", "POST"])
+@app.route("/contents/finish_req_stable", methods=["GET", "POST"])
 def finish_req_stable():
     # 데이터 받아오기
     data = request.get_json()
@@ -202,7 +194,7 @@ def finish_req_stable():
 
 
 # send_message 요청 처리
-@app.route("/send_message", methods=["GET", "POST"])
+@app.route("/contents/send_message", methods=["GET", "POST"])
 def send_message():
     try:
         data = request.get_json()
@@ -268,7 +260,7 @@ async def log_summary_upload(user_id):
 
 
 # 로그아웃 로직
-@app.route("/logout", methods=["GET", "POST"])
+@app.route("/contents/logout", methods=["GET", "POST"])
 def logout():
     data = request.get_json()
     user_id = data.get("user_id")
@@ -282,14 +274,14 @@ def logout():
     return jsonify({})
 
 
-@app.route("/user_table_request", methods=["GET", "POST"])
+@app.route("/contents/user_table_request", methods=["GET", "POST"])
 def user_table_request():
     result = db_select_user()
     return jsonify({"data": result})
 
 
 # 파이차트 데이터
-@app.route("/pie_chart_data", methods=["GET", "POST"])
+@app.route("/contents/pie_chart_data", methods=["GET", "POST"])
 def pie_chart_data():
     data = request.get_json()
     user_id = data.get("user_id")
@@ -299,7 +291,7 @@ def pie_chart_data():
 
 
 # 전체 대화 개수
-@app.route("/total_conversations", methods=["GET", "POST"])
+@app.route("/contents/total_conversations", methods=["GET", "POST"])
 def get_total_conversations():
     data = request.get_json()
     user_id = data.get("user_id")
@@ -309,7 +301,7 @@ def get_total_conversations():
 
 
 # 선차트 데이터(감정별 데이터)
-@app.route("/update_chart_data", methods=["GET", "POST"])
+@app.route("/contents/update_chart_data", methods=["GET", "POST"])
 def update_chart_data():
     data = request.get_json()
     user_id = data.get("user_id")
@@ -322,7 +314,7 @@ def update_chart_data():
 
 
 # 대화 로그
-@app.route("/admin_chatlog", methods=["GET", "POST"])
+@app.route("/contents/admin_chatlog", methods=["GET", "POST"])
 def admin_chatlog():
     data = request.get_json()
     user_id = data.get("user_id")
@@ -332,5 +324,5 @@ def admin_chatlog():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
     # read_summary()

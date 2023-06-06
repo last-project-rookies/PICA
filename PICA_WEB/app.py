@@ -10,8 +10,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "PICA_WEB"
 app.config["JSON_AS_ASCII"] = False
 
-# aws_addr = '13.125.120.92'
 aws_addr = "pica-middle-1"
+middle_url = "http:// ~~~ /contents"
 stable_img = None
 
 #################################################### 라우터
@@ -63,10 +63,12 @@ def admin():
         users=user_table,
     )
 
+
 # 미션 페이지
 @app.route("/mission")
 def mission():
     return render_template("pages/mission.html")
+
 
 #################################################### 로직
 
@@ -83,7 +85,7 @@ def delete_img():
 
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/delete_img", json=data)
+        res = requests.post(f"{middle_url}/delete_img", json=data)
     except Exception as e:
         print("delete_img error : ", e)
 
@@ -104,7 +106,7 @@ def req_stable():
     sex = request.get_json()["sex"]
     face = request.get_json()["face"]
     mbti = request.get_json()["mbti"]
-    
+
     session["nickname"] = nickname
     session["user_id"] = user_id
 
@@ -129,7 +131,7 @@ def req_stable():
     base_data = None
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/req_stable", json=data)
+        res = requests.post(f"{middle_url}/req_stable", json=data)
         base_data = res.json().get("base_data")
         global stable_img
         stable_img = base_data
@@ -144,7 +146,7 @@ def re_req_stable():
     base_data = None
     # 재요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/re_req_stable")
+        res = requests.post(f"{middle_url}/re_req_stable")
         base_data = res.json().get("base_data")
         global stable_img
         stable_img = base_data
@@ -163,7 +165,7 @@ def finish_req_stable():
     data = {"user_id": user_id, "nickname": nickname, "b_img": stable_img}
     # 이미지 업로드 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/finish_req_stable", json=data)
+        res = requests.post(f"{middle_url}/finish_req_stable", json=data)
 
     except requests.exceptions.ConnectionError as e:
         print("re_req_stable error : ", e)
@@ -186,7 +188,7 @@ def send_message():
     video_url = None
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/send_message", json=data)
+        res = requests.post(f"{middle_url}/send_message", json=data)
         video_url = res.json().get("video_url")
         msg = res.json().get("msg")
     except Exception as e:
@@ -201,7 +203,7 @@ def logout():
     data = {"user_id": user_id}
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/logout", json=data)
+        res = requests.post(f"{middle_url}/logout", json=data)
     except Exception as e:
         print("logout error : ", e)
 
@@ -212,7 +214,7 @@ def user_table_request():
     users = None
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/user_table_request")
+        res = requests.post(f"{middle_url}/user_table_request")
         users = res.json().get("data")
     except Exception as e:
         print("pieChart data load error : ", e)
@@ -228,7 +230,7 @@ def pie_chart_data():
     pie_data = None
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/pie_chart_data", json=data)
+        res = requests.post(f"{middle_url}/pie_chart_data", json=data)
         pie_data = res.json().get("data")
     except Exception as e:
         print("pieChart data load error : ", e)
@@ -244,7 +246,7 @@ def get_total_conversations():
     total_conversations = None
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/total_conversations", json=data)
+        res = requests.post(f"{middle_url}/total_conversations", json=data)
         total_conversations = res.json().get("data")
     except Exception as e:
         print("num_chat data load error : ", e)
@@ -261,7 +263,7 @@ def update_chart_data():
     chart_data = None
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/update_chart_data", json=data)
+        res = requests.post(f"{middle_url}/update_chart_data", json=data)
         chart_data = res.json().get("data")
 
     except Exception as e:
@@ -279,7 +281,7 @@ def admin_chatlog():
     chat_logs = []
     # 요청
     try:
-        res = requests.post(f"http://{aws_addr}:3000/admin_chatlog", json=data)
+        res = requests.post(f"{middle_url}/admin_chatlog", json=data)
         chat_log_db = res.json().get("data")
         for chat in chat_log_db:
             question = chat[0]
@@ -296,5 +298,5 @@ def admin_chatlog():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3333, debug=True)
+    app.run(host="0.0.0.0", port=80, debug=True)
 # waitress-serve --port=5000 --channel-timeout=300 app:app
