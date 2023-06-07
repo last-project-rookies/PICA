@@ -20,12 +20,16 @@ stable_img = None
 # 홈 페이지(캐릭터 입력 & 관리자 페이지)
 @app.route("/")
 def home():
+    global stable_img
+    stable_img = None
     return render_template("index.html")
 
 
 # 캐릭터 정보 입력 페이지
 @app.route("/input")
 def input():
+    global stable_img
+    stable_img = None
     return render_template("pages/input.html")
 
 

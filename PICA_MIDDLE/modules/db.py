@@ -284,7 +284,7 @@ def generate_chart_data(emotion, user_id):
     emotion_list = {
         "행복": "happiness",
         "신남": "excited",
-        "슬픔": "excited",
+        "슬픔": "sadness",
         "지루": "bored",
         "혐오": "disgust",
         "분노": "anger",
