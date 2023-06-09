@@ -9,7 +9,7 @@ from langchain.memory import VectorStoreRetrieverMemory
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "openai-api-key"
 HUGGINGFACEHUB_API_TOKEN = ""
 SERPAPI_API_KEY = ""
 

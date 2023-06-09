@@ -20,7 +20,7 @@ with open("./modules/gpt/mbti_en.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
 # open ai key
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "openai-api-key"
 HUGGINGFACEHUB_API_TOKEN = ""
 SERPAPI_API_KEY = ""
 

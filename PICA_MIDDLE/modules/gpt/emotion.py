@@ -2,7 +2,7 @@ import openai
 import json
 import asyncio
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "openai-api-key"
 openai.api_key = OPENAI_API_KEY
 
 
